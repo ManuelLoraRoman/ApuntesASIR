@@ -92,7 +92,7 @@ Para añadir una imagen a nuestro texto, podemos usar
 
 Ejemplo:
 
-             ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png)  
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png)  
 
 o hacer referencia a ella con "[texto]: ubicación del archivo" y luego
 sustituir (ubicación de la imagen) por [texto]
@@ -101,7 +101,7 @@ Ejemplo:
 
 [logo]: https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png
 
-             ![alt text][logo]  
+![alt text][logo]  
 
 
 ## 6. Bloques de programación
