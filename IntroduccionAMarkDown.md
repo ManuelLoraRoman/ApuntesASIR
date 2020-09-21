@@ -42,19 +42,19 @@ establecer y después un punto (.). Acto seguido escribiremos lo que queramos:
 2. Segundo ejemplo
 3. Tercer ejemplo
 
-Si queremos hacer una sublista, usaremos los *blank lines* (⋅⋅) antes de escribir
+Si queremos hacer una sublista, usaremos los *blank lines* (\\) antes de escribir
 el número:
 
 1. Primer ejemplo
-⋅⋅1.1 Primer primer ejemplo
+\\1.1 Primer primer ejemplo
 2. Segundo ejemplo
 
 Note que puedes poner tantos *blank lines* como quieras para ir añadiendo espacios en
 blanco para, por ejemplo, añadir párrafos entre las listas.
 
-⋅⋅⋅Aquí un primer párrafo
-⋅⋅⋅de ejemplo
-⋅⋅⋅para ver el funcionamiento.
+\\Aquí un primer párrafo
+\\de ejemplo
+\\para ver el funcionamiento.
 
 Si por el contrario, queremos hacer listas sin orden, podemos usar tanto
 asteriscos (*), como menos (-) o más (+).
