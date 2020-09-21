@@ -1,6 +1,6 @@
 # Introducción a MarkDown
 
-1. Encabezado
+## 1. Encabezado
 
 Con el símbolo # , puedes poner diferentes tipos de encabezados. Mientras más #,
 más irá disminuyendo el tamaño del encabezado. Aquí algunos ejemplos:
@@ -11,7 +11,7 @@ más irá disminuyendo el tamaño del encabezado. Aquí algunos ejemplos:
 #### H4
 ##### H5
 
-2. Énfasis
+## 2. Énfasis
 
 Para añadir el estilo cursiva a tu texto, puedes colocar tanto asteriscos (*) o
 guión bajo (_) al principio y al final del texto.
