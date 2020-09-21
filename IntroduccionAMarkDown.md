@@ -46,7 +46,7 @@ Si queremos hacer una sublista, usaremos los *leading spaces* (  ) antes de escr
 el número:
 
 1. Primer ejemplo
-  2. Primer primer ejemplo  
+   2. Primer primer ejemplo  
 3. Segundo ejemplo
 
 Note que puedes poner tantos *leading spaces* como quieras para ir añadiendo 
@@ -65,3 +65,29 @@ asteriscos (*), como menos (-) o más (+).
 - Menos
 
 + Más
+
+## 4. Links
+
+Hay dos formas de incorporar un link. La primera y más obvia es añadir 
+directamente la URL o la URL con el soporte (<>).
+
+https://es.wikipedia.org/wiki/Felis_silvestris_catus
+
+Con soporte:
+
+<https://es.wikipedia.org/wiki/Felis_silvestris_catus>
+
+La otra manera es añadir corchetes ([]) al texto que queramos añadirle un link
+y después entre paréntesis copiar tanto una URL, una búsqueda con referencia,
+un link hacia un archivo de un repositorio. Por ejemplo:
+
+[Este texto nos lleva a una página web](https://es.wikipedia.org/wiki/Felis_silvestris_catus)
+
+[Y este otro hacia el Inicio de mi repositorio](..)
+
+## 5. Imágenes
+
+Para añadir una imagen a nuestro texto, podemos usar
+"![alt text](ubicación de la imagen)"
+
+![alt text]
