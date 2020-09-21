@@ -46,15 +46,15 @@ Si queremos hacer una sublista, usaremos los *leading spaces* (  ) antes de escr
 el número:
 
 1. Primer ejemplo
-  1.1 Primer primer ejemplo
-2. Segundo ejemplo
+  2. Primer primer ejemplo
+3. Segundo ejemplo
 
 Note que puedes poner tantos *leading spaces* como quieras para ir añadiendo 
 espacios en blanco para, por ejemplo, añadir párrafos entre las listas.
 
-   Aquí un primer párrafo
-   de ejemplo
-   para ver el funcionamiento.
+  Aquí un primer párrafo
+  de ejemplo
+  para ver el funcionamiento.
 
 Si por el contrario, queremos hacer listas sin orden, podemos usar tanto
 asteriscos (*), como menos (-) o más (+).
