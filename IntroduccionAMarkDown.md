@@ -102,3 +102,27 @@ Ejemplo:
 [logo]: https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png
 
 ![alt text][logo]
+
+
+## 6. Bloques de programación
+
+
+Si queremos que cierto código se remarque en nuestro texto, usaremos tanto al
+principio como al final las comillas invertidas (`).
+
+Ejemplo: Aquí nuestras `comillas invertidas` puestas en uso.
+
+
+Pero cuando vayamos a colocar un bloque de programación, usaremos 3 comillas
+invertidas o 4 espacios. Su funcionamiento es el siguiente: 
+
+"
+```lenguaje de programación
+código
+```
+"
+
+Ejemplo: ```python
+	 s = "Phyton syntax highlighting"
+	 print s
+	 ```
