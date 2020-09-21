@@ -92,7 +92,7 @@ Para añadir una imagen a nuestro texto, podemos usar
 
 Ejemplo:
 
-<div align="center"> ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png) </div>  
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png)  
 
 o hacer referencia a ella con "[texto]: ubicación del archivo" y luego
 sustituir (ubicación de la imagen) por [texto]
@@ -101,7 +101,7 @@ Ejemplo:
 
 [logo]: https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png
 
-<div align="center"> ![alt text][logo] </div>  
+![alt text][logo]
 
 
 ## 6. Bloques de programación
@@ -117,8 +117,8 @@ Pero cuando vayamos a colocar un bloque de programación, usaremos 3 comillas
 invertidas o 4 espacios. Su funcionamiento es el siguiente: 
 
 
-"\`\`\`lenguaje de programación
-código\`\`\`"
+   "\`\`\`lenguaje de programación  
+   código\`\`\`"  
 
 
 Ejemplo: 
@@ -133,10 +133,14 @@ print s
 Las tablas no son algo propiamente de MarkDown, pero se pueden hacer igualmente.
 Se pueden hacer de la siguiente manera:
 
+<div align="center">
+
    " | Tablas | De | Ejemplo |"  
    " |--------|----|---------|"  
    " |  ABC   | DE |  FGHI   |"  
    " |  abc   | de |  fghi   |"  
+
+</div>
 
 | Tablas | De | Ejemplo |
 |--------|----|---------|
