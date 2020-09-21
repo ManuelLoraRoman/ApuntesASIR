@@ -116,11 +116,11 @@ Ejemplo: Aquí nuestras `comillas invertidas` puestas en uso.
 Pero cuando vayamos a colocar un bloque de programación, usaremos 3 comillas
 invertidas o 4 espacios. Su funcionamiento es el siguiente: 
 
-"
-```lenguaje de programación
+
+"```lenguaje de programación
 código
-```
-"
+```"
+
 
 Ejemplo: ```python
 	 s = "Phyton syntax highlighting"
