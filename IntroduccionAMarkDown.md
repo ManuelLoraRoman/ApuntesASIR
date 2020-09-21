@@ -142,23 +142,35 @@ Se pueden hacer de la siguiente manera:
 
 </div>
 
+<div align="center">
+
 | Tablas | De | Ejemplo |
 |--------|----|---------|
 |  ABC   | DE |  FGHI   |
 |  abc   | de |  fghi   |
 
+</div>
+
 No hace falta que sea algo perfecto puesto que automáticamente nos añadirá la
 tabla correctamente.
+
+<div align="center">
 
    "  Tablas | De | Ejemplo "  
    " ----|----|---"  
    "   ABC   | DE |  FGHI   "  
    "   abc   | de |  fghi   "  
 
+</div>
+
+<div align="center">
+
 Tablas | De | Ejemplo
 ----|----|---
 ABC   | DE |  FGHI
 abc   | de |  fghi
+
+</div>
 
 ## 8. Anotaciones
 
@@ -186,23 +198,23 @@ asteriscos (*) o guiones bajos (_).
 
 -----------------
 
-Guiones
+<div align="center"> Guiones </div>
 
 
 *****************
 
 
-Asteriscos
+<div align="center"> Asteriscos </div>
 
 _________________
 
 
-Guiones Bajos
+<div align="center"> Guiones Bajos </div>
 
 ## 11. Alineamiento
 
 MarkDown automáticamente, alinea a la izquierda. Para, por ejemplo, centrar al centro,
-usaremos <div align="center">
+usaremos \<div align="center"\>
 
 Ejemplo:
 
