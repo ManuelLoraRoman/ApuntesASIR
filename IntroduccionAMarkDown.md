@@ -143,3 +143,16 @@ Se pueden hacer de la siguiente manera:
 |  ABC   | DE |  FGHI   |
 |  abc   | de |  fghi   |
 
+No hace falta que sea algo perfecto puesto que automáticamente nos añadirá la
+tabla correctamente.
+
+   "  Tablas | De | Ejemplo "
+   " ----|----|---"
+   "   ABC   | DE |  FGHI   "
+   "   abc   | de |  fghi   "
+
+Tablas | De | Ejemplo
+----|----|---
+ABC   | DE |  FGHI
+abc   | de |  fghi
+
