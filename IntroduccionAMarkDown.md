@@ -92,7 +92,7 @@ Para añadir una imagen a nuestro texto, podemos usar
 
 Ejemplo:
 
-![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png)  
+<div align="center"> ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png) </div>  
 
 o hacer referencia a ella con "[texto]: ubicación del archivo" y luego
 sustituir (ubicación de la imagen) por [texto]
@@ -101,7 +101,7 @@ Ejemplo:
 
 [logo]: https://github.com/ManuelLoraRoman/Prueba/blob/master/Yo.png
 
-![alt text][logo]  
+<div align="center"> ![alt text][logo] </div>  
 
 
 ## 6. Bloques de programación
@@ -159,9 +159,11 @@ abc   | de |  fghi
 ## 8. Anotaciones
 
 Para hacer un bloque de anotaciones, usaremos el símbolo de soporte (>)
+Mientras más soportes coloques, más subanotaciones se producirán.
 
 > Soporte
-
+>> 2 soportes
+>>> 3 soportes
 Se pueden hacer múltiples anotaciones
 
 > Esto van a ser dos líneas de texto
@@ -192,3 +194,16 @@ _________________
 
 
 Guiones Bajos
+
+## 11. Alineamiento
+
+MarkDown automáticamente, alinea a la izquierda. Para, por ejemplo, centrar al centro,
+usaremos <div align="center">
+
+Ejemplo:
+
+<div align="left"> Texto alineado a la izquierda </div>
+
+<div align="center"> Texto alineado en el centro </div>
+
+<div align="right"> Texto alineado a la derecha </div>
