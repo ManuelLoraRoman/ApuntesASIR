@@ -45,7 +45,7 @@ establecer y después un punto (.). Acto seguido escribiremos lo que queramos:
 Si queremos hacer una sublista, usaremos dos puntos antes de escribir el número:
 
 1. Primer ejemplo
-..1.1. Primer primer ejemplo
+..2. Primer primer ejemplo
 2. Segundo ejemplo
 
 Note que puedes poner tantos puntos como quieras para ir añadiendo espacios en
