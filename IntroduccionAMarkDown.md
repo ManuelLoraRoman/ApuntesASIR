@@ -118,11 +118,28 @@ invertidas o 4 espacios. Su funcionamiento es el siguiente:
 
 
 "```lenguaje de programación
-código
-```"
+código```"
 
 
-Ejemplo: ```python
-	 s = "Phyton syntax highlighting"
-	 print s
-	 ```
+Ejemplo: 
+
+```python
+s = "Phyton syntax highlighting"
+print s
+```
+
+## 7. Tablas
+
+Las tablas no son algo propiamente de MarkDown, pero se pueden hacer igualmente.
+Se pueden hacer de la siguiente manera:
+
+" | Tablas | De | Ejemplo |"
+" |--------|----|---------|"
+" |  ABC   | DE |  FGHI   |"
+" |  abc   | de |  fghi   |"
+
+| Tablas | De | Ejemplo |
+|--------|----|---------|
+|  ABC   | DE |  FGHI   |
+|  abc   | de |  fghi   |
+
