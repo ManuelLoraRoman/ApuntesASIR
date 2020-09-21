@@ -146,13 +146,43 @@ Se pueden hacer de la siguiente manera:
 No hace falta que sea algo perfecto puesto que automáticamente nos añadirá la
 tabla correctamente.
 
-   "  Tablas | De | Ejemplo "
-   " ----|----|---"
-   "   ABC   | DE |  FGHI   "
-   "   abc   | de |  fghi   "
+   "  Tablas | De | Ejemplo "  
+   " ----|----|---"  
+   "   ABC   | DE |  FGHI   "  
+   "   abc   | de |  fghi   "  
 
 Tablas | De | Ejemplo
 ----|----|---
 ABC   | DE |  FGHI
 abc   | de |  fghi
 
+## 8. Anotaciones
+
+Para hacer un bloque de anotaciones, usaremos el símbolo de soporte (>)
+
+> Soporte
+
+Se pueden hacer múltiples anotaciones
+
+> Esto van a ser dos líneas de texto
+> metidas en el mismo bloque de anotaciones.
+
+## 9. Uso de HTML
+
+Como apunte, se puede usar el propio lenguaje de HTML en MarkDown, y prácticamente
+funcionará a la perfección en la mayoría de los casos.
+
+## 10. Regla Horizontal
+
+Si queremos añadir una línea en nuestro texto, usaremos 3 o más de, tanto guiones (-),
+asteriscos (*) o guiones bajos (_).
+
+
+Guiones
+-----------------
+
+Asteriscos
+*****************
+
+Guiones Bajos
+_________________
