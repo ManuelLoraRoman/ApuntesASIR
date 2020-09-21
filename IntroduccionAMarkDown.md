@@ -151,10 +151,10 @@ Se pueden hacer de la siguiente manera:
 
 </div>
 
+<div align="center"> 
+
 No hace falta que sea algo perfecto puesto que automáticamente nos añadirá la
 tabla correctamente.
-
-<div align="center">
 
    "  Tablas | De | Ejemplo "  
    " ----|----|---"  
