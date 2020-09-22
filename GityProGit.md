@@ -10,7 +10,7 @@ acceder al mismo mediante SSH, haremos lo siguiente:
 1. Copia el contenido del fichero *~/.ssh/id_rsa.pub* y añadelo en el apartado
 de:
  
-   ```_Settings --> SSH and GPG keys --> SSH keys --> New SSH key_```  
+   _```Settings --> SSH and GPG keys --> SSH keys --> New SSH key```_  
 
    y añadimos dicho contenido.    
 
