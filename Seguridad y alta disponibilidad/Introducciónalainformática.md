@@ -14,6 +14,8 @@ siguiente:
 El almacenamiento en la nube está creciendo a alta velocidad en los últimos
 tiempos. Dicho esto, estas son algunas de sus ventajas e inconvenientes:
 
+<div align="center">
+
 #### Ventajas
 
 * Actualización de los datos en tiempo real
@@ -29,6 +31,7 @@ tiempos. Dicho esto, estas son algunas de sus ventajas e inconvenientes:
 
 * Dependencia
 
+</div>
 
 ## 2. RAID
 
