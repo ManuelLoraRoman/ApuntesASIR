@@ -56,7 +56,8 @@ local.
                  Se suele usar los parámetros -am para añadir un fichero
 		 (add) y escribir el contenido del commit al mismo tiempo.
 
-* _git mv_ --> cambia el nombre de cierto fichero.
+* _git mv_ --> cambia el nombre de cierto fichero o mueve un fichero de un
+	       directorio a otro.
 
 * _git push_ --> envía los cambios al repositorio remoto.
 
@@ -64,3 +65,40 @@ local.
                se trabaje con varios repositorios locales).
 
 * _git status_ --> comprueba el estado del repositorio local.
+
+
+## 3. Git Avanzado
+
+
+* _git log_ --> lista las confirmaciones hechas sobre el repositorio en el
+		que trabajamos en orden cronológico. Muestra varios datos como
+		la suma de comprobación SHA-1, nombre, email, fecha, etc.
+		
+		Al usar el parámetro -p, muestra las diferencias en cada
+		confirmación. Al usar -x(nº), muestras las x últimas entradas.
+		
+		Si usamos --pretty, modificaremos el formato de salida. El 
+		formato _oneline_ imprime cada confirmación en una única línea.
+		Otras opciones de formato son _short_, _full_ o _fuller_.
+		Puedes crear tu propio formato con _format_. Para más
+		información sobre esto, visita esta [página](https://uniwebsidad.com/libros/pro-git/capitulo-2/viendo-el-historico-de-confirmaciones).
+
+
+* _git commit --amend_ --> si haces la confirmación demasiado pronto, y te has
+			   olvidado modificar, crear, etc, puedes volver a hacer
+			   la confirmación con este comando. 
+ 
+* _git remote -v_ --> muestra todos los repositorios remotos que tienes
+		      configurados.
+
+* _git remote add nombre URL_ --> añade a los repositorios configurados un
+				  repositorio en cuestión. Útil si no quieres
+				  usar toda la URL, y quieres usar un nombre. 
+
+* _git remote show repositorio_ --> permite ver información del repositorio en
+				    cuestión.
+
+* _git remote rename repositorio nombrenuevo_ --> cambia el nombre guardado del
+						  repositorio. 
+
+* _git fetch repositorio_ --> recibe datos de un repositorio en cuestión.
