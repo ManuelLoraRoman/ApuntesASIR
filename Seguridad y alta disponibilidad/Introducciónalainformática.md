@@ -18,18 +18,18 @@ tiempos. Dicho esto, estas son algunas de sus ventajas e inconvenientes:
 
 #### Ventajas
 
- * Actualización de los datos en tiempo real
+ Actualización de los datos en tiempo real
 
- * Acceso a los datos en cualquier lugar
+ Acceso a los datos en cualquier lugar
 
- * Costes
+ Costes
 
 
 #### Inconvenientes
 
- * Seguridad
+ Seguridad
 
- * Dependencia
+ Dependencia
 
 </div>
 
