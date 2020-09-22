@@ -12,7 +12,7 @@ de:
  
    ```_Settings --> SSH and GPG keys --> SSH keys --> New SSH key_```  
 
-y añadimos dicho contenido.  
+   y añadimos dicho contenido.    
 
 2. Instala git en tu PC:
 
