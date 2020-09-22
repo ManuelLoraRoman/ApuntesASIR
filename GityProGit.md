@@ -74,14 +74,14 @@ local.
 		que trabajamos en orden cronológico. Muestra varios datos como
 		la suma de comprobación SHA-1, nombre, email, fecha, etc.
 		
-		Al usar el parámetro -p, muestra las diferencias en cada
-		confirmación. Al usar -x(nº), muestras las x últimas entradas.
+	Al usar el parámetro -p, muestra las diferencias en cada
+	confirmación. Al usar -x(nº), muestras las x últimas entradas.
 		
-		Si usamos --pretty, modificaremos el formato de salida. El 
-		formato _oneline_ imprime cada confirmación en una única línea.
-		Otras opciones de formato son _short_, _full_ o _fuller_.
-		Puedes crear tu propio formato con _format_. Para más
-		información sobre esto, visita esta [página](https://uniwebsidad.com/libros/pro-git/capitulo-2/viendo-el-historico-de-confirmaciones).
+	Si usamos --pretty, modificaremos el formato de salida. El 
+	formato _oneline_ imprime cada confirmación en una única línea.
+	Otras opciones de formato son _short_, _full_ o _fuller_.
+	Puedes crear tu propio formato con _format_. Para más
+	información sobre esto, visita esta [página](https://uniwebsidad.com/libros/pro-git/capitulo-2/viendo-el-historico-de-confirmaciones).
 
 
 * _git commit --amend_ --> si haces la confirmación demasiado pronto, y te has
