@@ -49,6 +49,9 @@ local.
 
 * _git add_ --> permite añadir al repositorio un nuevo fichero.
 
+* _git rm_ --> se usa para borrar ficheros del repositorio. Se usa de la misma
+               manera que el "_rm_" de la shell.
+
 * _git commit_ --> permite realizar y mandar un commit al repositorio remoto.
                  Se suele usar los parámetros -am para añadir un fichero
 		 (add) y escribir el contenido del commit al mismo tiempo.
