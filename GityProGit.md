@@ -9,10 +9,15 @@ acceder al mismo mediante SSH, haremos lo siguiente:
 <div align="center">
 
 1. Copia el contenido del fichero *~/.ssh/id_rsa.pub* y añadelo en el
-   apartado de ```_Settings --> SSH and GPG keys --> SSH keys --> New SSH key_```
-   y añadimos dicho contenido.
+   apartado de 
+   ```_Settings --> SSH and GPG keys --> SSH keys --> New SSH key_```  
+   y añadimos dicho contenido.  
+
+</div>
 
 2. Instala git en tu PC:
+
+<div align="center">
 
 ```apt-get install git```
 
@@ -35,17 +40,17 @@ local.
 
 ## 2. Comandos básicos de Git
 
-* git add --> permite añadir al repositorio un nuevo fichero.
+* _git add_ --> permite añadir al repositorio un nuevo fichero.
 
-* git commit --> permite realizar y mandar un commit al repositorio remoto.
+* _git commit_ --> permite realizar y mandar un commit al repositorio remoto.
                  Se suele usar los parámetros -am para añadir un fichero
 		 (add) y escribir el contenido del commit al mismo tiempo.
 
-* git mv --> cambia el nombre de cierto fichero.
+* _git mv_ --> cambia el nombre de cierto fichero.
 
-* git push --> envía los cambios al repositorio remoto.
+* _git push_ --> envía los cambios al repositorio remoto.
 
-* git pull --> sincroniza el repositorio local con el remoto (en caso de que
+* _git pull_ --> sincroniza el repositorio local con el remoto (en caso de que
                se trabaje con varios repositorios locales).
 
-* git status --> comprueba el estado del repositorio local.
+* _git status_ --> comprueba el estado del repositorio local.
