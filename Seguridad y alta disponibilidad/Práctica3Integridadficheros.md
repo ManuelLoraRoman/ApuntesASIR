@@ -9,7 +9,7 @@ del sistema para ocultarse mejor, pudiendo servir de puertas trasera o backdoor
 para la ejecución malware remota.
 
 
-* *Tarea 1*: Crea un manual lo más completo posible de las herramientas sfc y dsim 
+* *Tarea 1*: Crea un manual lo más completo posible de las herramientas sfc y dism 
 	     para comprobar la integridad de ficheros en Windows. 
 	     Indica para qué sirven las opciones más usadas del programa y 
 	     entrega capturas de pantallas para comprobar que has realizado la práctica.
@@ -73,9 +73,74 @@ Sol: para visualizar el archivo de errores, ejecutaremos esto en la CMD:
 
 Dicho archivo aparecerá en nuestro escritorio.
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/28.png)
 
    *3. Protección de recursos de Windows encontró archivos dañados y no consiguió reparar algunos  
        de ellos*    
 
 Sol: visualizamos el archivo de errores de la misma manera que el anterior punto, pero esta vez
      debemos reparar los archivos dañados de manera manual.
+
+Algunos comandos adicionales en el uso de SFC son:
+
+
+* *SFC /Revert* --> sirve para revertir la acción de escaneo de todos los archivos del sistema,
+
+* *SFC /Purgecache* --> purga toda la caché de Windows y procede a examinar todos los archivos
+			protegidos del sistema.
+
+* *SFC /verifyonly* --> se utiliza para analizar todos los archivos protegidos de Windows, pero
+			sin efectuar reparaciones.
+
+* *SFC /scanfile* --> sirve para analizar la integridad de un archivo específico.
+
+
+### Manual de DISM
+
+DISM son las siglas de _Deployment Image Servicing and Management_. Herramienta que permite la
+administración y el mantenimiento de las imágenes desde Windows. Busca daños en imágenes y
+procede a repararlos a partir de un repositorio que posee el sistema operativo.
+
+El comando DISM sirve para capturar imágenes de Windows, agregar o eliminar imágenes de un
+archivo o dividirlos en más pequeños.
+
+Para reparar el sistema con DISM, debes dirigirte a la CMD y ejecutarla con permisos de
+administración.
+
+Hecho ya esto, primero detectamos los daños en el sistema con el siguiente comando:
+
+```Dism.exe /Online/Cleanup-image/CheckHealth```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/29.png)
+
+Este, escanea los archivos en busca de errores:
+
+```DISM.exe/Online/Cleanup-image/Scanhealth```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/30.png)
+
+Si queremos reparar el sistema, escribiremos lo siguiente:
+
+```DISM /Online/Cleanup-image/RestoreHealth```
+
+y presionamos _ENTER_.
+
+Realizará una comprobación y después intentará repararlo.
+
+
+Algunas opciones de DISM útiles adicionales son:
+
+
+* *Analyze* --> utiliza el comando _analysecomponentstore y comprueba la memoria del componente
+		si se puede liberar espacio de memoria.
+
+
+* *Apply-Image* --> aplica una imagen.
+
+* *Get_MountedImageInfo* --> muestra información de las imágenes WIM y VHD montadas.
+
+* *Mount-Image* --> Monta una imagen desde un archivo WIN o VHD.
+
+* *List-Image* --> Muestra una lista de los archivos y las carpetas de una imagen especificada.
+
+
