@@ -50,7 +50,7 @@ Para crear una raid llamada md5, ejecutaremos lo siguiente en la shell:
 
 ```mdadm --create /dev/md5 -l5 -n2 /dev/sdb /dev/sdc```
 
-
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/2.png)
 
 Tenemos que conectar dos como mínimo, y como en este caso, tenemos 2 discos
 de 1 GB cada uno, conectaremos los dos.
@@ -67,6 +67,7 @@ Para comprobar las características del RAID, usaremos el siguiente comando:
 
 La capacidad del RAID será la combinación de ambos discos.
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/1.png)
 
 ## Tarea 3
 
@@ -78,12 +79,13 @@ Para el volumen físico, haremos lo siguiente:
 
 ```sudo pvcreate /dev/sdd```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/3.png)
 
 y para el grupo de volúmenes:
 
 ```sudo vgcreate vgs /dev/sdd```
 
-
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/4.png)
 
 Por último, para crear un volumen lógico, debemos usar _lvcreate_. Usaremos los siguientes
 parámetros:
@@ -100,6 +102,7 @@ Por lo tanto, ejecutaremos el siguiente comando:
 
 ```lvcreate -n vol1 vgs -L 500M```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/5.png)
 
 ## Tarea 4
 
@@ -108,6 +111,7 @@ Para formatear el volumen anterior, debemos ejecutar lo siguiente:
 
 ```mkfs.xfs /dev/mapper/vgs-vol1```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/6.png)
 
 ## Tarea 5
 
@@ -122,8 +126,12 @@ Para marcar un disco como estropeado, haremos lo siguiente:
 
 ```sudo mdadm --fail /dev/md5 /dev/sdb```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/7.png)
 
 Y si, efectivamente, se puede visualizar el fichero, ya que el RAID5 lo permite.
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/8.png)
+
 
 ## Tarea 7
 
@@ -131,6 +139,7 @@ Para extraer un disco estropeado del RAID, debemos ejecutar este comando:
 
 ```sudo mdadm --remove /dev/md5 /dev/sdb```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/9.png)
 
 ## Tarea 8
 
@@ -142,6 +151,7 @@ Como solo tenemos dos discos, pues lo haríamos de esta manera:
 
 ```sudo mdadm --re-add /dev/md5 /dev/sdb```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/10.png)
 
 ## Tarea 9
 
@@ -159,3 +169,5 @@ Para volver a simular el fallo, usaremos el comando usado anteriormente en la ta
 Para redimensionar el volumen lógico, haremos esto:
 
 ```sudo lvresize -l +100%FREE /dev/mapper/vgs-vol1```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/11.png)
