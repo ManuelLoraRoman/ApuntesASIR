@@ -9,16 +9,16 @@ en distintos servicios de almacenamiento en la nube
 Por lo tanto con rclone podemos gestionar y sincronizar los ficheros de 
 nuestros servicios preferidos desde la línea de comandos.
 
-* *Tarea 1*: Instala rclone en tu equipo.
+* *_Tarea 1_*: Instala rclone en tu equipo.
 
-* *Tarea 2*: Configura dos proveedores cloud en rclone (dropbox, google drive, mega, …).
+* *_Tarea 2_*: Configura dos proveedores cloud en rclone (dropbox, google drive, mega, …).
 
-* *Tarea 3*: Muestra distintos comandos de rclone para gestionar los ficheros 
+* *_Tarea 3_*: Muestra distintos comandos de rclone para gestionar los ficheros 
 	     de los proveedores cloud: lista los ficheros, copia un fichero local a la nube, 
 	     sincroniza un directorio local con un directorio en la nube, 
 	     copia ficheros entre los dos proveedores cloud, muestra alguna funcionalidad más,…
 
-* *Tarea 4*: Monta en un directorio local de tu ordenador, los ficheros de un proveedor cloud. 
+* *_Tarea 4_*: Monta en un directorio local de tu ordenador, los ficheros de un proveedor cloud. 
 	     Comprueba que copiando o borrando ficheros en este directorio 
 	     se crean o eliminan en el proveedor.
 
@@ -39,11 +39,11 @@ Para empezar a configurar rclone, usaremos el siguiente comando:
 
 Si es la primera vez que usamos rclone, nos aparecerán 3 opciones:
 
-* *New remote* --> permite crear un nuevo acceso a la nube.
+* *_New remote_* --> permite crear un nuevo acceso a la nube.
 
-* *Set configuration password* --> para crear una contraseña.
+* *_Set configuration password_* --> para crear una contraseña.
 
-* *Quit config* --> para salir de rclone.
+* *_Quit config_* --> para salir de rclone.
 
 Por lo tanto, pondremos _n_ y le damos a _ENTER_.
 
@@ -98,21 +98,21 @@ Seguiremos los mismos pasos para hacerlo con DropBox. Y el resultado, sería est
 
 ### Comandos de Rclone
 
-* *rclone lsd* --> Lista todos los directorios / contenedores en la ruta.
+* *_rclone lsd_* --> Lista todos los directorios / contenedores en la ruta.
 
-* *rclone copy* --> Copia ficheros desde la fuente hasta el destino que queramos.
+* *_rclone copy_* --> Copia ficheros desde la fuente hasta el destino que queramos.
 
-* *rclone sync* --> sincroniza los directorios locales con los remotos.
+* *_rclone sync_* --> sincroniza los directorios locales con los remotos.
 
-* *rclone moveto source:path dest:path* --> copia ficheros/directorios entre repositorios.
+* *_rclone moveto source:path dest:path_* --> copia ficheros/directorios entre repositorios.
 
-* *rclone purge* --> elimina la ruta del repositorio y todo su contenido.
+* *_rclone purge_* --> elimina la ruta del repositorio y todo su contenido.
 
-* *rclone size* --> imprime por pantalla el tamaño total y el número de archivos de la ruta.
+* *_rclone size_* --> imprime por pantalla el tamaño total y el número de archivos de la ruta.
 
-* *rclone touch* --> crea un nuevo fichero.
+* *_rclone touch_* --> crea un nuevo fichero.
 
-* *rclone check* --> comprueba que los archivos locales son iguales a los del repositorio.
+* *_rclone check_* --> comprueba que los archivos locales son iguales a los del repositorio.
 
 
 ## Tarea 4
