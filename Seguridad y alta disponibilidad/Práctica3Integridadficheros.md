@@ -163,14 +163,15 @@ Una vez ya instalado, para escanear todo nuestro sistema de ficheros, usaremos r
  
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/31.png)
 
+<div align="center">
 
-
    .  
    .  
    .  
    .  
    .  
 
+</div>
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/32.png)
 
@@ -184,7 +185,7 @@ Algunos comandos más usados con Rkhunter:
 
 * _*--unlock*_ --> esta opción elimina el fichero bloqueado en cuestión.
 
-* _*--propupd [{fichero | directorio | nombre del paquete},...]_ --> una de las varias
+* _*--propupd [{fichero | directorio | nombre del paquete},...]*_ --> una de las varias
 		comprobaciones que hace rkhunter es comparar las propiedades de varios
 		ficheros con otros que tenia previamente almacenados. Con esta opción,
 		rkhunter actualiza sus datos de ficheros que tenia guardados con los
