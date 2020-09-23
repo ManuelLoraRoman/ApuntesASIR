@@ -144,3 +144,54 @@ Algunas opciones de DISM útiles adicionales son:
 * *List-Image* --> Muestra una lista de los archivos y las carpetas de una imagen especificada.
 
 
+## Tarea 2
+
+Rootkit Hunter (Rkhunter) es una herramienta de software libre lanzada bajo _GPL_ que permite el 
+escaneo en sistemas Linux de _puertas traseras_, malwares, etc.
+
+Escanea en busca de archivos ocultos, permisos erróneos en archivos binarios, cadenas extrañas en
+el kernel, etc.
+
+Para instalar Rkhunter, podremos descargarlo desde _apt_.
+
+```apt-get install rkhunter```
+
+Una vez ya instalado, para escanear todo nuestro sistema de ficheros, usaremos rkhunter como root:
+
+```sudo rkhunter --check```
+
+ 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/31.png)
+
+
+<div align="center">
+.
+.
+.
+.
+.
+</div>
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/32.png)
+
+Una vez haya terminado, se generará un archivo. Podemos visualizarlo así:
+
+``` cat /var/log/rkhunter.log```
+
+
+Algunos comandos más usados con Rkhunter:
+
+
+* *--unlock* --> esta opción elimina el fichero bloqueado en cuestión.
+
+* *--propupd [{fichero | directorio | nombre del paquete},...] --> una de las varias
+		comprobaciones que hace rkhunter es comparar las propiedades de varios
+		ficheros con otros que tenia previamente almacenados. Con esta opción,
+		rkhunter actualiza sus datos de ficheros que tenia guardados con los
+		valores actuales.
+
+* *--config-check* --> hace que rkhunter compruebe su configuración. 
+
+* *--version* --> muestre el número de versión de rkhunter.
+
+* *--help* --> muestra ayuda sobre rkhunter.
