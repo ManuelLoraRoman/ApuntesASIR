@@ -91,3 +91,63 @@ Si queremos ver los diferentes archivos que tenemos, ejecutaremos el siguiente c
 Seguiremos los mismos pasos para hacerlo con DropBox. Y el resultado, sería este:
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/20.png)
+
+
+## Tarea 3
+
+
+### Comandos de Rclone
+
+* *rclone lsd* --> Lista todos los directorios / contenedores en la ruta.
+
+* *rclone copy* --> Copia ficheros desde la fuente hasta el destino que queramos.
+
+* *rclone sync* --> sincroniza los directorios locales con los remotos.
+
+* *rclone moveto source:path dest:path* --> copia ficheros/directorios entre repositorios.
+
+* *rclone purge* --> elimina la ruta del repositorio y todo su contenido.
+
+* *rclone size* --> imprime por pantalla el tamaño total y el número de archivos de la ruta.
+
+* *rclone touch* --> crea un nuevo fichero.
+
+* *rclone check* --> comprueba que los archivos locales son iguales a los del repositorio.
+
+
+## Tarea 4
+
+
+En primer lugar, debemos tener instalado el paquete _fuse_ en el equipo local.
+
+Una vez comprobado que esta instalado, vamos a crear un directorio donde queramos almacenar 
+el contenido de los repositorios.
+
+```mkdir Google Drive```
+
+Para montar el repositorio drive: en ese directorio, haremos lo siguiente:
+
+```rclone mount drive: GoogleDrive &```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/21.png)
+
+Algunas veces al editar ciertos archivos dentro de la unidad montada, nos da algún error.
+Para ello ejecutaremos esta opción en vez de la anterior:
+
+```rclone mount --vfs-cache-mode writes drive: GoogleDrive &```
+
+Para desmontar la unidad, usaremos:
+
+```fusermount -u GoogleDrive```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/22.png)
+
+Ahora borraremos algún fichero y comprobamos que tampoco se encuentra en Drive.
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/23.png)
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/24.png)
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/25.png)
+
+Y efectivamente, ese archivo no se encuentra en el repositorio.
