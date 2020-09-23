@@ -9,13 +9,13 @@ del sistema para ocultarse mejor, pudiendo servir de puertas trasera o backdoor
 para la ejecución malware remota.
 
 
-* *Tarea 1*: Crea un manual lo más completo posible de las herramientas sfc y dism 
+* _*Tarea 1*_: Crea un manual lo más completo posible de las herramientas sfc y dism 
 	     para comprobar la integridad de ficheros en Windows. 
 	     Indica para qué sirven las opciones más usadas del programa y 
 	     entrega capturas de pantallas para comprobar que has realizado la práctica.
 
 
-* *Tarea 2*: Del mismo modo, crea un manual de la herramienta Rootkit Hunter (rkhunter) en Linux. 
+* _*Tarea 2*_: Del mismo modo, crea un manual de la herramienta Rootkit Hunter (rkhunter) en Linux. 
 	     Indica las opciones mñas usadas del programa y entrega 
 	     capturas de pantallas para comprobar que has realizado la práctica.
 
@@ -58,14 +58,14 @@ Entonces, no presenta errores y todo esta bien en el sistema.
 Sin embargo pueden aparecer mensajes de error como los siguientes:
 
 
-   *1. Protección de recursos de Windows no pudo realizar la operación solicitada*  
+   _*1. Protección de recursos de Windows no pudo realizar la operación solicitada*_  
 
 Sol: ejecutaremos de nuevo SFC, pero accediendo a Windows en modo seguro, asegurandote de tener
      las carpetas _PendingDeletes_ y _PendingRenames_ en la ruta _Windows\WinSxS\Temp_.
 
 
-   *2. Protección de recursos de Windows encontró archivos dañados y los reparó correctamente.  
-       Se incluye información de la CBS*  
+   _*2. Protección de recursos de Windows encontró archivos dañados y los reparó correctamente.  
+       Se incluye información de la CBS*_  
 
 Sol: para visualizar el archivo de errores, ejecutaremos esto en la CMD:
 
@@ -75,8 +75,8 @@ Dicho archivo aparecerá en nuestro escritorio.
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/28.png)
 
-   *3. Protección de recursos de Windows encontró archivos dañados y no consiguió reparar algunos  
-       de ellos*    
+   _*3. Protección de recursos de Windows encontró archivos dañados y no consiguió reparar algunos  
+       de ellos*_    
 
 Sol: visualizamos el archivo de errores de la misma manera que el anterior punto, pero esta vez
      debemos reparar los archivos dañados de manera manual.
@@ -84,15 +84,15 @@ Sol: visualizamos el archivo de errores de la misma manera que el anterior punto
 Algunos comandos adicionales en el uso de SFC son:
 
 
-* *SFC /Revert* --> sirve para revertir la acción de escaneo de todos los archivos del sistema,
+* _*SFC /Revert*_ --> sirve para revertir la acción de escaneo de todos los archivos del sistema,
 
-* *SFC /Purgecache* --> purga toda la caché de Windows y procede a examinar todos los archivos
+* _*SFC /Purgecache*_ --> purga toda la caché de Windows y procede a examinar todos los archivos
 			protegidos del sistema.
 
-* *SFC /verifyonly* --> se utiliza para analizar todos los archivos protegidos de Windows, pero
+* _*SFC /verifyonly*_ --> se utiliza para analizar todos los archivos protegidos de Windows, pero
 			sin efectuar reparaciones.
 
-* *SFC /scanfile* --> sirve para analizar la integridad de un archivo específico.
+* _*SFC /scanfile*_ --> sirve para analizar la integridad de un archivo específico.
 
 
 ### Manual de DISM
@@ -131,17 +131,17 @@ Realizará una comprobación y después intentará repararlo.
 Algunas opciones de DISM útiles adicionales son:
 
 
-* *Analyze* --> utiliza el comando _analysecomponentstore y comprueba la memoria del componente
+* _*Analyze*_ --> utiliza el comando _analysecomponentstore y comprueba la memoria del componente
 		si se puede liberar espacio de memoria.
 
 
-* *Apply-Image* --> aplica una imagen.
+* _*Apply-Image*_ --> aplica una imagen.
 
-* *Get_MountedImageInfo* --> muestra información de las imágenes WIM y VHD montadas.
+* _*Get_MountedImageInfo*_ --> muestra información de las imágenes WIM y VHD montadas.
 
-* *Mount-Image* --> Monta una imagen desde un archivo WIN o VHD.
+* _*Mount-Image*_ --> Monta una imagen desde un archivo WIN o VHD.
 
-* *List-Image* --> Muestra una lista de los archivos y las carpetas de una imagen especificada.
+* _*List-Image*_ --> Muestra una lista de los archivos y las carpetas de una imagen especificada.
 
 
 ## Tarea 2
@@ -164,13 +164,13 @@ Una vez ya instalado, para escanear todo nuestro sistema de ficheros, usaremos r
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/31.png)
 
 
-<div align="center">
-.
-.
-.
-.
-.
-</div>
+
+   .  
+   .  
+   .  
+   .  
+   .  
+
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/32.png)
 
@@ -182,16 +182,16 @@ Una vez haya terminado, se generará un archivo. Podemos visualizarlo así:
 Algunos comandos más usados con Rkhunter:
 
 
-* *--unlock* --> esta opción elimina el fichero bloqueado en cuestión.
+* _*--unlock*_ --> esta opción elimina el fichero bloqueado en cuestión.
 
-* *--propupd [{fichero | directorio | nombre del paquete},...] --> una de las varias
+* _*--propupd [{fichero | directorio | nombre del paquete},...]_ --> una de las varias
 		comprobaciones que hace rkhunter es comparar las propiedades de varios
 		ficheros con otros que tenia previamente almacenados. Con esta opción,
 		rkhunter actualiza sus datos de ficheros que tenia guardados con los
 		valores actuales.
 
-* *--config-check* --> hace que rkhunter compruebe su configuración. 
+* _*--config-check*_ --> hace que rkhunter compruebe su configuración. 
 
-* *--version* --> muestre el número de versión de rkhunter.
+* _*--version*_ --> muestre el número de versión de rkhunter.
 
-* *--help* --> muestra ayuda sobre rkhunter.
+* _*--help*_ --> muestra ayuda sobre rkhunter.
