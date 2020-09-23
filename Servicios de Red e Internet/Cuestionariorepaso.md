@@ -46,4 +46,61 @@
 * **Tarea 9** Muestra la configuración de red de tu ordenador de clase. 
 	      ¿Qué servidor DNS se está utilizando?
 
+
 ## Repaso DNS
+
+
+* **Tarea 1.** ¿Qué herramientas se usa en linux para realizar una consulta DNS?¿Y en Windows? 
+	       Pregunta en varios sistemas cuál es la dirección IP de www.marca.com. 
+	       Realiza una consulta para saber los servidores DNS 
+	       que conocen el dominio gonzalonazareno.org.
+
+
+* **Tarea 2.** ¿Qué ocurre si hacemos una consulta para averiguar la ip de 
+	       dit.gonzalonazareno.org desde el ordenador del aula y desde 
+	       el ordenador de tu casa? Razona la respuesta.
+
+
+* **Tarea 3.** A qué servidor DNS le estás consultando desde clase. 
+	       Realiza una consulta a www.google.es consultando a nuestro DNS. 
+	       Vuelve a hacer la consulta usando el servidor público que ofrece google.
+
+
+* **Tarea 4.** ¿Qué información puedo guardar en una zona DNS? ¿Qué registros puedo guardar? 
+	       ¿Cuantos tipos de zonas existen?
+
+
+* **Tarea 5.** Si desde clase, consulto la dirección IP de www.josedomingo.org? 
+	       ¿Cuál es el proceso de consultas que se realiza? 
+	       ¿A que servidores se va preguntando?
+
+
+* **Tarea 6.** ¿Qué son los root server? ¿Cuántos hay?
+
+
+* **Tarea 7.** Haz una consulta a www.nyu.edu ¿Cuánto ha tardado la consulta?. Vuelve a hacerla, 
+	       ¿Ha durado menos? ¿por qué?
+
+
+
+* **Tarea 8.** ¿Por qué desde clase la consulta a la dirección IP dit.gonzalonazareno.org 
+	       es distinta que si la hacemos desde casa?
+
+
+* **Tarea 9.** ¿Qué dirección IP tiene babuino.gonzalonazareno.org y dit.gonzalonazareno.org 
+	       desde clase? ¿Qué relación existe ambos nombres?
+
+
+* **Tarea 10.** ¿A que servidor mandamos el correo cuya dirección de destino 
+		es correo@josedomingo.org? ¿Y si lo mandamos a usuario@amazon.es?
+
+
+* **Tarea 11.** Desde clase, ¿cómo se llama el ordenador que tiene la dirección IP 192.168.103.2?
+
+
+* **Tarea 12.** ¿Por qué hay varios servidores con autoridad sobre la zona josedomingo.org?
+
+
+* **Tarea 13.** Una vez que sepas la dirección del servidor con autoridad sobre la zona 
+		josedomingo.org, realiza una consulta a ese servidor preguntando por 
+		www.josedomingo.org. ¿qué proceso de consultas se sigue?
