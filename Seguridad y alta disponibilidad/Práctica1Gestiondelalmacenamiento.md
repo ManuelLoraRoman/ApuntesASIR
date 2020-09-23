@@ -50,6 +50,8 @@ Para crear una raid llamada md5, ejecutaremos lo siguiente en la shell:
 
 ```mdadm --create /dev/md5 -l5 -n2 /dev/sdb /dev/sdc```
 
+
+
 Tenemos que conectar dos como mínimo, y como en este caso, tenemos 2 discos
 de 1 GB cada uno, conectaremos los dos.
 
@@ -69,7 +71,91 @@ La capacidad del RAID será la combinación de ambos discos.
 ## Tarea 3
 
 
-Para crear un volumen lógico, debemos usar _lvcreate_. Usaremos los siguientes
+Antes de crear un volumen lógico, debemos crear un volumen físico, y acto seguido,
+un grupo de volúmenes. Para ello, debemos instalar el paquete *lvm2*.
+
+Para el volumen físico, haremos lo siguiente:
+
+```sudo pvcreate /dev/sdd```
+
+
+y para el grupo de volúmenes:
+
+```sudo vgcreate vgs /dev/sdd```
+
+
+
+Por último, para crear un volumen lógico, debemos usar _lvcreate_. Usaremos los siguientes
 parámetros:
 
 * *-n* --> esta opción se utiliza para asignar el nombre al nuevo volumen lógico. 
+
+* *Volumen de grupo* --> debemos indicar en cual volumen de grupo vamos a crear el 
+			 volumen lógico.
+
+* *-L* --> establece el tamaño que vamos a asignar, M para Megabytes o G para
+	   Gigabytes.
+
+Por lo tanto, ejecutaremos el siguiente comando:
+
+```lvcreate -n vol1 vgs -L 500M```
+
+
+## Tarea 4
+
+
+Para formatear el volumen anterior, debemos ejecutar lo siguiente:
+
+```mkfs.xfs /dev/mapper/vgs-vol1```
+
+
+## Tarea 5
+
+Para montar el nuevo sistema de archivos, en primer lugar crearemos el directorio
+raid5 en el directorio /mnt.
+
+```mount /dev/mapper/vgs-vol1 /mnt/raid5```
+
+## Tarea 6
+
+Para marcar un disco como estropeado, haremos lo siguiente:
+
+```sudo mdadm --fail /dev/md5 /dev/sdb```
+
+
+Y si, efectivamente, se puede visualizar el fichero, ya que el RAID5 lo permite.
+
+## Tarea 7
+
+Para extraer un disco estropeado del RAID, debemos ejecutar este comando:
+
+```sudo mdadm --remove /dev/md5 /dev/sdb```
+
+
+## Tarea 8
+
+Para añadir un disco nuevo al RAID, haríamos esto:
+
+```sudo mdadm --add /dev/md5 /dev/sdb```
+
+Como solo tenemos dos discos, pues lo haríamos de esta manera:
+
+```sudo mdadm --re-add /dev/md5 /dev/sdb```
+
+
+## Tarea 9
+
+Para añadir un disco de reserva usamos:
+
+```mdadm --add-spare /dev/md5 /dev/sdd```
+
+Esta operación se realiza de manera muy fácil.
+
+Para volver a simular el fallo, usaremos el comando usado anteriormente en la tarea 7.
+
+
+## Tarea 10
+
+Para redimensionar el volumen lógico, haremos esto:
+
+```sudo lvresize -l +100%FREE /dev/mapper/vgs-vol1```
