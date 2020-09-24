@@ -91,3 +91,50 @@ a crear el fichero Vagrantfile, podemos crear uno vacío con la instrucción:
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/comandosvagrant.png)
 
 
+### Ejercicios
+
+1. Entra en virtualbox y comprueba las características de la máquina
+que se ha creado.
+
+2. ¿Qué usuario tiene creado por defecto el sistema?¿Cómo se ejecutan
+instrucciones de superusuario?
+
+3. ¿Cuántas tarjetas de red tiene?¿Para qué sirve la _eth0_?
+
+4. Investiga el funcionamiento de la instrucción _vagrant ssh_.
+¿Por qué interfaz se conecta?¿Qué certificado se utiliza para acceder?
+
+
+**1.** Características:
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/carac1.png)
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/carac2.png)
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/carac3.png)
+
+
+**2.** 
+El usuario que tiene creado por defecto es "mimaquina" y podremos 
+acceder al superusuario con la siguiente instrucción:
+
+```sudo su```
+
+
+**3.** 
+
+Para ver cuantas tarjetas de red tiene nuestra máquina, usaremos el 
+siguiente comando:
+
+```sudo ip a```
+
+La _eth0_ actúa como bridge entre la máquina y nuestro equipo local.
+
+
+**4.**
+
+En nuestro caso, al iniciar la conexión a la máquina vagrant por ssh, 
+podemos elegir la interfaz por la que conectarnos, la wlp2s0. Normalmente
+se usa la que acostumbra a conectar Internet.
+
+Utiliza una clave privada por el método de _SSH AUTH_.
