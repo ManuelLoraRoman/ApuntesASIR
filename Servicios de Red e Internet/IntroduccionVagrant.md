@@ -47,3 +47,48 @@ la siguiente instrucción:
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/list-box.png)
 
 
+**Práctica 3: Creación de una máquina virtual**
+
+1. Nos creamos un directorio (en este caso, llamado Vagrant) y dentro vamos 
+a crear el fichero Vagrantfile, podemos crear uno vacío con la instrucción:
+
+```vagrant init```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrant-init.png)
+
+
+2. Modificamos el fichero Vagrantfile y los dejamos de la siguiente manera:
+
+> # -*- mode: ruby -*-  
+> # vi: set ft=ruby :  
+> Vagrant.configure("2") do |config|
+>		config.vm.box = "debian/buster64"  
+>		config.vm.hostname = "mimaquina"  
+>		config.vm.network :public_network,:bridge=>"eth0"
+> end
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrantfile.png)
+
+3. Iniciamos la máquina estando dentro del directorio creado:
+
+```vagrant up```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrant-up1.png)
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrant-up2.png)
+
+
+4. Para acceder a la instancia:
+
+```vagrant ssh default```
+
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/sshdefault.png)
+
+
+5. Suspender, apagar o destruir:
+
+```vagrant suspend```
+```vagrant halt```
+```vagrant destroy```
+
+
+
