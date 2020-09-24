@@ -47,6 +47,79 @@
 	      ¿Qué servidor DNS se está utilizando?
 
 
+### Tarea 1
+
+Una dirección IP dinámica es la que cambia cada cierto tiempo, es decir, la IP
+cambia en función de las necesidades del servidor, siendo útil en el balanceo
+de carga. Mientras tanto la IP estática es asignada a un dispositivo, y nunca
+se modifica.
+
+La IP pública del router es aquella que aparece en la _Puerta de enlace_ 
+_predeterminada_.
+
+La dirección privada suele empezar por 192.168....
+
+Definiciones:
+
+* **Puerta de enlace** --> es el nodo que sirve como enlace entre dos redes.
+			   Es aquel dispositivo que conecta y dirige el
+			   tráfico de datos entre dos redes.
+
+* **Máscara de red** --> es una combinación de bits que sirve para delimitar
+			 el ámbito de una red de computadoras. Su función es 
+			 indicar a los dispositivos qué parte de la dirección
+			 IP es el número de la red y cuál es la del host.
+
+
+### Tarea 3
+
+Source NAT cambia la dirección de origen en el encabezado IP de los paquetes.
+También cambia el puerto de origen en encabezados TCP/UDP. El uso típico
+es cambiar de dirección/puerto privado a uno público para paquetes que salen
+de tu red.
+
+Para configurar SNAT, se debe implementar iptables.
+
+
+### Tarea 4
+
+El puerto 80, usado habitualmente para el protocolo HTTP.
+
+Para el servidor DNS se utiliza el puerto 53.
+
+El puerto 22 (SSH) sirve para acceder a máquinas remotas a través de una red.
+
+
+### Tarea 5
+
+La técnica utilizada se llama _"abrir los puertos"_.
+
+
+### Tarea 6
+
+Hostnames
+
+
+### Tarea 7
+
+En Windows se hará en el System32, y en Linux
+
+### Tarea 8
+
+La herramienta que se encarga de traducir nombres de máquina a direcciones IP
+y viceversa.
+
+/etc/network/interfaces
+
+/etc/resolv.conf
+
+
+### Tarea 9
+
+Servidor DNS de Google
+
+
+
 ## Repaso DNS
 
 
