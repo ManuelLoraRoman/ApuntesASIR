@@ -109,9 +109,9 @@ En Windows se hará en el System32, y en Linux
 La herramienta que se encarga de traducir nombres de máquina a direcciones IP
 y viceversa.
 
-/etc/network/interfaces
+La red se configura en el fichero /etc/network/interfaces.
 
-/etc/resolv.conf
+El DNS se configura en este otro: /etc/resolv.conf.
 
 
 ### Tarea 9
@@ -177,3 +177,74 @@ Servidor DNS de Google
 * **Tarea 13.** Una vez que sepas la dirección del servidor con autoridad sobre la zona 
 		josedomingo.org, realiza una consulta a ese servidor preguntando por 
 		www.josedomingo.org. ¿qué proceso de consultas se sigue?
+
+
+Una zona DNS es el conjunto de nombres definidos en un dominio.
+Cada zona estan guardadas dentro de un fichero en un servidor. A ese servidor se
+le llama Servidor DNS con autoridad sobre la zona. Pueden ser varios servidores.
+
+
+dig ns _servidor_ --> te muestra los servidores con autoridad.
+
+
+### Tarea 1
+
+
+
+
+### Tarea 2
+
+
+
+
+### Tarea 3
+
+
+
+
+### Tarea 4
+
+
+
+
+### Tarea 5
+
+
+
+
+### Tarea 6
+
+
+
+
+### Tarea 7
+
+
+
+
+### Tarea 8
+
+
+
+
+### Tarea 9
+
+
+
+
+### Tarea 10
+
+
+
+
+### Tarea 11
+
+
+
+
+### Tarea 12
+
+
+
+
+### Tarea 13
