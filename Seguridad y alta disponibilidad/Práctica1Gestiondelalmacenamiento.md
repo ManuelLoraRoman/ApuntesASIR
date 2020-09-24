@@ -48,7 +48,7 @@ Primero, instalaremos el paquete _mdadm_ para poder realizar RAIDs.
 
 Para crear una raid llamada md5, ejecutaremos lo siguiente en la shell:
 
-```mdadm --create /dev/md5 -l5 -n2 /dev/sdb /dev/sdc```
+```mdadm --create /dev/md5 -l5 -n3 /dev/sdb /dev/sdc /dev/sdd```
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/2.png)
 
