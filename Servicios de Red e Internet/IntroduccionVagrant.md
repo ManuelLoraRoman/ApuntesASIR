@@ -59,13 +59,11 @@ a crear el fichero Vagrantfile, podemos crear uno vacío con la instrucción:
 
 2. Modificamos el fichero Vagrantfile y los dejamos de la siguiente manera:
 
-> # -*- mode: ruby -*-  
-> # vi: set ft=ruby :  
-> Vagrant.configure("2") do |config|
+> Vagrant.configure("2") do |config|  
 >		config.vm.box = "debian/buster64"  
 >		config.vm.hostname = "mimaquina"  
->		config.vm.network :public_network,:bridge=>"eth0"
-> end
+>		config.vm.network :public_network,:bridge=>"eth0"  
+> end  
 
 ![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrantfile.png)
 
@@ -90,5 +88,6 @@ a crear el fichero Vagrantfile, podemos crear uno vacío con la instrucción:
 ```vagrant halt```
 ```vagrant destroy```
 
+![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/comandosvagrant.png)
 
 
