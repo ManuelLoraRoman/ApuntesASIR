@@ -11,6 +11,7 @@ La forma tradicional de crear un sitio web estático sería así:
 **4.** El despliegue podemos hacerlo usando ftp para subir archivos.
 
 
+
 Ventajas | Desventajas
 ---------|-------------
 Portabilidad|Funcionalidad limitada
