@@ -14,12 +14,8 @@ La forma tradicional de crear un sitio web estático sería así:
 Ventajas | Desventajas
 ---------|-------------
 Portabilidad|Funcionalidad limitada
-
 Tiempo óptimo|Visitante no tiene posibilidad de modificar el diseño de la página
-
 Posicionamiento|El administrador debe acceder al servidor para modificar
-
 Costos|Actualización lenta, tediosa y manual
-
 Requerimientos|No se accede a bases de datos
 
