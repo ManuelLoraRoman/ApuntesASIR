@@ -1,7 +1,8 @@
 # Introducción a Vagrant
 
 Vagrant es una aplicación libre que nos permite crear y personalizar
-entornos de desarrollo livianos, reproducibles y portables.
+entornos de desarrollo livianos, reproducibles y portables. Desarrollada en
+Ruby. Su objetivo es aproximar los entornos de desarrollo y producción.
 
 Nos permite automatizar la creación y gestión de máquinas virtuales. Estas 
 máquinas se pueden ejecutar con los diferentes gestores de máquinas virtuales.
