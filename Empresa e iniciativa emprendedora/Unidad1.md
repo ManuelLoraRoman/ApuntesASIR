@@ -8,7 +8,7 @@ idea de negocio y su idoneidad.
 * **Emprendedor** --> persona capaz de convertir en realidad una idea concreta.
 
 
-###Características
+### Características
 
 A) Creatividad
 
