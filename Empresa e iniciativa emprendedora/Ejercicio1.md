@@ -12,7 +12,7 @@ la idea innovadora que esta empresa ha desarrollado.
 * **Tipo de innovación** --> de producto, proceso o tecnológica.
 
 
-# GALGUS
+## Introducción: GALGUS
 
 Galgus es una empresa tecnológica sevillana, fundada por José González
 (actualmente CEO de la empresa),que ofrece redes WiFi de alto rendimiento 
@@ -33,7 +33,7 @@ problemas y lograr el éxito de cada proyecto.
 4. **Búsqueda incansable de resultados** --> comprometidos con los proyectos de
 los clientes hasta su finalización.
 
-## Cronología de su empresa
+### Cronología de su empresa
 
 ![alt text](../Imágenes/Cronologia.png)
 
@@ -47,3 +47,12 @@ Su actuación es meramente en el mercado vertical.
 
 Algunos de sus clientes habituales son Telefónica, Barceló hotel group,
 ACKSYS, Nomad Digital o Eltec Systems.
+
+## Idea Innovadora
+
+En este ejemplo, innovaron principalmente en su producto, CHT y después, en
+servicios una vez montada la empresa.
+
+## Tipo de innovación
+
+Innovación de producto que aportan algo nuevo al producto.
