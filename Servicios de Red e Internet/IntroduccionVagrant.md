@@ -138,4 +138,5 @@ En nuestro caso, al iniciar la conexión a la máquina vagrant por ssh,
 podemos elegir la interfaz por la que conectarnos, la wlp2s0. Normalmente
 se usa la que acostumbra a conectar Internet.
 
-Utiliza una clave privada por el método de _SSH AUTH_.
+Primero, accede con una clave insegura para comprobar la máquina, después empieza 
+Utilizando una clave privada que se encuentra en la máquina Vagrant ./machines....
