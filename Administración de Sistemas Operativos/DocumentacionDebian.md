@@ -66,13 +66,20 @@ localización de donde estemos. En nuestro caso, elegiremos **Península**.
 en nuestro sistema, para acto seguido, presentarte las opciones de particionado de disco.
 De entre ellas elegiremos **Manual**.
 
+Seleccionaremos nuestro disco, y al hacerlo, nos aparecerá la siguiente pantalla:
+
 ![alt text](../Imágenes/paso11.png)
+
+Crearemos el grupo de volúmenes:
 
 ![alt text](../Imágenes/paso112.png)
 
 ![alt text](../Imágenes/paso113.png)
 
 ![alt text](../Imágenes/paso114.png)
+
+Y después, creamos los volúmenes lógicos raíz, home y boot (los pasos a seguir son los
+mismos):
 
 ![alt text](../Imágenes/paso115.png)
 
@@ -94,8 +101,6 @@ adicionales. En nuestro caso, seleccionamos **No** y continuamos.
 se descargaran los ficheros. Primero debemos escoger el País y después la réplica.
 
 ![alt text](../Imágenes/paso14.png)
-
-![alt text](../Imágenes/paso141.png)
 
 ![alt text](../Imágenes/paso142.png)
 
