@@ -113,8 +113,6 @@ caso, no escribiremos nada y pasaremos al siguiente paso.
 es la que quieras. Seleccionamos las otras opciones si queremos instalar diferentes
 paquetes como **SSH_Server**.
 
-![alt text](../Imágenes/paso16.png)
-
 17. Una vez ya configurado todo lo anterior, procederá a la descarga de paquetes.
 
 18. El gestor de arranque de GNU-Linux es el GRUB, y es requerido para completar 
@@ -133,9 +131,16 @@ haremos lo siguiente:
 
 ```sudo ip a```
 
-Y nos saldrá lo siguiente:
+Y nos saldrán los dispositivos, interfaces y túneles de red:
 
 ![alt text](../Imágenes/WiFi1.png)
+
+Nosotros no disponemos por ahora de una interfaz de red correspondiente al WiFi,
+así que en primer lugar vamos a comprobar nuestra tarjeta de red inalámbrica.
+
+```lspci | grep Network```
+
+![alt text](../Imágenes/pasoNetwork.png)
 
 
 EXPLICACION USB
@@ -165,3 +170,7 @@ lo tanto procedemos a la descarga de dicho paquete:
 
 ```sudo apt-get install nvidia-driver```
 
+Y una vez acabada la instalación, reiniciamos el sistema.
+
+Ahora nuestro siguiente objetivo es que comprobar las tarjetas gráficas que 
+tenemos activa.
