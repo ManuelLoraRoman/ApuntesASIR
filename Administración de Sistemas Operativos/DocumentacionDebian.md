@@ -4,9 +4,9 @@
 
 * PC x86 z86_64
 
-* CD o USB booteable para la iso de Debian 10
+* CD o USB booteable para la iso de Debian 10 (en nuestro caso, USB)
 
-* Acceso a Internet para descargar los paquetes necesarios
+* Acceso a Internet para descargar los paquetes necesarios (por cable)
 
 ## Pasos para la instalación
 
@@ -174,3 +174,11 @@ Y una vez acabada la instalación, reiniciamos el sistema.
 
 Ahora nuestro siguiente objetivo es que comprobar las tarjetas gráficas que 
 tenemos activa.
+
+```lspci -vnnn | perl -lne 'print if /^\d+\:.+(\[\S+\:\S+\])/' | grep VGA```
+
+![alt text](../Imágenes/pasofinal.png)
+
+Si al final de cada línea vemos _[VGA controller]_, quiere decir que tenemos 
+activa y funcionando dicha tarjeta gráfica. En nuestro caso, tenemos 
+funcionando ambas.
