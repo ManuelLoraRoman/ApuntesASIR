@@ -21,5 +21,21 @@ Por lo tanto el comando quedaría así:
 Para ejecutar la página localmente, usaremos esta intrucción:
 
 ```cd mi-pagina```  
-```npm run build```  
+```npm run start```
 
+Para poder desplegar nuestra página generada, debemos construir la página en un
+directorio de contenidos estáticos y ponerlo en el servidor web. Para ello,
+ejecutaremos el siguiente comando:
+
+```npm run build```
+
+## Tips
+
+* Los documentos MarkDown se encuentran en mi-pagina/docs
+
+* La página de inicio se encuentra en mi-pagina/src/pages
+
+* En docusaurus.config.js se incorporan varios pluggins además de los elementos
+de la página de Inicio.
+
+* En static se encuentran las imágenes
