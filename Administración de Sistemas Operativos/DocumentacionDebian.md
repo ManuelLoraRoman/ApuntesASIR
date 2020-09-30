@@ -2,7 +2,7 @@
 
 ## Requisitos previos a la instalación
 
-* PC x86 z86_64
+* PC 
 
 * CD o USB booteable para la iso de Debian 10 (en nuestro caso, USB)
 
