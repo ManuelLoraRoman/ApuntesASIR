@@ -1,6 +1,6 @@
 # Documentación instalación Debian
 
-## Requisitos
+## Requisitos previos a la instalación
 
 * PC x86 z86_64
 
@@ -125,4 +125,43 @@ y le damos a continuar.
 19. Fin de la instalación. 
 
 ![alt text](../Imágenes/paso19.png)
+  
+  
+La instalación de Debian Buster estaría ya completada. Lo siguiente que vamos
+a comprobar es si tenemos a nuestra disposición la red WiFi. Para comprobarlo,
+haremos lo siguiente:
+
+```sudo ip a```
+
+Y nos saldrá lo siguiente:
+
+![alt text](../Imágenes/WiFi1.png)
+
+
+EXPLICACION USB
+
+
+Una vez terminado con el WiFi, nos pondremos con la tarjeta gráfica. Al usar
+este comando:
+
+```lspci | grep VGA```
+
+Nos aparecerá las tarjetas gráficas que tenemos en ese momento.
+
+![alt text](../Imágenes/pasoIntel.png)
+
+En mi caso, el ordenador posee una tarjeta gráfica Nvidia GeForce GTX 1060 y no
+la estaría detectando. Por lo tanto, vamos a hacer lo siguiente:
+
+
+1. Ejecutaremos _sudo apt-get install nvidia-detect_ y luego ejecutaremos 
+la instrucción _sudo nvidia detect_ para ver que drivers son los que
+necesitariamos instalarnos para que funcionase.
+
+![alt text](../Imágenes/pasodetect.png)
+
+En nuestro caso, nos recomienda que instalemos el driver _nvidia-driver_, por
+lo tanto procedemos a la descarga de dicho paquete:
+
+```sudo apt-get install nvidia-driver```
 
