@@ -85,8 +85,6 @@ mismos):
 
 ![alt text](../Imágenes/paso116.png)
 
-![alt text](../Imágenes/paso117.png)
-
 ![alt text](../Imágenes/paso118.png)
 
 12. Después del particionado, nos preguntará si queremos participar en una encuesta de
@@ -142,9 +140,23 @@ así que en primer lugar vamos a comprobar nuestra tarjeta de red inalámbrica.
 
 ![alt text](../Imágenes/pasoNetwork.png)
 
+En mi caso, nuestra tarjeta de red, no se encuentra en la configuración de 
+Linux [aquí](https://wiki.debian.org/es/WiFi). Por lo tanto, investigaremos
+como poder solucionar dicho incidente. En esta práctica, yo he cogido varios
+ficheros de configuración de una página de Github, aunque dicho ficheros,
+tras investigar más detenidamente, se encuentran en los repositorios de Debian
+de la version de _sid_.
 
-EXPLICACION USB
+Ahora, los comandos que usé para lograr tener WiFi:
 
+```sudo apt-get install curl```  
+```curl -L -O https://github.com/kvalo/ath10k-firmware/archive/master.zip```  
+```unzip master.zip```  
+```mkdir -p /lib/firmware/ath10k/QCA6174/hw3.0/```  
+```cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/*.bin* /lib/firmware/ath10k/QCA6174/hw3.0/```  
+```cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/4.4/*.bin*  /lib/firmware/ath10k/QCA6174/hw3.0/```  
+```sudo update-initramfs -u```  
+```sudo reboot```  
 
 Una vez terminado con el WiFi, nos pondremos con la tarjeta gráfica. Al usar
 este comando:
