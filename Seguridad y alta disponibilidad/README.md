@@ -11,4 +11,4 @@ haciendo.
 
    [1.3. Práctica 3: Integridad de ficheros](./Práctica3Integridadficheros.md)
 
-[2. Criptografia](./Criptografia.md)
+[2. Cifrado simétrico con gpg y openssl](./Cifradosimetrico.md)
