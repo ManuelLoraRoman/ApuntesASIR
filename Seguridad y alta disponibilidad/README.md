@@ -10,3 +10,5 @@ haciendo.
    [1.2. Práctica 2: Gestionando nuestro almacenamiento en la nube](./Práctica2Gestiondelalmacenamientonube.md)
 
    [1.3. Práctica 3: Integridad de ficheros](./Práctica3Integridadficheros.md)
+
+[2. Criptografia](./Criptografia.md)
