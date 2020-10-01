@@ -8,7 +8,7 @@ es necesario crear scripts.
 
 Nos permite acceder a funcionalidades dependientes del SO.
 
-* **os.access(path, modo_de_acceso) --> saber si se puede acceder a un archivo o
+* **os.access(path, modo_de_acceso)** --> saber si se puede acceder a un archivo o
 					directorio.
 
 * **os.getcwd()** --> conocer el directorio actual.
@@ -106,18 +106,20 @@ Sirve para realizar operaciones de alto nivel con archivos y directorios.
 * **shutil.copyfileobj(fsrc, fdst[, length])** --> copia un fichero completo o
 parte.
 
-* **shutil.copyfile(src, dst, *, follow_symlinks=True)** --> copia el contenido
+* **shutil.copyfile(src, dst, (asterisco), follow_symlinks=True)** --> copia el contenido
 completo de un archivo.
 
-* **shutil.copymode(src, dst, *, follow_symlinks=True)** --> copia los permisos
-de un archivo origen a uno destino.
+* **shutil.copymode(src, dst, (asterisco), follow_symlinks=True)** --> copia 
+los permisos de un archivo origen a uno destino.
 
-* **shutil.copystat(src, dst, *, follow_symlinks=True)** --> copia permisos,
-fecha-hora de la última modificación y atributos.
+* **shutil.copystat(src, dst, (asterisco), follow_symlinks=True)** --> copia 
+permisos, fecha-hora de la última modificación y atributos.
 
-* **shutil.copy(src, dst, *, follow_symlinks=True)** --> copia un archivo.
+* **shutil.copy(src, dst, (asterisco), follow_symlinks=True)** --> copia 
+un archivo.
 
-* **shutil.move(src, dst, *, follow_symlinks=True)** --> copia archivos.
+* **shutil.move(src, dst, (asterisco), follow_symlinks=True)** --> copia 
+archivos.
 
 * **shutil.disk_usage(path)** --> obtiene información del espacio total.
 
