@@ -29,6 +29,10 @@ ejecutaremos el siguiente comando:
 
 ```npm run build```
 
+# Introducción a Surge
+
+Surge es una herramienta que sirve para desplegar nuestro sitio web.
+
 ## Tips
 
 * Los documentos MarkDown se encuentran en mi-pagina/docs
