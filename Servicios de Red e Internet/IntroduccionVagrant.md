@@ -55,9 +55,6 @@ a crear el fichero Vagrantfile, podemos crear uno vacío con la instrucción:
 
 ```vagrant init```
 
-![alt text](https://github.com/ManuelLoraRoman/Prueba/blob/master/Imágenes/vagrant-init.png)
-
-
 2. Modificamos el fichero Vagrantfile y los dejamos de la siguiente manera:
 
 > Vagrant.configure("2") do |config|  
