@@ -45,7 +45,7 @@ Si no se introducen dos parámetros se da un error.
 
 ## Tarea 1
 
-#!/usr/bin/env python	
+> #!/usr/bin/env python  
 > import os  
 > import subprocess  
 
@@ -56,7 +56,7 @@ Si no se introducen dos parámetros se da un error.
 
 # Tarea 2
 
-#!/usr/bin/env python   
+> #!/usr/bin/env python   
 > import os  
 > import subprocess  
 
@@ -67,7 +67,7 @@ Si no se introducen dos parámetros se da un error.
 
 # Tarea 3
 
-#!/usr/bin/env python   
+> #!/usr/bin/env python   
 > import os  
 > import subprocess  
 
@@ -78,8 +78,7 @@ Si no se introducen dos parámetros se da un error.
 
 ## Tarea 4
 
-#!/usr/bin/env python
-
+> #!/usr/bin/env python  
 > import os  
 > import subprocess  
 
@@ -95,8 +94,7 @@ Si no se introducen dos parámetros se da un error.
 
 ## Tarea 5
 
-#!/usr/bin/env python
-
+> #!/usr/bin/env python  
 > import os  
 > import subprocess  
 
@@ -111,8 +109,7 @@ Si no se introducen dos parámetros se da un error.
 
 ## Tarea 6
 
-#!/usr/bin/env python
-
+> #!/usr/bin/env python  
 > import os  
 
 > usuario=raw_input("Usuario:")  
