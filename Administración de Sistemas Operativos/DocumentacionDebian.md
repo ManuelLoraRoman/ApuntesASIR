@@ -10,6 +10,8 @@
 
 ## Pasos para la instalación
 
+En primer lugar, se ha de hacer la instalación normal, no la gráfica, pero
+para mayor legibilidad, usaré la instalación gráfica.
 
 1. Modificaremos el boot de arranque de nuestro PC en la BIOS. (En nuestro caso, era
 necesario pulsar el botón F2 unas cinco veces mientras aparecía el logotipo de Lenovo)
@@ -73,8 +75,6 @@ Seleccionaremos nuestro disco, y al hacerlo, nos aparecerá la siguiente pantall
 Crearemos el grupo de volúmenes:
 
 ![alt text](../Imágenes/paso112.png)
-
-![alt text](../Imágenes/paso113.png)
 
 ![alt text](../Imágenes/paso114.png)
 
