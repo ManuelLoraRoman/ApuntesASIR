@@ -43,3 +43,80 @@ Si no se introducen dos parámetros se da un error.
    el uid y el gid a partir de 2000 {% endcapture %} 
    {{ notice-text | markdownify }}
 
+## Tarea 1
+
+#!/usr/bin/env python	
+import os
+import subprocess
+
+salida=subprocess.check_output("ls")
+
+print("Nuestro directorio de trabajo es ", os.getcwd() ,
+" y está compuesto por: \n", salida.decode())
+
+# Tarea 2
+
+#!/usr/bin/env python   
+import os
+import subprocess
+
+salida=subprocess.check_output(["cut","-d:","-f1","/etc/password"])
+lista=len(salida.decode())
+
+print("Número de usuarios definidos en el sistema: , lista , ".")
+# Tarea 3
+
+#!/usr/bin/env python   
+import os
+import subprocess
+
+salida=subprocess.check_output("w")
+
+print("Usuarios conectados: \n", salida.decode() ,".")
+
+
+## Tarea 4
+
+#!/usr/bin/env python
+
+import os
+import subprocess
+
+usuario=raw_input("Usuario:")
+f=open("/etc/passwd","r")
+lineas=f.read()
+if lineas.find(usuario)==-1:
+	print "Usuario no existe"
+if lineas.find(usuario+":x:0:0")==-1:
+	print "No es administrador"
+else:
+	print "Es administrador"
+
+## Tarea 5
+
+import os
+import subprocess
+
+f=open("/etc/hosts","r")
+lineas=f.readlines()
+lineas.insert(3,"192.168.6.5\tpepito.com\n")
+f.close()
+f=open("/etc/hosts","w")
+for linea in lineas:
+	f.write(linea)
+f.close()
+
+## Tarea 6
+
+import os
+usuario=raw_input("Usuario:")
+usuariol=raw_input("Nombre:")
+f=open("/etc/passwd","a")
+f.write(usuario+":x:2000:2000:"+usuariol+",,,:/home/"+usuario+":/bin/bash")
+f.close()
+
+f=open("/etc/group","a")
+f.write(usuario+":x:2001:")
+f.close()
+
+os.mkdir("/home/"+usuario)
