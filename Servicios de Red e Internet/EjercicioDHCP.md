@@ -63,3 +63,64 @@ option routers 192.168.0.254;
 option domain-name-servers 80.58.0.33, 80.58.32.9;  
 }  
 ```
+
+En Windows para liberar la concesión se utiliza _ipconfig /release_ y _renew_
+la renueva.
+
+
+## Ejercicio DHCP 1
+
+**Tarea 1.** Configura el servidor dhcp con las siguientes características
+   
+ * Rango de direcciones a repartir: 192.168.0.100 - 192.168.0.110
+ * Máscara de red: 255.255.255.0
+ * Duración de la concesión: 1 hora
+ * Puerta de enlace: 192.168.0.1
+ * Servidores DNS: 8.8.8.8, 8.8.4.4
+
+**Tarea 2.** Configura los clientes para obtener direccionamiento dinámico. 
+Comprueba las configuraciones de red que han tomado los clientes. 
+Visualiza el fichero del servidor donde se guarda las configuraciones asignadas.
+
+
+### Tarea 1
+
+![alt text](../Imágenes/iscdhcpserver.png)
+
+![alt text](../Imágenes/dhcpconf1.png)
+
+![alt text](../Imágenes/dhcpconf2.png)
+
+![alt text](../Imágenes/dhcpstart.png)
+
+### Tarea 2
+
+Para configurar el direccionamiento para que sea dinámico, debemos modificar en 
+la máquina cliente el archivo _/etc/network/interfaces_. Elegiremos la interfaz
+de red que tengamos activa, en nuestro caso, _eth0_.
+
+
+```
+auto eth0
+iface eth0 inet dhcp
+```
+
+Y después, reiniciar las interfaces con este comando:
+
+```sudo /etc/init.d/networking restart```
+
+!!! Antes de realizar dicho cambio, guarda tu configuración actual en caso de
+que te encontrases fallos.
+
+
+Si por el contrario, deseamos asignar IPs estáticas a los clientes, debemos 
+modificar en el fichero _/etc/dhcp/dhcpd.conf_ dichas IPs de la siguiente 
+manera:
+
+```
+host cliente1 {
+   fixed-address XXX.XX.XXX.X;
+}
+```
+
+
