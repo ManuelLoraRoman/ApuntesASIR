@@ -9,3 +9,7 @@
 [3.1. Ejercicios Python](./Ejerciciospython.md)
 
 [4. DHCP](./DHCP.md)
+
+[4.1. Ejercicio: Instalación y configuración del servidor DHCP en Linux](./EjercicioDHCP.md)
+
+
