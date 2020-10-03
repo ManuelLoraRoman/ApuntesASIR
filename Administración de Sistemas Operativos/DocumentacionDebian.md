@@ -194,3 +194,22 @@ tenemos activa.
 Si al final de cada línea vemos _[VGA controller]_, quiere decir que tenemos 
 activa y funcionando dicha tarjeta gráfica. En nuestro caso, tenemos 
 funcionando ambas.
+
+Otra forma de ver si tenemos los drivers instalados y operativos sería de la
+siguiente manera:
+
+```sudo lsmod | grep nvidia```
+
+Con este comando vemos los drivers de nvidia y sus dependencias.
+
+![alt text](../Imágenes/lsmod.png)
+
+```sudo lshw | less```
+
+Veo los componentes hardware de nuestro ordenador, y podemos ver que la 
+tarjeta gráfica, efectivamente, está cargando los drivers de nvidia.
+
+![alt text](../Imágenes/lshw.png)
+
+
+
