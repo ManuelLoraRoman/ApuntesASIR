@@ -85,11 +85,17 @@ Visualiza el fichero del servidor donde se guarda las configuraciones asignadas.
 
 ### Tarea 1
 
+* Configuración del fichero _isc-dhcp-server_:
+
 ![alt text](../Imágenes/iscdhcpserver.png)
+
+* Configuraciones del fichero _dhcpd.conf_:
 
 ![alt text](../Imágenes/dhcpconf1.png)
 
 ![alt text](../Imágenes/dhcpconf2.png)
+
+* DHCP iniciando:
 
 ![alt text](../Imágenes/dhcpstart.png)
 
