@@ -1,7 +1,7 @@
 # Práctica: Implantación y despliegue de una aplicación web estática
 
 **Tarea 1.** Selecciona una combinación entre generador de páginas estáticas y
-servicio donde desplegar la página web. EScribe tu propuesta en redmine, cada
+servicio donde desplegar la página web. Escribe tu propuesta en redmine, cada
 propuesta debe ser original.
 
 **Tarea 2.** Comenta la instalación del generador de página estática. 
@@ -32,12 +32,19 @@ se realiza la puesta en producción de forma automática.
 
 
 
-## Tarea 1
+## Tarea 1 y Tarea 2
 
 Para el generador de nuestra páginas estáticas, usaremos Docusaurus. 
 La documentación de dicho generador la podemos encontrar [aquí](https://v2.docusaurus.io/).
 
+Dicho generador utiliza javascript y MarkDown/REACT.
+
 Y para el servicio donde desplegar nuestra página, [Surge](https://surge.sh/).
 
 
-## Tarea 2
+## Tarea 3
+
+
+En el fichero _docusaurus.config.js_, se puede cambiar el estilo de la página.
+
+En este fichero se puede modificar el header, el footer y varios iconos.
