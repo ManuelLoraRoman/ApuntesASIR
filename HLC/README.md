@@ -2,4 +2,4 @@
 
 Aquí estarán los diferentes apuntes, ejercicios y prácticas de HLC.
 
-[1. Virtualización](./Virtualizacion.md)
+[1. Virtualización](./Virtualización.md)
