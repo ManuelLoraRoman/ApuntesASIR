@@ -12,4 +12,4 @@
 
 [4.1. Ejercicio: Instalación y configuración del servidor DHCP en Linux](./EjercicioDHCP.md)
 
-
+[4.2. Práctica: Servidor DHCP](./practicadhcp.md)
