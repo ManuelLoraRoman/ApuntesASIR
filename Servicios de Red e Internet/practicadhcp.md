@@ -1,7 +1,9 @@
 # Práctica: Servidor DHCP
 
-**Tarea 1.** Lee el documento Teoría: Servidor DHCP y explica el 
+**Tarea 1.** Lee el documento _Teoría: Servidor DHCP_ y explica el 
 funcionamiento del servidor DHCP resumido en este gráfico.
+
+
 
 ## Preparación del escenario
 
