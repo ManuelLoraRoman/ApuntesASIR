@@ -71,6 +71,7 @@ Instala un servidor dhcp en el ordenador “servidor” que de servicio a los
 ordenadores de red local, teniendo en cuenta que el tiempo de concesión 
 sea 12 horas y que la red local tiene el direccionamiento _192.168.100.0/24_.
 
+Instalaremos el paquete _isc-dhcp-server_ en la máquina servidor.
 
 **Tarea 2**: Entrega el fichero Vagrantfile que define el escenario.
 
