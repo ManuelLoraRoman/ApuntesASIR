@@ -82,6 +82,27 @@ concesiones, la modificación en la configuración que has hecho en el cliente
 para que tome la configuración de forma automática y muestra la salida 
 del comando _`ip address`_.
 
+Primero, vamos a mostrar la salida del comando _ip a_:
+
+![alt text](../Imágenes/ipa1.png)
+
+Los dos ficheros que tenemos que modificar son _/etc/default/isc-dhcp-server_ y 
+_/etc/dhcp/dhcpd.conf_.
+
+En primer lugar _/etc/default/isc-dhcp-server_:
+
+![alt text](../Imágenes/iscdhcpserver1.png)
+
+Después, procederemos a modificar el fichero _/etc/dhcp/dhcpd.conf_:
+
+Modificamos el parámetro _max-lease-time_ a 43200 para que sean 12 horas:
+
+![alt text](../Imágenes/maxleasetime.png)
+
+Y ahora procedemos a configurar el servidor DHCP:
+
+![alt text](../Imágenes/dhcpconf1.png) 
+
 **Tarea 4**: Configura el servidor para que funcione como router y NAT, 
 de esta forma los clientes tengan internet.
     
