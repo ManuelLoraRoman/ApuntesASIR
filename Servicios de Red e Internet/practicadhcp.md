@@ -3,6 +3,59 @@
 **Tarea 1.** Lee el documento _Teoría: Servidor DHCP_ y explica el 
 funcionamiento del servidor DHCP resumido en este gráfico.
 
+* **Paso 1**: se inicializa el cliente DHCP, comenzando en el estado INIT.
+
+* **Paso 2**: como desconoce sus parámetros IP, envía un broadcast DHCPDISCOVER. Este, se 
+encapsula en un paquete UDP. El DHCPDISCOVER usa la dirección IP de broadcast 255.255.255.255.
+
+* **Paso 3**: si no hay un servidor DHCP en la red local, el router debe tener un DHCP relay
+que soporte la retransmisión de esta petición hacia otras subredes. 
+
+* **Paso 4**: antes de enviar el DHCPDISCOVER, el cliente espera un tiempo aleatorio para 
+evitar colisiones.
+
+* **Paso 5**: el cliente ingresa al estado SELECTING, donde recibirá mensaje DHCPOFFER de 
+los servidores DHCP. 
+
+* **Paso 6**: si el cliente recibe varias respuestas, elegirá una. Como respuesta a esto, 
+enviará un mensaje DHCPREQUEST para elegir un servidor DHCP, que responderá con un DHCPACK.
+
+* **Paso 7**: el cliente controla la dirección IP enviada en el DHCPACK para verificar si
+está en uso o no. En caso de estarlo, el DHCPACK se ignora y se envía un DHCPDECLINE, con lo
+cual el cliente vuelve al estado INIT y vuelve a comenzar los pasos de nuevo.
+
+* **Paso 8**: si se acepta el DHCPACK, se colocan 3 valores de temporización y el cliente 
+DHCP pasa al estado BOUND.
+
+	* **T1**: temporizador de renovación de alquiler.
+	* **T2**: temporizador de reenganche.
+	* **T3**: duración del alquiler.
+
+* **Paso 9**: el DHCPACK trae consigo el T3. Los demás se configuran en el servidor
+
+* **Paso 10**: después de la expiración del T1, el cliente pasa del estado BOUND al 
+RENEWING. En este último, se debe negociar un nuevo alquiler para la dirección IP. 
+
+* **Paso 11**: si por algún motivo, no se renueva el alquiler, enviará un DHCPNACK y el 
+cliente pasará otra vez al estado INIT, y lo volverá a intentar. En caso contrario, el 
+servidor DHCP enviará un DHCPACK el cual contiene la duración del nuevo alquiler. Entonces 
+el cliente pasará al estado BOUND.
+
+* **Paso 12**: si el T2 expira mientras el cliente está esperando en el estado RENEWING una 
+respuesta DHCPACK o DHCPNACK, el cliente pasará al estado REBINDING. 
+
+* **Paso 13**: al expirar el T2, el cliente DHCP enviará un DHCPREQUEST a la red, para 
+contactar con cualquier servidor DHCP para extender su alquiler, pasando al estado 
+REBINDING. Espera a que cualquier servidor DHCP le conteste, y si alguno responde con un 
+DHCPACK, el cliente renueva el alquiler y retorna al BOUND.
+
+* **Paso 14**: si no hay servidor DHCP, entonces el alquiler cesa, y retorna al estado INIT.
+
+* **Paso 15**: al acabar el T3, el cliente debe devolver su dirección IP y cesar las 
+acciones con dicha dirección IP.
+
+* **Paso 16**: si un usuario se libera armoniosamente, el cliente DHCP enviará un
+DHCPRELEASE al servidor DHCP para cancelar el alquiler, y la dirección IP estará disponible.
 
 
 ## Preparación del escenario
@@ -20,6 +73,8 @@ sea 12 horas y que la red local tiene el direccionamiento _192.168.100.0/24_.
 
 
 **Tarea 2**: Entrega el fichero Vagrantfile que define el escenario.
+
+Aquí el fichero [Vagrantfile](./Vagrantfile)
     
 **Tarea 3**: Muestra el fichero de configuración del servidor, la lista de 
 concesiones, la modificación en la configuración que has hecho en el cliente 
