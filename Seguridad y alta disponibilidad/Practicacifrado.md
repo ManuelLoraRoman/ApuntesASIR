@@ -20,7 +20,8 @@ de las claves pública y privada.
   
 ![alt text](../Imágenes/gpggenkey2.png)
 
-Las claves públicas y privadas se guardan en /home/[usuario]/.gnupg/pubring.kbx
+Las claves públicas y privadas se guardan en 
+_/home/[usuario]/.gnupg/pubring.kbx_.
 
 **2.** Lista las claves públicas que tienes en tu almacén de claves. Explica 
 los distintos datos que nos muestra. ¿Cómo deberías haber generado las claves 
@@ -67,6 +68,8 @@ armadura-ASCII.
 
 ![alt text](../Imágenes/manuel_loraasc.png)
 
+Se la pasaremos a nuestro compañero Francisco Madueño por e-mail.
+
 **2.** Importa las claves públicas recibidas de vuestro compañero.
 
 Para importar las claves públicas de nuestros compañeros debemos hacer este
@@ -74,8 +77,7 @@ otro comando:
 
 ```gpg --import [clave].asc / [clave].key```
 
-![alt text](../Imágenes/claveimport.png)
-
+![alt text](../Imágenes/claveimport1.png)
     
 **3.** Comprueba que las claves se han incluido correctamente en vuestro 
 keyring.
@@ -86,7 +88,6 @@ clave de nuestro compañero.
 ![alt text](../Imágenes/listadonuevo.png)
 
 ## Tarea 3: Cifrado asimétrico con claves públicas
-
 
 **1.** Cifraremos un archivo cualquiera y lo remitiremos por email a uno de 
 nuestros compañeros que nos proporcionó su clave pública.
@@ -102,24 +103,33 @@ Se generará un fichero _.gpg_ y le enviaremos dicho fichero a nuestro compañer
 **2.** Nuestro compañero, a su vez, nos remitirá un archivo cifrado para que 
 nosotros lo descifremos.
 
+Francisco Madueño, nos ha enviado el archivo _kpasa.gpg_.
 
+![alt text](../Imágenes/archivorecibido.png)
 
 **3.** Tanto nosotros como nuestro compañero comprobaremos que hemos podido 
 descifrar los mensajes recibidos respectivamente.
 
 Para descifrar un fichero debemos hacer:
 
-```gpg -d [archivo] -o [archivo destino]```
+```gpg -d [archivo] > [archivo destino]```
 
 Si no colocamos la opción _-o_ se nos desplegará el contenido del fichero por
 pantalla.
 
-![alt text](../Imágenes/descodasim.png)
+![alt text](../Imágenes/descodasim1.png)
+
+![alt text](../Imágenes/descodasim2.png)
 
 **4.** Por último, enviaremos el documento cifrado a alguien que no estaba 
 en la lista de destinatarios y comprobaremos que este usuario no podrá 
 descifrar este archivo.
-    
+
+Le pasaremos el documento cifrado a Sergio Ibáñez y como no tiene nuestra 
+clave pública, no puede descifrar el mensaje:
+
+![alt text](../Imágenes/nopuede.png)
+
 **5.** Para terminar, indica los comandos necesarios para borrar las 
 claves públicas y privadas que posees.
 
@@ -131,6 +141,7 @@ Y para borrar una clave privada, haremos esto otro:
 
 ```gpg --delete-secret-key "Nombre de usuario"```
 
+![alt text](../Imágenes/borradoclave.png)
 
 ## Tarea 4: Exportar clave a un servidor público de claves PGP
 
@@ -164,6 +175,8 @@ Para ello, haremos esto:
     
 **3.** Borra la clave pública de alguno de tus compañeros de clase e 
 impórtala ahora del servidor público de rediris.
+
+Anteriormente, hemos borrado la clave pública de nuestro compañero.
 
 Para recibir la clave pública de nuestros compañeros desde el servidor de 
 claves, usaremos los siguientes comandos:
@@ -200,7 +213,7 @@ clave privada:
 
 **2.** Envía tu clave pública a un compañero.
 
-Le enviamos dicha clave pública a nuestro compañero.
+Le enviamos dicha clave pública a nuestro compañero Francisco Madueño.
     
 **3.** Utilizando la clave pública cifra un fichero de texto y envíalo 
 a tu compañero.
@@ -221,3 +234,4 @@ Para descifrar, tendremos que usar el siguiente comando:
 
 ```openssl rsautl -decrypt -inkey ./key.pem -in [fichero].encrypted -out [fichero]```
 
+![alt text](../Imágenes/descifraropenssl.png)
