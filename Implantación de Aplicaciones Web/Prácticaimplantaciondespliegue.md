@@ -48,3 +48,4 @@ Y para el servicio donde desplegar nuestra página, [Surge](https://surge.sh/).
 En el fichero _docusaurus.config.js_, se puede cambiar el estilo de la página.
 
 En este fichero se puede modificar el header, el footer y varios iconos.
+
