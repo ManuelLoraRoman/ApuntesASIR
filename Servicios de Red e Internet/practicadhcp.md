@@ -99,16 +99,61 @@ Modificamos el parámetro _max-lease-time_ a 43200 para que sean 12 horas:
 
 ![alt text](../Imágenes/maxleasetime.png)
 
-Y ahora procedemos a configurar el servidor DHCP:
+Y ahora procedemos a configurar el servidor DHCP: 
 
-![alt text](../Imágenes/dhcpconf1.png) 
+![alt text](../Imágenes/dhcpconf2.png)
+
+Reiniciamos el servicio y ahora nos dirigimos al _nodolan1_ y hacemos un 
+_ip address_ para ver si recibe la configuración automático del servidor DHCP:
+
+![alt text](../Imágenes/ipanodolan1.png)
+
+Como podemos observar, obtiene la IP "_192.168.100.2_".
+
+Para mayor comprobación del funcionamiento de dicho proceso, podemos visualizar
+el contenido del fichero _/var/lib/dhcp/dhcpd.leases_:
+
+![alt text](../Imágenes/dhcpdleases.png)
 
 **Tarea 4**: Configura el servidor para que funcione como router y NAT, 
-de esta forma los clientes tengan internet.
-    
+de esta forma los clientes tengan internet.Muestra las rutas por defecto del 
+servidor y el cliente. Realiza una prueba de funcionamiento para comprobar 
+que el cliente tiene acceso a internet (utiliza nombres, para comprobar 
+que tiene resolución DNS).
+
+Para configurar el sevidor para que actue como router, debemos activar el bit
+de enrutamiento en el fichero _/etc/sysctl.conf_:
+
+![alt text](../Imágenes/activarbit.png)
+
+Antes de configurar la NAT, debemos borrar las rutas por defecto de ambas 
+máquinas, servidor y nodo, y configurar unas nuevas. Para borrar las rutas, 
+debemos realizar lo siguiente:
+
+```ip route del default```
+
+Y después añadir ambas rutas nuevas:
+
+![alt text](../Imágenes/routes.png)
+
+Y para configurar NAT en nuestro servidor, añadimos la siguiente línea en el 
+fichero _/etc/network/interfaces_:
+
+![alt text](../Imágenes/interfaces1.png)
+
+Y una vez modificado esto, reiniciamos el servicio de red con 
+
+```/etc/init.d/networking restart```
+
+Y ahora comprobamos la conexión en el _nodolan1_:
+
+![alt text](../Imágenes/ping8888.png)
+
 **Tarea 5**: Realizar una captura, desde el servidor usando tcpdump, 
 de los cuatro paquetes que corresponden a una concesión: DISCOVER, OFFER, 
 REQUEST, ACK.
+
+
 
 **Tarea 6**: Los clientes toman una configuración, y a continuación apagamos 
 el servidor dhcp. ¿qué ocurre con el cliente windows? ¿Y con el cliente linux?
