@@ -49,3 +49,5 @@ En el fichero _docusaurus.config.js_, se puede cambiar el estilo de la página.
 
 En este fichero se puede modificar el header, el footer y varios iconos.
 
+Para cambiar el nombre de nuestra página, modificaremos el index.js, en 
+_function Home()_

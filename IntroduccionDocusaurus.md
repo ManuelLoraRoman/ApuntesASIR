@@ -27,13 +27,21 @@ Para poder desplegar nuestra página generada, debemos construir la página en u
 directorio de contenidos estáticos y ponerlo en el servidor web. Para ello,
 ejecutaremos el siguiente comando:
 
-```npm run build```
+```
+npm run build
+```
 
 # Introducción a Surge
 
 Surge es una herramienta que sirve para desplegar nuestro sitio web.
 
-## Tips
+Nos iremos al directorio creado anteriormente, y ejecutamos:
+
+```surge```
+
+Y nos desplegará la página estática en un dominio generado aleatoriamente.
+
+## Consejos y características de ambas herramientas:
 
 * Los documentos MarkDown se encuentran en mi-pagina/docs
 
@@ -43,3 +51,16 @@ Surge es una herramienta que sirve para desplegar nuestro sitio web.
 de la página de Inicio.
 
 * En static se encuentran las imágenes
+
+* Surge, cada vez que desplegamos la página, se nos despliega en un dominio 
+diferente, por eso es recomendable, hacer un:
+
+```echo [primer dominio que nos haya salido] > CNAME```
+
+Y después al desplegarlo cogerá dicho CNAME.
+
+* En el fichero index.js, se modifica el contenido de la página inicial.
+
+* En el fichero sidebars.js se encuentra la barra lateral.
+
+
