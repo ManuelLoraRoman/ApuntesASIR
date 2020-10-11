@@ -6,6 +6,8 @@ Apuntes y prácticas de esta asignatura.
 
 [2. Implantación y despliegue de una aplicación estática](./Implantaciondespliegueestatica.md)
 
+[2.1. Práctica: Implantación y despliegue de una aplicación web estática](./Prácticaimplantaciondespliegue.md)
+
 [3. Instalación de LAMP en Debian 10](./LAMP.md)
 
 
