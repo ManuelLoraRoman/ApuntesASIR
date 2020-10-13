@@ -44,10 +44,65 @@ Y para el servicio donde desplegar nuestra página, [Surge](https://surge.sh/).
 
 ## Tarea 3
 
+Para cambiar el nombre de nuestra página de Inicio, modificaremos el fichero 
+_src/pages/index.js_, en _function Home()_,en la sección _title_.
 
-En el fichero _docusaurus.config.js_, se puede cambiar el estilo de la página.
+![alt text](../Imágenes/nombrepagina.png)
 
-En este fichero se puede modificar el header, el footer y varios iconos.
+Para cambiar el contenido de la página de inicio, modificamos este mismo 
+archivo.
 
-Para cambiar el nombre de nuestra página, modificaremos el index.js, en 
-_function Home()_
+Por otra parte, si queremos cambiar el _header_, _footer_ o el propio icono,
+debemos ir a _docusaurus.config.js_:
+
+![alt text](../configjs1.png)
+
+
+Los temas están centrados en el lado del cliente, mientras que los plugins, lo 
+están en el lado del servidor. Para usar temas, debemos especificarlos en el
+fichero _docusaurus.config.js_.
+
+```
+module.exports = {
+  // ...
+  themes: ['@docusaurus/theme-classic'],
+};
+```
+
+Por lo general, todo lo modificado está [aquí.](https://github.com/ManuelLoraRoman/ApuntesASIR/blob/master/IntroduccionDocusaurus.md)
+
+## Tarea 4
+
+La página generada está en el siguiente repositorio de [Github](https://github.com/ManuelLoraRoman/Docusaurus/tree/main/ManuelLoraRoman)
+
+
+## Tarea 5
+
+Con el comando:
+
+```npm run build```
+
+Creamos una carpeta llamada _build_ que nos permite guardar en un directorio de
+contenidos estáticos, el cual podremos usar para desplegarla con Surge.
+
+Una vez tenemos el directorio creado, ejecutaremos la instrucción _surge_ dentro
+de la misma:
+
+![alt text](../Imágenes/surgepagina.png)
+
+Para ello, antes es necesario la creación de un usuario.
+
+Le pondremos en el dominio lo que queramos, siempre y cuando acabe en 
+_.surge.sh_ y ya lo tendriamos desplegado. Cada vez que queramos desplegar
+la página, nos pedirá un dominio. Si queremos siempre usar el mismo, haremos
+lo siguiente dentro del directorio _build_:
+
+```echo [Nombre de la página].surge.sh > CNAME```
+
+Y automáticamente, cuando despleguemos la página, se nos pondrá dicho dominio.
+
+
+## Tarea 6
+
+
+
