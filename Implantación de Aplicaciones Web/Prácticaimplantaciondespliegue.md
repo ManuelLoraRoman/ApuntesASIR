@@ -55,7 +55,7 @@ archivo.
 Por otra parte, si queremos cambiar el _header_, _footer_ o el propio icono,
 debemos ir a _docusaurus.config.js_:
 
-![alt text](../configjs1.png)
+![alt text](../Imágenes/configjs1.png)
 
 
 Los temas están centrados en el lado del cliente, mientras que los plugins, lo 
@@ -69,7 +69,21 @@ module.exports = {
 };
 ```
 
-Por lo general, todo lo modificado está [aquí.](https://github.com/ManuelLoraRoman/ApuntesASIR/blob/master/IntroduccionDocusaurus.md)
+Por lo general, todo lo modificado sería lo siguiente:
+
+
+* Los documentos MarkDown se encuentran en mi-pagina/docs
+
+* La página de inicio se encuentra en mi-pagina/src/pages
+
+* En docusaurus.config.js se incorporan varios pluggins además de los elementos de la página de Inicio.
+
+* En static se encuentran las imágenes
+
+* En el fichero index.js, se modifica el contenido de la página inicial.
+
+* En el fichero sidebars.js se encuentra la barra lateral.
+
 
 ## Tarea 4
 
