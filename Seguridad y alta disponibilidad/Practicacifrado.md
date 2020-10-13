@@ -119,8 +119,6 @@ pantalla.
 
 ![alt text](../Imágenes/descodasim1.png)
 
-![alt text](../Imágenes/descodasim2.png)
-
 **4.** Por último, enviaremos el documento cifrado a alguien que no estaba 
 en la lista de destinatarios y comprobaremos que este usuario no podrá 
 descifrar este archivo.
