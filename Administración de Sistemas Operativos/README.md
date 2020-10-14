@@ -3,3 +3,5 @@
 [1. Documentación de la instalación de Debian](./DocumentacionDebian.md)
 
 [1.1. Ejercicios de dpkg/APT](./Ejerciciosdpkgapt.md)
+
+[1.2. Script para seleccionar paquetes por repositorio](./ScriptRepo.sh)
