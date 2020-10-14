@@ -1,0 +1,40 @@
+# Funciones usadas en el Script para seleccionar paquetes por repositorio
+
+# Función con el que da comienzo el Script. Nos muestra el repositorio que
+# hemos elegido.
+
+function comienzo () {
+
+	echo "\n"
+	echo "SELECCIÓN DE PAQUETES POR REPOSITORIO"
+	echo "--------------------------------------"
+	
+	echo "\nRepositorio introducido:" $1
+}
+
+# Función con la que comprobamos que 
+
+function comprobación () {
+
+if echo "$1" | grep "^http\:\/\/.\.*" > /dev/null
+then
+
+	VAR =`echo "$1" | cut -f3 -d"/"`
+
+else
+
+	VAR=$1
+}
+
+function listado_repo () {
+
+for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
+
+# Esta primera sección del for permite visualizar el nombre de los paquetes
+# instalados en nuestra máquina e iterar sobre ellos.
+
+         do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}';
+
+done;
+
+}
