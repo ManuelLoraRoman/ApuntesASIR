@@ -8,4 +8,4 @@
 
 [1.3. Funciones del Script principal](./funcionesRepo.txt)
 
-[2. Kernel](./kernel.md)
+[2. Kernel del Sistema Operativo](./kernel.md)
