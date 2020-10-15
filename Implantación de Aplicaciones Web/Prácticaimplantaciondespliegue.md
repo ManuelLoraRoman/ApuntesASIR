@@ -41,6 +41,7 @@ Dicho generador utiliza javascript y MarkDown/REACT.
 
 Y para el servicio donde desplegar nuestra página, [Surge](https://surge.sh/).
 
+El proceso de instalación está resumido [aquí](../IntroduccionDocusaurus.md)
 
 ## Tarea 3
 
