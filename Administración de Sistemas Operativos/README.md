@@ -5,3 +5,5 @@
 [1.1. Ejercicios de dpkg/APT](./Ejerciciosdpkgapt.md)
 
 [1.2. Script para seleccionar paquetes por repositorio](./ScriptRepo.sh)
+
+[1.3. Funciones del Script principal](./funcionesRepo.txt)
