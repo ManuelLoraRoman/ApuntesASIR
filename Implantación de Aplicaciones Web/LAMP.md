@@ -63,3 +63,29 @@ Hecho esto, ahora ejecutarás este comando:
 Y una vez hecho, veremos dicha página por nuestro navegador:
 
 ![alt text](../Imágenes/phpinfo.png)
+
+
+## Instalación de WordPress en LAMP
+
+WordPress es una aplicación escrito en PHP, que permite la creación de blogs.
+
+Para conectar con WordPress, es necesario crear un usuario en la base de datos.
+
+Comandos a utilizar en la base de datos:
+
+```
+create database wordpress;
+use wordpress;
+create user 'user'@'localhost';
+grant all privileges on wordpress.* to 'user'@'localhost' identified by 'password';
+flush privileges;
+```
+Iremos a _/var/www/html_ y nos descargamos wordpress mediante **wget**.
+Al descomprimir el fichero, nos aparecerá un directorio llamado _wordpress_.
+
+En _/var/www_ debemos ejecutar el siguiente comando:
+
+```chown -R www-data:www-data /html```
+
+Una vez ya tenemos eso hecho, debemos dirigirnos al servidor Apache, y ahi ya
+podríamos configurar Wordpress.
