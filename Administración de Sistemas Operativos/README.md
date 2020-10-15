@@ -7,3 +7,5 @@
 [1.2. Script para seleccionar paquetes por repositorio](./ScriptRepo.sh)
 
 [1.3. Funciones del Script principal](./funcionesRepo.txt)
+
+[2. Kernel](./kernel.md)
