@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # Funciones usadas en el Script para seleccionar paquetes por repositorio
 
 # Función con el que da comienzo el Script. Nos muestra el repositorio que
@@ -5,36 +7,73 @@
 
 function comienzo () {
 
-	echo "\n"
+	echo -e "\n"
 	echo "SELECCIÓN DE PAQUETES POR REPOSITORIO"
 	echo "--------------------------------------"
-	
-	echo "\nRepositorio introducido:" $1
+
+	echo -e "\nRepositorio introducido:" $1
 }
 
-# Función con la que comprobamos que 
+# Función con la que comprobamos que el repositorio esté en el formato x.x.x
 
-function comprobación () {
+function comprobacion () {
 
 if echo "$1" | grep "^http\:\/\/.\.*" > /dev/null
 then
 
-	VAR =`echo "$1" | cut -f3 -d"/"`
+	VAR=`echo "$1" | cut -f3 -d"/"`
 
 else
 
 	VAR=$1
+fi
+
 }
 
 function listado_repo () {
 
-for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
+echo -e "¿Deseas introducir el resultado en un documento de texto?(S/N)"
+
+read respuesta
+
+if [ $respuesta = "S" ]
+then
+	echo "El proceso puede tardar unos segundos..."
+
+	for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
 
 # Esta primera sección del for permite visualizar el nombre de los paquetes
 # instalados en nuestra máquina e iterar sobre ellos.
 
-         do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}';
+        	do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}' >> paquetes.txt;
 
-done;
+# Para cada paquete instalado, obtenemos su información, y nos vamos quedando
+# solo con la información necesaria y filtramos según el repositorio que
+# hayamos puesto.
+
+	done;
+
+	echo -e "\n Fichero paquetes.txt creado con éxito."
+
+elif [ $respuesta = "N" ]
+then
+
+	echo -e "Este proceso puede tardar unos segundos...\n\nListado de los paquetes del repositorio $VAR:\n\n"
+
+	sleep 2
+
+	for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
+
+		do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}'
+
+	done;
+else
+
+	echo "Respuesta inválida. Se procederá a salir del Script..."
+	sleep 2
+	exit
+
+fi
 
 }
+

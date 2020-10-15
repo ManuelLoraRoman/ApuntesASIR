@@ -1,20 +1,18 @@
 #! /bin/bash
 
-#. ./funcionesRepo.txt
+. ./funcionesRepo.txt
 
 # Realiza un script que introduciéndolo como parámetro el nombre de un
 # repositorio, muestre como salida los paquetes de ese repositorio que
 # están instalados en la máquina.
 
+comienzo $1
 
+sleep 1
 
-echo "\n"
-echo "SELECCIÓN DE PAQUETES POR REPOSITORIO"
-echo "---------------------------------------"
+comprobacion $1
 
-echo "Repositorio introducido: " $1
+sleep 1
 
-if echo "$1" | grep "^http\:\/\/.\.*" > /dev/null
-then
+listado_repo $VAR
 
-	VAR=`echo "$1" | cut -f3 -d"/"`
