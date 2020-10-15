@@ -120,5 +120,7 @@ Y automáticamente, cuando despleguemos la página, se nos pondrá dicho dominio
 
 ## Tarea 6
 
+He seleccionado realizar el Script para la integración continua. 
 
+El Script [aquí](./ScriptIntcont.sh).
 
