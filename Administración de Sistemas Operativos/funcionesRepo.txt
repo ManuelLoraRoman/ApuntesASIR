@@ -20,11 +20,8 @@ function comprobacion () {
 
 if echo "$1" | grep "^http\:\/\/.\.*" > /dev/null
 then
-
 	VAR=`echo "$1" | cut -f3 -d"/"`
-
 else
-
 	VAR=$1
 fi
 
