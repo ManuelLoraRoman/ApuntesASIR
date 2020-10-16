@@ -92,6 +92,8 @@ then
 		rm paquetes.txt
 	else
 		rm paquetes.txt
+else
+	exit
 fi
 }
 
