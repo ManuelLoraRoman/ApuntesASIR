@@ -50,8 +50,6 @@ then
 
 	done;
 
-	echo -e "\n Fichero paquetes.txt creado con éxito."
-
 elif [ $respuesta = "N" ]
 then
 
@@ -62,6 +60,7 @@ then
 	for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
 
 		do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}'
+		do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}' >> paquetes.txt;
 
 	done;
 else
@@ -71,6 +70,27 @@ else
 	exit
 
 fi
+}
 
+function ultimo (){
+if [ $respuesta = "Y" ]
+then
+	if [ ! -s paquetes.txt ]
+	then
+		echo -e "No hay paquetes instalados del repositorio"
+		rm paquetes.txt
+
+	else
+		echo -e "\nFichero paquetes.txt creado con éxito."
+
+elif [ $respuesta = "N" ]
+then
+
+	if [ ! -s paquetes.txt ]
+	then
+		echo -e "No hay paquetes instalados del repositorio"
+		rm paquetes.txt
+	else
+		rm paquetes.txt
 }
 
