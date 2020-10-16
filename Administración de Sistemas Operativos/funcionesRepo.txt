@@ -60,7 +60,7 @@ then
 	for p in $(dpkg -l | grep '^ii' | cut -d ' ' -f 3);
 
 		do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}'
-		do apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}' >> paquetes.txt;
+		   apt-cache showpkg $p | head -3 | grep -v '^Versions' | sed -e 's/Package: //;' | paste - - | grep $VAR | awk -F '\t' '{print $1}' >> paquetes.txt;
 
 	done;
 else
