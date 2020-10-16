@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # Funciones usadas en el Script para seleccionar paquetes por repositorio
 
