@@ -75,6 +75,9 @@ else
 fi
 }
 
+# Esta función permite el borrado del fichero paquetes.txt en caso de que no
+# haya paquetes del repositorio seleccionado.
+
 function ultimo (){
 if [ $respuesta = "S" ]
 then
