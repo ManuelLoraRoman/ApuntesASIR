@@ -73,7 +73,7 @@ fi
 }
 
 function ultimo (){
-if [ $respuesta = "Y" ]
+if [ $respuesta = "S" ]
 then
 	if [ ! -s paquetes.txt ]
 	then
