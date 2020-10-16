@@ -40,3 +40,4 @@ Para activar la configuración de una página en concreto, debemos ejecutar:
 ```a2ensite [Nombre]```
 
 ```a2ensite apache1```
+
