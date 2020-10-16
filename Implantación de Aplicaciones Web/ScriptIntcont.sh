@@ -1,5 +1,7 @@
 #! /bin/bash
 
+
+
 echo -e "Bienvenid@ a la integración continua con Docusaurus y surge.\n"
 
 echo -e "En primer lugar, introduzca el nombre de un directorio para crear hay su página:"
@@ -20,20 +22,35 @@ ins=`dpkg -s npm | grep -o installed`
 
 if [ $ins="installed" ];
 then
-	echo -e "Ya está instalado dicho paquete"
+	echo -e "Ya está instalado dicho paquete."
 else
 	apt-get install npm > /dev/null
-	echo -e "El paquete ya está instalado"
+	echo -e "El paquete ya está instalado."
 fi
 
-npx @docusaurus/init@next init $pagina classic
+if [ -d $pagina ]
+then
+	echo -e "El directorio $pagina ya existe."
+else
+	npx @docusaurus/init@next init $pagina classic
+fi
 
 cd $pagina
 
-npm run build
+if [ -d build ]
+then
+	echo -e "EL directorio de contenidos estáticos ya está creado."
+else
+	npm run build
+fi
 
 cd build
 
-echo "$pagina.surge.sh" > CNAME
+if [ -f CNAME ]
+then
+	echo -e "El fichero CNAME ya existe, por lo tanto se procederá al despliegue"
+else
+	echo "$pagina.surge.sh" > CNAME
+fi
 
 surge
