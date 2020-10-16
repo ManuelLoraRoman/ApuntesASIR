@@ -82,6 +82,7 @@ then
 
 	else
 		echo -e "\nFichero paquetes.txt creado con éxito."
+	fi
 
 elif [ $respuesta = "N" ]
 then
@@ -92,8 +93,7 @@ then
 		rm paquetes.txt
 	else
 		rm paquetes.txt
-else
-	exit
+	fi
 fi
 }
 
