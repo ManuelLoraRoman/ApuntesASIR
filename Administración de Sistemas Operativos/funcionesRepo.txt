@@ -11,18 +11,21 @@ function comienzo () {
 	echo "SELECCIÓN DE PAQUETES POR REPOSITORIO"
 	echo "--------------------------------------"
 
-	echo -e "\nRepositorio introducido:" $1
+	echo -e "\nIntroduzca el repositorio:"
+	read repositorio
+
+	echo -e "\nRepositorio introducido:" $repositorio
 }
 
 # Función con la que comprobamos que el repositorio esté en el formato x.x.x
 
 function comprobacion () {
 
-if echo "$1" | grep "^http\:\/\/.\.*" > /dev/null
+if echo "$repositorio" | grep "^http\:\/\/.\.*" > /dev/null
 then
-	VAR=`echo "$1" | cut -f3 -d"/"`
+	VAR=`echo "$repositorio" | cut -f3 -d"/"`
 else
-	VAR=$1
+	VAR=$repositorio
 fi
 
 }

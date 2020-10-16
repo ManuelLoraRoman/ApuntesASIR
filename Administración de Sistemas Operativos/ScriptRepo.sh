@@ -6,11 +6,11 @@
 # repositorio, muestre como salida los paquetes de ese repositorio que
 # están instalados en la máquina.
 
-comienzo $1
+comienzo
 
 sleep 1
 
-comprobacion $1
+comprobacion $repositorio
 
 sleep 1
 
