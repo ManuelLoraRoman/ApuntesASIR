@@ -19,3 +19,5 @@
 [5. Introducción a Apache2.4](./Apache24.md)
 
 [5.1. Ejercicio 3: VirtualHosting con Apache](./VirtualHosting.md)
+
+[5.2. Ejercicio 4: Mapear URL a ubicaciones de un sistema de ficheros](./EjercicioMapeo.md)
