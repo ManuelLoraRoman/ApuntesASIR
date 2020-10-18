@@ -12,4 +12,4 @@ Apuntes y prácticas de esta asignatura.
 
 [3. Instalación de LAMP en Debian 10](./LAMP.md)
 
-
+[3.1. Práctica: Instalación local de un CMS PHP](./CMSPHP.md)
