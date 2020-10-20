@@ -132,29 +132,29 @@ fichero _~/.ssh/know_hosts_?
 **4.** ¿Qué significa este mensaje que aparece la primera vez que nos 
 conectamos a un servidor?
 
-> $ ssh debian@172.22.200.74
-> The authenticity of host '172.22.200.74 (172.22.200.74)' can't be established.
-> ECDSA key fingerprint is SHA256:7ZoNZPCbQTnDso1meVSNoKszn38ZwUI4i6saebbfL4M.
-> Are you sure you want to continue connecting (yes/no)? 
+> $ ssh debian@172.22.200.74  
+> The authenticity of host '172.22.200.74 (172.22.200.74)' can't be established.  
+> ECDSA key fingerprint is SHA256:7ZoNZPCbQTnDso1meVSNoKszn38ZwUI4i6saebbfL4M.  
+> Are you sure you want to continue connecting (yes/no)?   
 
 **5.** En ocasiones cuando estamos trabajando en el cloud, y reutilizamos una 
 ip flotante nos aparece este mensaje:
 
-> $ ssh debian@172.22.200.74
-> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-> @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-> IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
-> Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-> It is also possible that a host key has just been changed.
-> The fingerprint for the ECDSA key sent by the remote host is
-> SHA256:W05RrybmcnJxD3fbwJOgSNNWATkVftsQl7EzfeKJgNc.
-> Please contact your system administrator.
-> Add correct host key in /home/jose/.ssh/known_hosts to get rid of this message.
-> Offending ECDSA key in /home/jose/.ssh/known_hosts:103
->   remove with:
->   ssh-keygen -f "/home/jose/.ssh/known_hosts" -R "172.22.200.74"
-> ECDSA host key for 172.22.200.74 has changed and you have requested strict checking.
+> $ ssh debian@172.22.200.74  
+> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
+> @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @  
+> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
+> IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!  
+> Someone could be eavesdropping on you right now (man-in-the-middle attack)!  
+> It is also possible that a host key has just been changed.  
+> The fingerprint for the ECDSA key sent by the remote host is  
+> SHA256:W05RrybmcnJxD3fbwJOgSNNWATkVftsQl7EzfeKJgNc.  
+> Please contact your system administrator.  
+> Add correct host key in /home/jose/.ssh/known_hosts to get rid of this message.  
+> Offending ECDSA key in /home/jose/.ssh/known_hosts:103  
+>   remove with:  
+>   ssh-keygen -f "/home/jose/.ssh/known_hosts" -R "172.22.200.74"  
+> ECDSA host key for 172.22.200.74 has changed and you have requested strict checking.  
 
 **6.** ¿Qué guardamos y para qué sirve el fichero en el servidor 
 _~/.ssh/authorized_keys_?
