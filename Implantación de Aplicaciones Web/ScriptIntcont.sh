@@ -1,16 +1,20 @@
 #! /bin/bash
 
-
-
 echo -e "Bienvenid@ a la integración continua con Docusaurus y surge.\n"
 
-echo -e "En primer lugar, introduzca el nombre de un directorio para crear hay su página:"
+echo -e "En primer lugar, introduzca el nombre de un directorio donde irán sus páginas:"
 
 read directorio
 
-mkdir $directorio
+if [ -d $directorio ]
+then
+	cd $directorio
 
-cd $directorio
+else
+	mkdir $directorio
+
+	cd $directorio
+fi
 
 echo -e "Introduzca a continuación el nombre de su página:"
 
@@ -39,7 +43,15 @@ cd $pagina
 
 if [ -d build ]
 then
-	echo -e "EL directorio de contenidos estáticos ya está creado."
+	echo -e "El directorio de contenidos estáticos ya está creado."
+	echo -e "¿Desea actualizar su contenido?(S/N)"
+	read respuesta
+
+	if [ $respuesta="S" ]
+	then
+		npm run build
+	else
+		echo -e "No se actualizará el directorio"
 else
 	npm run build
 fi
