@@ -21,22 +21,21 @@ dichas tecnologías para ambientes de gran densidad de usuarios.
 
 Sus valores son:
 
-1. **Profesionalidad** --> son un equipo cualificado, especializado y 
+**1.** _Profesionalidad_ --> son un equipo cualificado, especializado y 
 comprometido.
 
-2. **Voluntad para enfrentar desafíos** --> preparados para comprender y
+**2.** _Voluntad para enfrentar desafíos_ --> preparados para comprender y
 responder rápidamente a las necesidades y demandas del mercado.
 
-3. **Actitud de "Puede hacerse"** --> seguros de su habilidad para lidiar con los
+**3.** _Actitud de "Puede hacerse"_ --> seguros de su habilidad para lidiar con los
 problemas y lograr el éxito de cada proyecto.
 
-4. **Búsqueda incansable de resultados** --> comprometidos con los proyectos de
+**4.** _Búsqueda incansable de resultados_ --> comprometidos con los proyectos de
 los clientes hasta su finalización.
 
 ### Cronología de su empresa
 
 ![alt text](../Imágenes/Cronologia.png)
-
 
 Su producto más comercializado es el CHT (Cognitive Hotspot Technology), una
 herramienta que optimiza la eficiencia espectral de puntos de acceso WiFi y 
