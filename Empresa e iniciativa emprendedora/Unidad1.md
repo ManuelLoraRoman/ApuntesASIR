@@ -10,17 +10,17 @@ idea de negocio y su idoneidad.
 
 ### Características
 
-A) Creatividad
+**A)** Creatividad
 
-B) Autonomía
+**B)** Autonomía
 
-C) Tenacidad
+**C)** Tenacidad
 
-D) Sentido de la responsabilidad
+**D)** Sentido de la responsabilidad
 
-E) Capacidad para asumir riesgos
+**E)** Capacidad para asumir riesgos
 
-F) Liderazgo
+**F)** Liderazgo
 
 * **Espíritu emprendedor** --> capacidad innovadora para probar cosas nuevas o
 hacerlas de una manera diferente.
@@ -29,7 +29,7 @@ hacerlas de una manera diferente.
 ## Tipos de emprendedores
 
 
-1. **Empresario** --> Persona capaz de identificar una necesidad, reunir los
+**1.** _Empresario_ --> Persona capaz de identificar una necesidad, reunir los
 recursos necesarios y emprender una acción para satifacer dicha necesidad.
 
 Ventajas | Desventajas
@@ -41,10 +41,10 @@ Prestigio social | Afrontar problemas
 Reconocimiento profesional | 
 
 
-2. **Intraemprendedor** --> trabajador por cuenta ajena, que desarrolla y 
+**2.** _Intraemprendedor_ --> trabajador por cuenta ajena, que desarrolla y 
 lleva a cabo proyectos con espíritu de innovación, creatividad y autonomía.
 
-3. **Emprendedor social** --> ponen en práctica proyectos que resuelven
+**3.** _Emprendedor social_ --> ponen en práctica proyectos que resuelven
 probelmas presentes en la sociedad.
 
 
@@ -68,17 +68,17 @@ Para buscar ideas de negocio debemos:
 
 ### Tipos de innovación
 
-1. **De producto**
+**1.** _De producto_
 
-1.1. Innovación total
+**1.1.** _Innovación total_
 
-1.2. Innovaciones que aportan algo nuevo al producto
+**1.2.** _Innovaciones que aportan algo nuevo al producto_
 
-1.3. Innovaciones que no aportan nada nuevo
+**1.3.** _Innovaciones que no aportan nada nuevo_
 
-2. **De proceso**
+**2.** _De proceso_
 
-3. **Tecnológica**
+**3.** _Tecnológica_
 
 
 La innovación se puede conseguir creando cosas nuevas, inventando usos nuevos
