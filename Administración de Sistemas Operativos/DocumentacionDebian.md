@@ -13,15 +13,15 @@
 En primer lugar, se ha de hacer la instalación normal, no la gráfica, pero
 para mayor legibilidad, usaré la instalación gráfica.
 
-1. Modificaremos el boot de arranque de nuestro PC en la BIOS. (En nuestro caso, era
+**1.** Modificaremos el boot de arranque de nuestro PC en la BIOS. (En nuestro caso, era
 necesario pulsar el botón F2 unas cinco veces mientras aparecía el logotipo de Lenovo)
 
-2. A continuación, veremos el Menú de instalación de Debian 10. Aparecen varias opciones
+**2.** A continuación, veremos el Menú de instalación de Debian 10. Aparecen varias opciones
 para instalarlo, y nosotros elegiremos la opción de **Install**.
 
 ![alt text](../Imágenes/paso2.png)
 
-3. Lo siguiente en aparecer será el idioma, el cual elegiremos **Spanish - Español**. Una
+**3.** Lo siguiente en aparecer será el idioma, el cual elegiremos **Spanish - Español**. Una
 vez hecho esto, debemos seleccionar nuestro país. Esto le permite al instalador asignar
 las opciones de nuestra localización (_zona horaria, distancia, moneda, etc_)
 
@@ -29,26 +29,26 @@ las opciones de nuestra localización (_zona horaria, distancia, moneda, etc_)
 
 ![alt text](../Imágenes/paso32.png)
 
-4. En la siguiente pantalla, configuraremos la distribución del teclado. En nuestro caso,
+**4.** En la siguiente pantalla, configuraremos la distribución del teclado. En nuestro caso,
 pondremos **Español**.
 
 ![alt text](../Imágenes/paso4.png)
 
-5. Ahora el instalador ejecutará una serie de instrucciones previas al proceso de
+**5.** Ahora el instalador ejecutará una serie de instrucciones previas al proceso de
 instalación, siendo estas la detección y configuración de los adaptadores de red, para la
 descarga de paquetes adicionales necesarios.
 
 ![alt text](../Imágenes/paso5.png)
 
-6. Introducimos el nombre que queremos ponerle a nuestra máquina. Recomendable ponerle
+**6.** Introducimos el nombre que queremos ponerle a nuestra máquina. Recomendable ponerle
 un nombre indicativo, por ejemplo **debian**.
 
-7. A continuación, si nuestro ordenador pertenece a un grupo de red exclusivo de un
+**7.** A continuación, si nuestro ordenador pertenece a un grupo de red exclusivo de un
 conjunto de ordenadores, deberíamos poner el nombre de dominio.
 
 ![alt text](../Imágenes/paso7.png)
 
-8. Toca elegir contraseña para super-usuario y la verificación de dicha contraseña.
+**8.** Toca elegir contraseña para super-usuario y la verificación de dicha contraseña.
 
 ![alt text](../Imágenes/paso8.png)
 
@@ -56,15 +56,15 @@ conjunto de ordenadores, deberíamos poner el nombre de dominio.
 
 ![alt text](../Imágenes/paso83.png)
 
-9. Las siguientes ventanas que nos aparecerán son la de la configuración del usuario 
+**9.** Las siguientes ventanas que nos aparecerán son la de la configuración del usuario 
 (Nombre completo y nombre de usuario) y la de la contraseña para dicho usuario.
 
-10. Según el país que hayamos elegido, nos tocará ahora configurar el reloj según la
+**10.** Según el país que hayamos elegido, nos tocará ahora configurar el reloj según la
 localización de donde estemos. En nuestro caso, elegiremos **Península**.
 
 ![alt text](../Imágenes/paso10.png)
 
-11. Debian, después de la anterior opción, comenzará la detección de los discos presentes
+**11.** Debian, después de la anterior opción, comenzará la detección de los discos presentes
 en nuestro sistema, para acto seguido, presentarte las opciones de particionado de disco.
 De entre ellas elegiremos **Manual**.
 
@@ -87,38 +87,38 @@ mismos):
 
 ![alt text](../Imágenes/paso118.png)
 
-12. Después del particionado, nos preguntará si queremos participar en una encuesta de
+**12.** Después del particionado, nos preguntará si queremos participar en una encuesta de
 popularidad. Elige tu respuesta, y haz clic en **Continuar**.
 
 ![alt text](../Imágenes/paso12.png)
 
-13. Ahora, el instalador nos da la opción de emplear métodos de instalación 
+**13.** Ahora, el instalador nos da la opción de emplear métodos de instalación 
 adicionales. En nuestro caso, seleccionamos **No** y continuamos.
 
-14. Lo siguiente que nos aparece en la selección de una réplica, que es el servidor donde 
+**14.** Lo siguiente que nos aparece en la selección de una réplica, que es el servidor donde 
 se descargaran los ficheros. Primero debemos escoger el País y después la réplica.
 
 ![alt text](../Imágenes/paso14.png)
 
 ![alt text](../Imágenes/paso142.png)
 
-15. Si quieres un proxy para salir a Internet, escribe en el campo en blanco. En nuestro
+**15.** Si quieres un proxy para salir a Internet, escribe en el campo en blanco. En nuestro
 caso, no escribiremos nada y pasaremos al siguiente paso.
 
 ![alt text](../Imágenes/paso15.png)
 
-16. Lo que toca ahora es elegir si queremos una interfaz gráfica, además de elegir cual 
+**16.** Lo que toca ahora es elegir si queremos una interfaz gráfica, además de elegir cual 
 es la que quieras. Seleccionamos las otras opciones si queremos instalar diferentes
 paquetes como **SSH_Server**.
 
-17. Una vez ya configurado todo lo anterior, procederá a la descarga de paquetes.
+**17.** Una vez ya configurado todo lo anterior, procederá a la descarga de paquetes.
 
-18. El gestor de arranque de GNU-Linux es el GRUB, y es requerido para completar 
+**18.** El gestor de arranque de GNU-Linux es el GRUB, y es requerido para completar 
 la instalación. Se nos pregunta si instalamos el cargador de arranque en el registro
 principal de arranque. Le decimos que no, seleccionamos **/boot** para cargar el GRUB
 y le damos a continuar.
 
-19. Fin de la instalación. 
+**19.** Fin de la instalación. 
 
 ![alt text](../Imágenes/paso19.png)
   
@@ -171,7 +171,7 @@ En mi caso, el ordenador posee una tarjeta gráfica Nvidia GeForce GTX 1060 y no
 la estaría detectando. Por lo tanto, vamos a hacer lo siguiente:
 
 
-1. Ejecutaremos _sudo apt-get install nvidia-detect_ y luego ejecutaremos 
+**1.** Ejecutaremos _sudo apt-get install nvidia-detect_ y luego ejecutaremos 
 la instrucción _sudo nvidia detect_ para ver que drivers son los que
 necesitariamos instalarnos para que funcionase.
 
@@ -184,7 +184,7 @@ lo tanto procedemos a la descarga de dicho paquete:
 
 Y una vez acabada la instalación, reiniciamos el sistema.
 
-Ahora nuestro siguiente objetivo es que comprobar las tarjetas gráficas que 
+**2.** Ahora nuestro siguiente objetivo es que comprobar las tarjetas gráficas que 
 tenemos activa.
 
 ```lspci -vnnn | perl -lne 'print if /^\d+\:.+(\[\S+\:\S+\])/' | grep VGA```
@@ -200,13 +200,13 @@ siguiente manera:
 
 ```sudo lsmod | grep nvidia```
 
-Con este comando vemos los drivers de nvidia y sus dependencias.
+**3.** Con este comando vemos los drivers de nvidia y sus dependencias.
 
 ![alt text](../Imágenes/lsmod.png)
 
 ```sudo lshw | less```
 
-Veo los componentes hardware de nuestro ordenador, y podemos ver que la 
+**4.** Veo los componentes hardware de nuestro ordenador, y podemos ver que la 
 tarjeta gráfica, efectivamente, está cargando los drivers de nvidia.
 
 ![alt text](../Imágenes/lshw.png)
