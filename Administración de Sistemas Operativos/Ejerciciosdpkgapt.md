@@ -231,19 +231,6 @@ las versiones disponible de dicho paquete?
 
 ```sudo apt-show-versions [paquete]```
 
-**Tarea 6.** Indica el procedimiento para descargar un paquete del 
-repositorio stable.
-
-**Tarea 7.** Indica el procedimiento para descargar un paquete del 
-repositorio de buster-backports.
-
-**Tarea 8.** Indica el procedimiento para descargar un paquete del 
-repositorio de sid.
-
-**Tarea 9.** Indica el procedimiento para descargar un paquete de 
-arquitectura i386.
-
-
 ## Trabajo con directorios
 
 
