@@ -33,7 +33,7 @@ parecida a esta:
 ![alt text](../Imágenes/mapeo3.png)
 
 Ahora, para hacer redireccionar, deberemos modificar el fichero 
-_apache2.conf_ con lo siguiente:
+_mapeo.conf_ con lo siguiente:
 
 ![alt text](../Imágenes/confalias1.png)
 
@@ -49,11 +49,15 @@ ficheros, no se permite que se siga los enlaces simbólicos y no se permite
 negociación de contenido. Muestra al profesor el funcionamiento. 
 ¿Qué configuración tienes que poner?
 
-Tenemos que modificar el contenido del fichero _apache2.conf_.
+Tenemos que modificar otra vez, el contenido del fichero _mapeo.conf_.
 Crearemos las siguiente líneas:
 
 ![alt text](../Imágenes/confoptions.png)
 
+Y en la configuración de apache2 del fichero _apache2.conf_, debemos modificar
+lo siguiente:
+
+![alt text](../Imágenes/confoptions12.png)
 
 **Tarea 3**. Si accedes a la página www.mapeo.com/principal/documentos se 
 visualizarán los documentos que hay en /home/usuario/doc. Por lo tanto se 
@@ -62,9 +66,8 @@ que el propietario del enlace y del fichero al que apunta sean el mismo
 usuario. Explica bien y pon una prueba de funcionamiento donde se vea bien 
 el seguimiento de los enlaces simbólicos.
 
-En primer lugar modificaremos de nuevo la configuración _apache2.conf_ con:
-
-![alt text](../Imágenes/confoptions2.png)
+La modificación realizada en el fichero _mapeo.conf_ ya está señalizada en el 
+anterior apartado.
 
 La opción de _SymLinksIfOwnerMatch_, permite seguir los enlaces simbólicos
 de los ficheros o directorios si le pertenece al mismo usuario que al del
