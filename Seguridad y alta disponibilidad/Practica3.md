@@ -15,10 +15,10 @@ Verifica la firma que tu has recibido.
 **2.** ¿Qué significa el mensaje que aparece en el momento de verificar la 
 firma?
 
-> gpg: Firma correcta de "Pepe D <josedom24@gmail.com>" [desconocido]
-> gpg: ATENCIÓN: ¡Esta clave no está certificada por una firma de confianza!
-> gpg:          No hay indicios de que la firma pertenezca al propietario.
-> Huellas dactilares de la clave primaria: E8DD 5DA9 3B88 F08A DA1D  26BF 5141 3DDB 0C99 55FC
+> gpg: Firma correcta de "Pepe D <josedom24@gmail.com>" [desconocido]  
+> gpg: ATENCIÓN: ¡Esta clave no está certificada por una firma de confianza!  
+> gpg:          No hay indicios de que la firma pertenezca al propietario.  
+> Huellas dactilares de la clave primaria: E8DD 5DA9 3B88 F08A DA1D  26BF 5141 3DDB 0C99 55FC  
 
 **3.** Vamos a crear un anillo de confianza entre los miembros de nuestra 
 clase, para ello.
