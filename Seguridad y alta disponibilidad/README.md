@@ -11,6 +11,10 @@ haciendo.
 
    [1.3. Práctica 3: Integridad de ficheros](./Práctica3Integridadficheros.md)
 
-[2. Cifrado simétrico con gpg y openssl](./Cifradosimetrico.md)
+[2. Introducción a la Criptografía](./Criptografia.md)
 
-[2.1. Práctica: Cifrado asimétrico con gpg y openssl](./Practicacifrado.md)
+[2.1. Cifrado simétrico con gpg y openssl](./Cifradosimetrico.md)
+
+[2.2. Práctica: Cifrado asimétrico con gpg y openssl](./Practicacifrado.md)
+
+
