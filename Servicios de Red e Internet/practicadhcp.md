@@ -153,18 +153,149 @@ Y ahora comprobamos la conexión en el _nodolan1_:
 de los cuatro paquetes que corresponden a una concesión: DISCOVER, OFFER, 
 REQUEST, ACK.
 
-
+![alt text](../Imágenes/capturatcpdump.png)
 
 **Tarea 6**: Los clientes toman una configuración, y a continuación apagamos 
 el servidor dhcp. ¿qué ocurre con el cliente windows? ¿Y con el cliente linux?
-    
+
+Lo que haremos para comprobarlo será modificar el archivo _/etc/dhcp/dhcpd.conf_
+el parámetro de _max-lease-time_ y le pondremos un valor bajo, para que cuando
+paremos el servicio dhcp y pasado ese tiempo de concesión, nuestro cliente
+pierda su ip:
+
+```
+vagrant@nodolan1:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:8d:c0:4d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
+       valid_lft 84566sec preferred_lft 84566sec
+    inet6 fe80::a00:27ff:fe8d:c04d/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:6b:6c:f9 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::a00:27ff:fe6b:6cf9/64 scope link 
+       valid_lft forever preferred_lft forever
+vagrant@nodolan1:~$ 
+```
+
+Ahora reiniciamos otra vez el servicio, y su nueva ip será la siguiente:
+
+```
+vagrant@nodolan1:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:8d:c0:4d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
+       valid_lft 84166sec preferred_lft 84166sec
+    inet6 fe80::a00:27ff:fe8d:c04d/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:6b:6c:f9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.100.5/24 brd 192.168.100.255 scope global dynamic eth1
+       valid_lft 18sec preferred_lft 18sec
+    inet6 fe80::a00:27ff:fe6b:6cf9/64 scope link 
+       valid_lft forever preferred_lft forever
+vagrant@nodolan1:~$ 
+```
+
 **Tarea 7**: Los clientes toman una configuración, y a continuación cambiamos 
 la configuración del servidor dhcp (por ejemplo el rango). ¿qué ocurriría 
 con un cliente windows? ¿Y con el cliente linux?
 
-**Tarea 8**: Indica las modificaciones realizadas en los ficheros de 
+Como hemos hecho anteriormente, modificaremos el fichero _/etc/dhcp/dhcpd.conf_
+y donde se encuentra el rango, lo modificaremos:
+
+```
+option subnet-mask 255.255.255.0;
+option broadcast-address 192.168.100.255;
+option routers 192.168.100.2;
+option domain-name-servers 192.168.100.1;
+
+subnet 192.168.100.0 netmask 255.255.255.0 {
+  range 192.168.100.20 192.168.100.253;
+}
+```
+
+Y pasado el tiempo de concesión, se renovaría la ip del cliente:
+
+```
+vagrant@nodolan1:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:8d:c0:4d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
+       valid_lft 83249sec preferred_lft 83249sec
+    inet6 fe80::a00:27ff:fe8d:c04d/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:6b:6c:f9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.100.21/24 brd 192.168.100.255 scope global dynamic eth1
+       valid_lft 12sec preferred_lft 12sec
+    inet 192.168.100.20/24 brd 192.168.100.255 scope global secondary dynamic eth1
+       valid_lft 16sec preferred_lft 16sec
+    inet6 fe80::a00:27ff:fe6b:6cf9/64 scope link 
+       valid_lft forever preferred_lft forever
+vagrant@nodolan1:~$ 
+```
+
+
+
+**Tarea 8**: Crea una reserva para el que el cliente tome siempre la dirección 
+192.168.100.100. Indica las modificaciones realizadas en los ficheros de 
 configuración y entrega una comprobación de que el cliente ha tomado esa 
 dirección.
+
+Tenemos que añadir al fichero _/etc/dhcp/dhcpd.conf_ esto, para realizar una
+reserva ip a nuestro cliente:
+
+```
+host nodolan1 {
+hardware ethernet 08:00:27:6b:6c:f9;
+fixed-address 192.168.100.100;
+}
+```
+
+Y reiniciamos el servicio. Pasado el tiempo de concesión, la nueva ip del 
+cliente es la reservada:
+
+```
+vagrant@nodolan1:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:8d:c0:4d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic eth0
+       valid_lft 82692sec preferred_lft 82692sec
+    inet6 fe80::a00:27ff:fe8d:c04d/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:6b:6c:f9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.100.100/24 brd 192.168.100.255 scope global dynamic eth1
+       valid_lft 20sec preferred_lft 20sec
+    inet6 fe80::a00:27ff:fe6b:6cf9/64 scope link 
+       valid_lft forever preferred_lft forever
+vagrant@nodolan1:~$ 
+```
 
 ## Uso de varios ámbitos
 
@@ -179,9 +310,10 @@ los ordenadores de la nueva red local, teniendo en cuenta que el tiempo de
 concesión sea 24 horas y que la red local tiene el direccionamiento 
 _192.168.200.0/24_.
 
-
 **Tarea 9**: Entrega el nuevo fichero Vagrantfile que define el escenario.
-    
+
+Aquí estaría el nuevo fichero [Vagrantfile]()
+
 **Tarea 10**: Explica las modificaciones que has hecho en los distintos 
 ficheros de configuración. Entrega las comprobaciones necesarias de que 
 los dos ámbitos están funcionando.
