@@ -12,6 +12,8 @@ ello te pueden ayudar los siguientes enlaces:
 **1.** Manda un documento y la firma electrónica del mismo a un compañero. 
 Verifica la firma que tu has recibido.
 
+
+
 **2.** ¿Qué significa el mensaje que aparece en el momento de verificar la 
 firma?
 
