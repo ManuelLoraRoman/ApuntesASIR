@@ -16,3 +16,11 @@ a la memoria:
 Un kernel monolítico es aquel que todo se hace a través de _kernel mode_.
 
 
+## Características de la compilación del kernel
+
+Los componentes del kernel se compilan de dos formas:
+
+* Se incluyen dentro de un fichero que se denomina _vmlinuz_ o _zImage_.
+
+* Se compilan individualmente en ficheros objetos con extensión _.ko_ que se
+cargan en memoria a demanda (/lib/modules).
