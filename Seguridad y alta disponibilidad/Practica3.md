@@ -72,13 +72,44 @@ siguiente comando:
 
 ```
 gpg --keyserver [servidor de claves] --recv-keys [Fingerprint]  
+```
+![alt text](../Imágenes/bajada1.png)
 
-gpg --keyserver pgp.rediris.es --recv-keys []
+![alt text](../Imágenes/bajada2.png)
+
+![alt text](../Imágenes/bajada3.png)
+
+Y firmaremos las claves con:
+
+```
+gpg --edit-key [Fingerprint]
 ```
 
+![alt text](../Imágenes/firmallave.png)
+
+Y se la enviamos de vuelta a nuestro compañero:
+
+```
+gpg --export -a [Fingerprint] > [clave_compañero]
+```
+
+![alt text](../Imágenes/exportllavefirm.png)
 
 * Tu te debes asegurar que tu clave pública es firmada por al menos tres 
   compañeros de la clase.
+
+Para importar las claves de mis compañeros, debo realizar lo siguiente:
+
+```
+gpg --import --import-options merge-only [clave_firmada]
+gpg --keyserver [servidor de claves] --send-keys [Mi Fingerprint]
+```
+
+![alt text](../Imágenes/importllave.png)
+
+![alt text](../Imágenes/subidallave.png)
+
+![alt text](../Imágenes/comprollavesfirm.png)
 
 * Una vez que firmes una clave se la tendrás que devolver a su dueño, para 
   que otra persona se la firme.
