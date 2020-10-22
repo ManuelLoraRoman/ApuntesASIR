@@ -52,10 +52,62 @@ Y procederemos a la instalación:
 
 ![alt text](../Imágenes/drupal2.png)
 
+Nos pedirá qué tipo de BBDD queremos utilizar, alguna que tengamos creada y un
+usuario de dicha base de datos.
+
+![alt text](../Imágenes/drupal3.png)
+
+Nos pedirá ahora rellenar diferentes campos con información:
+
+![alt text](../Imágenes/drupal4.png)
+
+Y así, ya tendriamos instalado Drupal.
+
+![alt text](../Imágenes/drupalfinal.png)
+
 * Realiza una configuración mínima de la aplicación (Cambia la plantilla, 
 crea algún contenido,…)
 
+Para quitar el !!!Warning que tenemos sobre las URLs limpias, debemos hacer:
+
+```
+sudo a2enmod rewrite
+```
+
+Y modificamos el fichero _.conf_ de nuestro VirtualHosting con las siguientes
+lineas:
+
+```
+<Directory /var/www/html>
+	AllowOverride All
+</Directory>
+```
+
+Y ya podriamos modificar nuestro sitio web con drupal.
+
+Primero, crearemos un articulo:
+
+![alt text](../Imágenes/articulodrupal.png)
+
+Ahora instalaremos un nuevo tema:
+
+![alt text](../Imágenes/temanuevodrupal.png)
+
+![alt text](../Imágenes/temanuevodrupal2.png)
+
+En la Pestaña _Apariencia --> Temas Desinstalados --> Adminimal ..._ le damos a
+instalar y después le damos a _Configurar como predeterminado_.
+
 * Instala un módulo para añadir alguna funcionalidad a drupal.
+
+Ahora instalaremos algún módulo:
+
+![alt text](../Imágenes/modulonuevodrupal.png)
+
+![alt text](../Imágenes/modulonuevodrupal2.png)
+
+Y nos iriamos a la Pestaña _Ampliar --> Listado --> Otros (en nuestro caso)_ y
+lo seleccionamos y le damos a _Instalar_. Y ya tendríamos el módulo activado.
 
 En este momento, muestra al profesor la aplicación funcionando en local. 
 Entrega un documentación resumida donde expliques los pasos fundamentales 
