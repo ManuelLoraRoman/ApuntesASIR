@@ -57,11 +57,25 @@ clase, para ello.
         
 * Tu clave pública debe estar en un servidor de claves
 
+Para exportar nuestra clave pública, seguiremos la [práctica anterior](https://github.com/ManuelLoraRoman/ApuntesASIR/blob/master/Seguridad%20y%20alta%20disponibilidad/Practicacifrado.md)
+
 * Escribe tu fingerprint en un papel y dárselo a tu compañero, para que puede 
   descargarse tu clave pública.
 
+Mi fingerprint es _BCB7E3294_.
+
 * Te debes bajar al menos tres claves públicas de compañeros. Firma estas 
   claves.
+
+Para bajarme las claves públicas de nuestros compañeros, ejecutaremos el 
+siguiente comando:
+
+```
+gpg --keyserver [servidor de claves] --recv-keys [Fingerprint]  
+
+gpg --keyserver pgp.rediris.es --recv-keys []
+```
+
 
 * Tu te debes asegurar que tu clave pública es firmada por al menos tres 
   compañeros de la clase.
