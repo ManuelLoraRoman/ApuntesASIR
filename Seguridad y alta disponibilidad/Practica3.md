@@ -12,7 +12,34 @@ ello te pueden ayudar los siguientes enlaces:
 **1.** Manda un documento y la firma electrónica del mismo a un compañero. 
 Verifica la firma que tu has recibido.
 
+Crearemos un documento llamado _doc_ y a continuación, lo firmaremos de la
+siguiente manera:
 
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --output doc.sig --sign doc
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ ls
+certificado.asc  doc  doc.sig  key.pem  key.public.pem
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ 
+```
+
+En nuestro caso, nos pide la contraseña para desbloquear la clave privada y
+poder firmar el documento. Le enviaremos dicho documento a nuestro compañero.
+También, nuestro compañero nos enviará un documento firmado por él.
+
+Para verificar la firma que hemos recibido, debemos realizar lo siguiente:
+
+```
+gpg --verify [documento].sig
+```
+
+Si por el contrario, queremos verificar la firma y extraer el documento, haremos
+esto otro:
+
+```
+gpg --output doc --decrypt doc.sig
+```
+
+![alt text](../Imágenes/Ej1firmaselec.png)
 
 **2.** ¿Qué significa el mensaje que aparece en el momento de verificar la 
 firma?
@@ -22,22 +49,31 @@ firma?
 > gpg:          No hay indicios de que la firma pertenezca al propietario.  
 > Huellas dactilares de la clave primaria: E8DD 5DA9 3B88 F08A DA1D  26BF 5141 3DDB 0C99 55FC  
 
+Significa que el propietario de la firma no está incluida en nuestro anillo de
+confianza.
+
 **3.** Vamos a crear un anillo de confianza entre los miembros de nuestra 
 clase, para ello.
         
 * Tu clave pública debe estar en un servidor de claves
+
 * Escribe tu fingerprint en un papel y dárselo a tu compañero, para que puede 
-descargarse tu clave pública.
+  descargarse tu clave pública.
+
 * Te debes bajar al menos tres claves públicas de compañeros. Firma estas 
-claves.
+  claves.
+
 * Tu te debes asegurar que tu clave pública es firmada por al menos tres 
-compañeros de la clase.
+  compañeros de la clase.
+
 * Una vez que firmes una clave se la tendrás que devolver a su dueño, para 
-que otra persona se la firme.
+  que otra persona se la firme.
+
 * Cuando tengas las tres firmas sube la clave al servidor de claves y 
-rellena tus datos en la tabla Claves públicas PGP 2020-2021
+  rellena tus datos en la tabla Claves públicas PGP 2020-2021
+
 * Asegurate que te vuelves a bajar las claves públicas de tus compañeros que 
-tengan las tres firmas.
+  tengan las tres firmas.
    
 **4.** Muestra las firmas que tiene tu clave pública.
 

@@ -15,6 +15,6 @@ haciendo.
 
 [2.1. Cifrado simétrico con gpg y openssl](./Cifradosimetrico.md)
 
-[2.2. Práctica: Cifrado asimétrico con gpg y openssl](./Practicacifrado.md)
+[2.2. Práctica 2: Cifrado asimétrico con gpg y openssl](./Practicacifrado.md)
 
 [2.3. Práctica 3: Integridad, firmas y autenticación](./Practica3.md)
