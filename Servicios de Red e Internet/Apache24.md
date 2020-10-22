@@ -39,5 +39,28 @@ Para activar la configuración de una página en concreto, debemos ejecutar:
 
 ```a2ensite [Nombre]```
 
-```a2ensite apache1```
+```a2ensite apache2```
+
+## Control de acceso Apache2
+
+* VirtualHosting por IP --> en el _Directory_ / _conf_ se incorpora la IP del 
+Servidor donde el puerto ( IP : Puerto) para acceder al Servidor por ese 
+puerto.
+
+* El parámetro _Require_ permite el acceso. Tiene varias opciones:
+
+1. _All granted_
+
+2. _All denied_
+
+3. _user ...._
+
+4. _group ...._
+
+5. _valid-user_
+
+6. _Ip_
+
+7. _Dominio_
+
 
