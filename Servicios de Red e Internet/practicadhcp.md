@@ -317,9 +317,73 @@ Aquí estaría el nuevo fichero [Vagrantfile](https://github.com/ManuelLoraRoman
 **Tarea 10**: Explica las modificaciones que has hecho en los distintos 
 ficheros de configuración. Entrega las comprobaciones necesarias de que 
 los dos ámbitos están funcionando.
-    
+
+En primer lugar, una vez ya modificado el Vagranfile, debemos hacer un 
+_vagrant reload_ y conectarnos al servidor una vez ya inicializado.
+
+Modificamos el archivo _/etc/default/isc-dhcp-server_ y añadiremos la nueva 
+interfaz:
+
+```
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACESv4="eth2 eth3"
+INTERFACESv6=""
+```
+
+Y volveremos a modificar el fichero _/etc/dhcp/dhcpd.conf_ y definimos el 
+_max-lease-time_ a 43200 y añadimos también lo siguiente:
+
+```
+option subnet-mask 255.255.255.0;
+option broadcast-address 192.168.200.255;
+option routers 192.168.200.2;
+option domain-name-servers 192.168.200.1;
+
+subnet 192.168.200.0 netmask 255.255.255.0 {
+  range 192.168.200.20 192.168.200.253;
+}
+```
+
+Quedando el fichero completo así:
+
+```
+option domain-name "example.org";
+option domain-name-servers ns1.example.org, ns2.example.org;
+
+default-lease-time 600;
+max-lease-time 43200;
+
+ddns-update-style none;
+
+option subnet-mask 255.255.255.0;
+option broadcast-address 192.168.100.255;
+option routers 192.168.100.2;
+option domain-name-servers 192.168.100.1;
+
+subnet 192.168.100.0 netmask 255.255.255.0 {
+  range 192.168.100.20 192.168.100.253;
+}
+
+option subnet-mask 255.255.255.0;
+option broadcast-address 192.168.200.255;
+option routers 192.168.200.2;
+option domain-name-servers 192.168.200.1;
+
+subnet 192.168.200.0 netmask 255.255.255.0 {
+  range 192.168.200.20 192.168.200.253;
+}
+```
+
+Reiniciamos el servicio y en el nodolan2 realizamos una petición dhcp en la que 
+obtendremos la siguiente ip:
+
+![alt text](../Imágenes/concesionipnodolan2.png)
+
 **Tarea 11**: Realiza las modificaciones necesarias para que los cliente de 
 la segunda red local tengan acceso a internet. Entrega las comprobaciones 
 necesarias.
 
+Ya hecho en el apartado anterior.
 
+![alt text](../Imágenes/pingnodolan2.png)
