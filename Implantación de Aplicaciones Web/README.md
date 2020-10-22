@@ -8,7 +8,7 @@ Apuntes y prácticas de esta asignatura.
 
 [2.1. Práctica: Implantación y despliegue de una aplicación web estática](./Prácticaimplantaciondespliegue.md)
 
-[2.2. Script Práctica Web Estática](./Scriptintcont.sh)
+[2.2. Script Práctica Web Estática](./ScriptIntcont.sh)
 
 [3. Instalación de LAMP en Debian 10](./LAMP.md)
 
