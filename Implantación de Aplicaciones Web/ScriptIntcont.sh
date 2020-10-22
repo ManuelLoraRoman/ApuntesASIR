@@ -49,9 +49,11 @@ then
 
 	if [ $respuesta="S" ]
 	then
+		rm -r build
 		npm run build
 	else
 		echo -e "No se actualizará el directorio"
+	fi
 else
 	npm run build
 fi
@@ -62,7 +64,13 @@ if [ -f CNAME ]
 then
 	echo -e "El fichero CNAME ya existe, por lo tanto se procederá al despliegue"
 else
-	echo "$pagina.surge.sh" > CNAME
+	surge=".surge.sh"
+	cname=$pagina$surge
+	echo "$cname" > CNAME
 fi
 
-surge
+surge ./
+
+cd ..
+
+
