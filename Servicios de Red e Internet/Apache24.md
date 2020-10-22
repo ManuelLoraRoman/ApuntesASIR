@@ -53,14 +53,28 @@ puerto.
 
 2. _All denied_
 
-3. _user ...._
-
-4. _group ...._
-
-5. _valid-user_
+------ AUTENTIFICACIÓN
+|
+|3. _user ...._
+|
+|4. _group ...._ ====> crear el fichero de grupos:
+|			NombreGrupo: usuario1 usuario2 ...
+|
+|5. _valid-user_ ====> crear el fichero de usuarios:
+|                    ```htpasswd [-c] /etc/apache2/claves/passwd.txt dominio usuario1```
+------
 
 6. _Ip_
 
 7. _Dominio_
 
 
+## Autentificación Digest
+
+```htdigest [-c] /etc/apache2/claves/digest.txt```
+
+## .htaccess
+
+La opción _AllowOverride_ permite el uso de ficheros _.htaccess_.
+
+El _.htaccess_ funcionará dentro de su directorio y sus subdirectorios.
