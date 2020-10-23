@@ -109,7 +109,105 @@ Ahora instalaremos algún módulo:
 Y nos iriamos a la Pestaña _Ampliar --> Listado --> Otros (en nuestro caso)_ y
 lo seleccionamos y le damos a _Instalar_. Y ya tendríamos el módulo activado.
 
-En este momento, muestra al profesor la aplicación funcionando en local. 
-Entrega un documentación resumida donde expliques los pasos fundamentales 
-para realizar esta tarea.
+## Tarea 3: Configuración multinodo
+
+* Realiza un copia de seguridad de la base de datos.
+
+Ya una vez tenemos Drupal funcionando, vamos a proceder a hacer una copia de
+seguridad de la BBDD. 
+
+```
+sudo mysqldump [nombre_BD] > [nombre_BD].sql
+```
+
+![alt text](../Imágenes/respaldoBD.png)
+
+* Crea otra máquina con vagrant, conectada con una red interna a la anterior 
+y configura un servidor de base de datos. Crea un usuario en la base de datos 
+para trabajar con la nueva base de datos.
+
+Ahora crearemos otro máquina Vagrant. 
+
+```
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "debian/buster64"
+  config.vm.network :public_network, :bridge =>"wlp2s0"
+  config.vm.network :private_network, ip:"192.168.100.5",
+	virtualbox__intnet: "redinterna3"
+end
+```
+E instalaremos MariaDB:
+
+```
+apt-get install mariadb-client mariadb-server
+```
+
+Y transferiremos mediante scp el backup de la BBD a la nueva máquina.
+
+* Restaura la copia de seguridad en el nuevo servidor de base datos.
+
+Una vez 
+tengamos eso hecho, haremos lo siguiente en la terminal de MySQL:
+
+```
+create database newdb;
+grant usage on newdb.* to manuel@localhost identified by 1q2w3e4r5t;
+grant all privileges on newdb.* to manuel@localhost;
+flush privileges;
+```
+Y una vez hecho esto, haremos _mysql newdb > newdb.sql_.
+
+* Desinstala el servidor de base de datos en el servidor principal.
+
+Para eliminar la base de datos del servidor principal, únicamente debemos hacer:
+
+```
+DROP DATABASE newdb;
+```
+
+* Realiza los cambios de configuración necesario en drupal para que 
+la página funcione.
+
+Para que nuestra BBDD funcione, debemos escribir el siguiente fichero:
+
+```
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cn
+
+Y modificar lo siguiente:
+
+bind-address = 0.0.0.0
+```
+
+Esto le indicará que puede recibir conexiones de cualquier dirección IP.
+
+A continuación en drupal, debemos dirigirnos hacia la ruta donde tengamos
+drupal. En nuestro caso, _/var/www/html/manuelloraroman-drupal/drupal-9.0.7/sites/default/_
+y modificar el fichero _settings.php_.
+
+Debemos encontrarnos con algo parecido a esto (cambiar con nuestros datos):
+
+```
+$databases['default']['default'] = array (
+ 'database' => 'newdb',
+ 'username' => 'manuel',
+ 'password' => '1q2w3e4r5t',
+ 'prefix' => '',
+ 'host' => '192.168.100.6',
+ 'port' => '3306',
+ 'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+ 'driver' => 'mysql',
+);
+```
+
+Y reiniciamos el servicio de MariaDB y Apache. Cuando accedamos, lo tendremos
+operativo y sin ningún cambio.
+
+## Tarea 4: Instalación de otro CMS PHP
+
+* Elige otro CMS realizado en PHP y realiza la instalación en tu 
+infraestructura.
+
+* Configura otro virtualhost y elige otro nombre en el mismo dominio.
+
 
