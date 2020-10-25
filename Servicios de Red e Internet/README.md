@@ -23,3 +23,9 @@
 [5.1. Ejercicio 3: VirtualHosting con Apache](./VirtualHosting.md)
 
 [5.2. Ejercicio 4: Mapear URL a ubicaciones de un sistema de ficheros](./EjercicioMapeo.md)
+
+[5.3. Ejercicio 5: Control de acceso, autentificación y autorización](./Ejerciciocontrol.md)
+
+[5.4. Ejercicio 6: Configuración de apache mediante archivo .htaccess](./Ejerciciohtaccess.md)
+
+
