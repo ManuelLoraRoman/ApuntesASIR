@@ -1,0 +1,109 @@
+
+CREATE TABLE socios(
+
+  DNI VARCHAR2(10) NOT NULL,
+  Nombre VARCHAR2(20) NOT NULL,
+  Direccion VARCHAR2(20),
+  Penalizaciones NUMBER(2) DEFAULT 0,
+  CONSTRAINT PK_DNI PRIMARY KEY(DNI)
+);
+
+CREATE TABLE libros(
+
+  RefLibro VARCHAR2(10) NOT NULL,
+  Nombre VARCHAR2(30) NOT NULL,
+  Autor VARCHAR2(20) NOT NULL,
+  Genero VARCHAR2(10),
+  AnyoPublicacion NUMBER(4),
+  Editorial VARCHAR2(10),
+  CONSTRAINT PK_RefLibro PRIMARY KEY(RefLibro)
+);
+
+CREATE TABLE prestamos(
+
+  DNI VARCHAR2(10) NOT NULL,
+  RefLibro VARCHAR2(10) NOT NULL,
+  FechaPrestamo DATE NOT NULL,
+  Duracion NUMBER(2) DEFAULT 24,
+  CONSTRAINT PK_TODAS PRIMARY KEY(DNI, RefLibro, FechaPrestamo),
+  CONSTRAINT FK_DNI FOREIGN KEY (DNI) REFERENCES socios(DNI),
+  CONSTRAINT FK_RefLibro FOREIGN KEY (RefLibro) REFERENCES libros(RefLibro)
+);
+
+CREATE OR REPLACE PROCEDURE listadocuatromasprestados
+IS
+    cursor c_ref
+    IS
+        SELECT RefLibro
+        FROM libros;
+BEGIN
+      for v_ref in c_ref loop
+        contarprestamos(v_ref);
+        prestamosocio(v_ref);
+      end loop;
+
+END listadocuatromasprestados;
+
+CREATE OR REPLACE PROCEDURE contarprestamos(p_RefLibro libros.RefLibro%TYPE)
+IS
+      v_nombrelibro libros.Nombre%TYPE;
+      v_prestamos NUMBER;
+      v_genero libros.Genero%TYPE;
+BEGIN
+      SELECT Nombre INTO v_nombrelibro, COUNT(p_RefLibro) INTO v_prestamos, Genero INTO v_genero
+      FROM libros
+      WHERE RefLibro = p_RefLibro;
+
+      dbms_output.put_line(v_nombrelibro || "      " || v_prestamos || "      " || v_genero);
+END contarprestamos;
+
+CREATE OR REPLACE PROCEDURE prestamosocio(p_RefLibro libros.RefLibro%TYPE)
+IS
+      v_dni   prestamos.DNI%TYPE;
+      v_fecha prestamos.FechaPrestamo%TYPE;
+BEGIN
+      SELECT DNI INTO v_dni, FechaPrestamo INTO v_fecha
+      FROM prestamos
+      WHERE RefLibro = p_RefLibro;
+
+      dbms_output.put_line(v_dni || "        " || v_fecha);
+END prestamosocio;
+
+CREATE OR REPLACE PROCEDURE comprobar_excepciones ()
+IS
+      v_numlibros           NUMBER;
+      v_numsocios           NUMBER;
+      v_numlibrosdistintos  NUMBER;
+
+      e_libros_vacios   EXCEPTION;
+      e_socios_vacios   EXCEPTION;
+      e_libros_menor_4  EXCEPTION;
+
+BEGIN
+      SELECT COUNT(*) INTO v_numlibros FROM libros;
+      SELECT COUNT(*) INTO v_numsocios FROM socios;
+      SELECT COUNT(DISTINCT RefLibro) INTO v_numlibrosdistintos FROM libros;
+
+      IF v_numlibros=0 THEN
+              RAISE e_libros_vacios;
+      ELSE IF v_numlibrosdistintos < 4 THEN
+              RAISE e_libros_menor_4;
+      END IF;
+
+      IF v_numsocios=0 THEN
+              RAISE e_socios_vacios;
+      END IF;
+EXCEPTION
+
+      WHEN e_libros_vacios THEN
+              dbms_output.put_line('La tabla libros está vacía.');
+              RAISE;
+
+      WHEN e_socios_vacios THEN
+              dbms_output.put_line('La tabla socios está vacía.');
+              RAISE;
+
+      WHEN e_libros_menor_4 THEN
+              dbms_output.put_line('Hay menos de 4 libros prestados.');
+              RAISE;
+END comprobar_excepciones;

@@ -1,0 +1,134 @@
+
+DROP TABLE productos CASCADE CONSTRAINTS;
+
+CREATE TABLE productos
+(
+	CodProducto 		VARCHAR2(10) CONSTRAINT p_cod_no_nulo NOT NULL,
+	Nombre    			VARCHAR2(20) CONSTRAINT p_nom_no_nulo NOT NULL,
+	LineaProducto		VARCHAR2(10),
+	PrecioUnitario	NUMBER(6),
+	Stock 					NUMBER(5),
+	PRIMARY KEY (CodProducto)
+);
+
+DROP TABLE ventas CASCADE CONSTRAINTS;
+
+CREATE TABLE ventas
+(
+	CodVenta  				VARCHAR2(10) CONSTRAINT cod_no_nula NOT NULL,
+	CodProducto 			VARCHAR2(10) CONSTRAINT pro_no_nulo NOT NULL,
+	FechaVenta 				DATE,
+	UnidadesVendidas	NUMBER(3),
+	PRIMARY KEY (CodVenta)
+);
+
+INSERT INTO productos VALUES ('1','Procesador P133', 'Proc',15000,20);
+INSERT INTO productos VALUES ('2','Placa base VX',   'PB',  18000,15);
+INSERT INTO productos VALUES ('3','Simm EDO 16Mb',   'Memo', 7000,30);
+INSERT INTO productos VALUES ('4','Disco SCSI 4Gb',  'Disc',38000, 5);
+INSERT INTO productos VALUES ('5','Procesador K6-2', 'Proc',18500,10);
+INSERT INTO productos VALUES ('6','Disco IDE 2.5Gb', 'Disc',20000,25);
+INSERT INTO productos VALUES ('7','Procesador MMX',  'Proc',15000, 5);
+INSERT INTO productos VALUES ('8','Placa Base Atlas','PB',  12000, 3);
+INSERT INTO productos VALUES ('9','DIMM SDRAM 32Mb', 'Memo',17000,12);
+
+INSERT INTO ventas VALUES('V1', '2', '22/09/97',2);
+INSERT INTO ventas VALUES('V2', '4', '22/09/97',1);
+INSERT INTO ventas VALUES('V3', '6', '23/09/97',3);
+INSERT INTO ventas VALUES('V4', '5', '26/09/97',5);
+INSERT INTO ventas VALUES('V5', '9', '28/09/97',3);
+INSERT INTO ventas VALUES('V6', '4', '28/09/97',1);
+INSERT INTO ventas VALUES('V7', '6', '02/10/97',2);
+INSERT INTO ventas VALUES('V8', '6', '02/10/97',1);
+INSERT INTO ventas VALUES('V9', '2', '04/10/97',4);
+INSERT INTO ventas VALUES('V10','9', '04/10/97',4);
+INSERT INTO ventas VALUES('V11','6', '05/10/97',2);
+INSERT INTO ventas VALUES('V12','7', '07/10/97',1);
+INSERT INTO ventas VALUES('V13','4', '10/10/97',3);
+INSERT INTO ventas VALUES('V14','4', '16/10/97',2);
+INSERT INTO ventas VALUES('V15','3', '18/10/97',3);
+INSERT INTO ventas VALUES('V16','4', '18/10/97',5);
+INSERT INTO ventas VALUES('V17','6', '22/10/97',2);
+INSERT INTO ventas VALUES('V18','6', '02/11/97',2);
+INSERT INTO ventas VALUES('V19','2', '04/11/97',3);
+INSERT INTO ventas VALUES('V20','9', '04/12/97',3);
+
+a)
+
+CREATE OR REPLACE PROCEDURE actualizar_stock
+IS
+				cursor c_ventas is
+							SELECT CodProducto, SUM(UnidadesVendidas) AS TOTAL
+							FROM Ventas
+							GROUP BY CodProducto;
+
+							v_ventas c_ventas%ROWTYPE;
+							ind_ventas 				NUMBER:=0;
+							num_productos 		NUMBER:=0;
+
+							e_nohayproductos	EXCEPTION;
+
+BEGIN
+
+				SELECT COUNT(*) INTO num_productos FROM productos;
+
+				IF (num_productos=0) THEN
+							RAISE e_nohayproductos;
+
+				END IF;
+
+				OPEN c_ventas;
+				FETCH c_ventas INTO v_ventas;
+				WHILE c_ventas%FOUND LOOP
+									tratar_productos(v_ventas.CodProducto, v_ventas.TOTAL);
+									FETCH c_ventas INTO v_ventas;
+									ind_ventas:=1;
+				END LOOP;
+				CLOSE c_ventas;
+
+				IF (ind_ventas=0) THEN
+								dbms_output.put_line('La tabla ventas está vacía');
+				END IF;
+
+EXCEPTION
+				WHEN e_nohayproductos THEN
+								dbms_output.put_line('La tabla productos está vacía');
+								RAISE;
+END actualizar_stock;
+
+CREATE OR REPLACE PROCEDURE tratar_productos (Cod productos.CodProducto%TYPE, TOTAL NUMBER)
+IS
+			stock_antiguo				NUMBER;
+			stock_nuevo					NUMBER;
+			e_stock_negativo		EXCEPTION;
+
+BEGIN
+
+			SELECT Stock INTO stock_antiguo
+			FROM productos
+			WHERE CodProducto=Cod;
+
+			stock_nuevo:=stock_antiguo - TOTAL;
+
+			IF stock_nuevo < 0) THEN
+						RAISE e_stock_negativo;
+			END IF;
+
+			UPDATE productos
+			SET Stock = stock_nuevo
+			WHERE CodProducto = Cod;
+
+EXCEPTION
+
+			WHEN e_stock_negativo THEN
+								dbms_output.put_line('Error de stock negativo en producto' || cod);
+								RAISE;
+
+END tratar_productos;
+
+b) 
+
+CREATE OR REPLACE PROCEDURE formato ()
+IS
+BEGIN
+END formato;

@@ -1,0 +1,102 @@
+
+--Ejercicio 3
+
+--Haz un trigger que solo permita a los vendedores tener comisiones.
+
+CREATE OR REPLACE TRIGGER solovendedores
+BEFORE INSERT OR UPDATE ON emp
+FOR EACH ROW
+BEGIN
+	IF :new.job!= 'SALESMAN' AND :new.comm IS NOT NULL THEN
+		raise_application_error(-20002,'Solo los vendedores tienen permitido tener comisiones');
+	END IF;
+END solovendedores;
+
+--Ejercicio 4
+
+--Registrar todas las operaciones sobre la tabla EMP de SCOTT en una
+--tabla llamada AUDIT_EMP donde se guarde usuario, fecha y tipo de
+--operación.
+
+CREATE TABLE audit_emp
+(
+	Usuario		Varchar2(20),
+	Fecha		  Date,
+	Tipo		  Varchar2(20)
+);
+
+CREATE OR REPLACE TRIGGER auditoriaemp
+AFTER INSERT OR UPDATE OR DELETE ON emp
+DLECARE
+	       v_operacion VARCHAR2(6);
+BEGIN
+	IF INSERTING THEN
+		  v_operacion:='INSERT'
+	END IF;
+	IF UPDATING THEN
+		  v_operacion:='UPDATE'
+	END IF;
+	IF DELETING THEN
+		  v_operacion:='DELETE'
+	END IF;
+	INSERT INTO audit_emp
+	VALUES(user, sysdate, v_operacion);
+END auditoriaemp;
+
+--Ejercicio 5
+
+--Haz un trigger que controle si los sueldos están en los siguientes
+--rangos:
+
+--CLERK: 800 – 1100
+--ANALYST: 1200 – 1600
+--MANAGER:1800 – 2000
+
+--Si un empleado tiene otros a su cargo o su oficio no es uno de
+--los anteriores, no se aplican los límites.
+
+CREATE OR REPLACE TRIGGER controlrangosueldos
+BEFORE INSERT OR UPDATE ON emp
+FOR EACH ROW
+BEGIN
+	CASE :new.job
+		WHEN 'CLERK' THEN
+			IF :new.sal<800 or :new.sal>1100 THEN
+				raise_application_error(-20001,'Un conserje no puede tener ese sueldo');
+			END IF;
+		WHEN 'ANALYST' THEN
+			IF :new.sal<1200 OR :new.sal>1600 THEN
+				raise_application_error(-20002,'Un analista no puede tener ese sueldo');
+			END IF;
+		WHEN 'MANAGER' THEN
+			IF :new.sal<1800 OR :new.sal>2000 THEN
+				raise_application_error(-20003,'Un manager no puede tener ese sueldo');
+			END IF;
+	END CASE;
+END controlrangosueldos;
+
+--Ejercicio 6
+
+--Haz un trigger que impida al usuario MANOLO que cambie el sueldo
+--de los empleados que trabajan en DALLAS.
+
+CREATE OR REPLACE TRIGGER noManolo
+BEFORE UPDATE OF SAL ON emp
+FOR EACH ROW
+DECLARE
+	 v_loc dept.loc%TYPE;
+BEGIN
+	SELECT loc INTO v_loc
+	FROM dept
+	WHERE deptno=:old.deptno;
+
+	IF v_loc = 'DALLAS' AND user = 'MANOLO' THEN
+		raise_application_error(-20004, 'Manolo, estate quieto');
+	END IF;
+
+END noManolo;
+
+--Ejercicio 7
+
+--Haz un trigger que le suba un 10% el sueldo a los empleados cuando
+--cambia la localidad donde trabajan.
