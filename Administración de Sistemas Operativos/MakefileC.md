@@ -20,3 +20,7 @@ amd64:
 ```
 https://packages.debian.org/buster/git
 ```
+
+Y lo enviaremos a la ubicación _/usr/local/_ para poder trabajar con ella
+de manera segura.
+
