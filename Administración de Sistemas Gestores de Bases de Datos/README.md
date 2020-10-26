@@ -11,4 +11,4 @@ Apuntes, boletines y prácticas de BBDD.
 
 [2.2. Ejercicio 2: Boletin 1](./Ejercicio_2)
 
-[2.3. Ejercicios Varios: Boletin 1](./Ejercicios Varios)
+[2.3. Ejercicios Varios: Boletin 1](./Ejercicios\ Varios)
