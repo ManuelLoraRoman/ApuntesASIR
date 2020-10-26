@@ -210,4 +210,79 @@ infraestructura.
 
 * Configura otro virtualhost y elige otro nombre en el mismo dominio.
 
+En primer lugar, hemos elegido el CMS de Joomla.
+
+Primero, para instalarlo, debemos descargarlo desde su página web:
+
+```
+wget -q https://downloads.joomla.org/cms/joomla3/3-9-20/Joomla_3-9-20-Stable-Full_Package.tar.bz2
+```
+
+A continuación, nos dirigiremos hacia el directorio _/var/www/html_ y crearemos
+un directorio llamado _joomla_ donde descomprimiremos el paquete descargado.
+
+```
+sudo tar xf Joomla_3-9-20-Stable-Full_Package.tar.bz2 -C /var/www/html/joomla/
+```
+
+El directorio joomla contiene un fichero llamado htaccess.txt cuyo nombre
+deberemos cambiar por:
+
+```
+sudo mv /var/www/html/joomla/htaccess.txt /var/www/html/joomla/.htaccess
+```
+
+Y como joomla necesitará editar su propio directorio, le otorgaremos propiedad
+de dicho directorio:
+
+```
+sudo chown -R www-data: /var/www/html/joomla/
+```
+
+Ahora, crearemos un nueva configuración de apache2 e introduciremos este 
+contenido dentro:
+
+```
+<Directory /var/www/html/joomla>
+    AllowOverride All
+    php_value output_buffering "0"
+</Directory>
+```
+
+Activamos dicha configuración y el módulo _rewrite_, reiniciamos el servicio.
+
+Joomla requiere la presencia de algunas extensiones de php:
+
+```
+sudo apt install -y php-xml php-zip php-mysql
+```
+
+Una vez instalados, reiniciamos el servicio.
+
+Y ahora procederemos a la instalación de joomla.
+
+![alt text](../Imágenes/iniciojoomla.png)
+
+La primera pantalla nos pedirá completar información trivial sobre el sitio web.
+
+Ahora nos pedirá completar información sobre la base de datos, la cual iremos
+completando con el nombre de la BBDD, usuario y contraseña creados 
+anteriormente en el LAMP:
+
+![alt text](../Imágenes/bbddjoomla.png)
+
+Y el siguiente paso, se ultima los aspectos finales de la instalación que
+rellenaremos según el gusto:
+
+![alt text](../Imágenes/pasofinaljoomla.png)
+
+En nuestro caso, hemos instalado los datos de ejemplo, no queremos que nos
+envien correos una vez terminado la instalación y al final aparece un resumen
+de la instalación.
+
+Una vez instalado, nos aparecerá lo siguiente:
+
+![alt text](../Imágenes/finaljoomla.png)
+
+Para continuar con Joomla, es necesario eliminar el directorio _installation._
 

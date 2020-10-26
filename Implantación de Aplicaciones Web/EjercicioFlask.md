@@ -15,13 +15,16 @@ Si se podría usando por ejemplo el siguiente comando:
 
 ```sudo apt-get -y install $(cat requirements.apt)```
 
+Pero no es recomendable ya que dichos paquetes se instalarían según la versión
+más reciente, pero no la versión del _pip freeze_.
+
 * ¿Sería buena idea instalar como root estos paquetes en el sistema con pip?
 
-Como root no, mejor hacerlo con sudo.
+No, ya que todo se hace desde el usuario
 
 * ¿Cómo sería la mejor manera de instalar estos paquetes?
 
-Si es en un entorno virtual si.
+```pip install -r requirements.txt```
 
 ## Trabajamos con entornos virtualesPermalink
 
