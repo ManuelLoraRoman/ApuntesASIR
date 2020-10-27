@@ -220,19 +220,206 @@ anfitriona por la red pública. A la URL departamentos.iesgn.org/internet,
 sin embargo, sólo se debe tener acceso desde la anfitriona por la red pública, 
 y no desde la red local.
 
+En la configuración del VirtualHost _/etc/apache2/sites-avalaible/departamentos.conf_
+añadimos las siguientes líneas:
 
-    
+```
+<Directory /var/www/departamentos/internet/>
+                Options Indexes FollowSymLinks MultiViews
+                <RequireAll>
+                        Require not ip 192.168.100
+                        Require all granted
+                </RequireAll>
+</Directory>
+```
+
+Esto hará que solo sea posible acceder a dicho directorio a través de una
+dirección IP que esté fuera de nuestra red local.
+
+Y también, añadiremos lo siguiente:
+
+```
+<Directory /var/www/departamentos/intranet/>
+                Options Indexes FollowSymLinks MultiViews
+                <RequireAll>
+                        Require ip 192.168.100
+                        Require all granted
+                </RequireAll>
+</Directory>
+```
+
+Esta configuración permite solo a las Ips de la red local entrar a dicho
+directorio.
+
+Acto seguido, nos dirigiremos tanto al cliente como a la máquina anfitriona
+y modificaremos el fichero /etc/hosts_, añadiendo:
+
+**En el cliente:**
+
+```192.168.100.4   www.departamentos.iesgn.org```
+
+**En la máquina:**
+
+```192.168.0.101   www.departamentos.iesgn.org```
+
+Ahora para comprobar que funciona, vamos a dirigirnos a nuestra máquina e
+intentaremos acceder a _intranet_:
+
+![alt text](../Imágenes/compintranet.png)
+
+Pero sin embargo, podemos acceder a _internet_:
+
+![alt text](../Imágenes/compinternet.png)
+
+Y ahora comprobaremos en el cliente:
+
+![alt text](../Imágenes/compintranet2.png)
+
+![alt text](../Imágenes/compinternet2.png)
+
 **Tarea 2.** Autentificación básica. Limita el acceso a la URL 
 _departamentos.iesgn.org/secreto__. Comprueba las cabeceras de los mensajes 
 HTTP que se intercambian entre el servidor y el cliente. ¿Cómo se manda la 
 contraseña entre el cliente y el servidor?. Entrega una breve explicación del 
 ejercicio.
-    
+
+Crearemos el directorio secreto en primer lugar. Después crearemos en 
+_/etc/apache2_ un directorio llamado login por ejemplo y una vez allí,
+ejecutamos la siguiente instrucción:
+
+```
+htpasswd -c /etc/apache2/login/pass.txt root
+```
+
+Así crearemos las credenciales para root. Y ahora modificaremos de nuevo la 
+configuración del VirtualHost:
+
+```
+<Directory /var/www/departamentos/secreto> 
+                Options Indexes FollowSymLinks MultiViews
+                AuthType Basic
+                AuthName "Introduzca sus datos"
+                AuthUserFile "/etc/apache2/login/pass.txt"
+                Require valid-user
+</Directory>
+```
+
+Reiniciamos apache2 y desde nuestra máquina física, accedemos al directorio
+_secreto_:
+
+![alt text](../Imágenes/validuser.png)
+
+Introducimos los datos y accedemos sin problema:
+
+![alt text](../Imágenes/validuser2.png)
+
+Y desde el cliente, haremos lo siguiente:
+
+```
+vagrant@Cliente:~$ curl -i 'www.departamentos.iesgn.org/secreto'
+HTTP/1.1 401 Unauthorized
+Date: Tue, 27 Oct 2020 19:24:57 GMT
+Server: Apache/2.4.38 (Debian)
+WWW-Authenticate: Basic realm="Introduzca sus datos"
+Content-Length: 474
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>401 Unauthorized</title>
+</head><body>
+<h1>Unauthorized</h1>
+<p>This server could not verify that you
+are authorized to access the document
+requested.  Either you supplied the wrong
+credentials (e.g., bad password), or your
+browser doesn't understand how to supply
+the credentials required.</p>
+<hr>
+<address>Apache/2.4.38 (Debian) Server at www.departamentos.iesgn.org Port 80</address>
+</body></html>
+vagrant@Cliente:~$ 
+```
+
+La contraseña entre el servidor y el cliente se envía encriptada en Base64.
+
 **Tarea 3.** Cómo hemos visto la autentificación básica no es segura, modifica 
 la autentificación para que sea del tipo digest, y sólo sea accesible a los 
 usuarios pertenecientes al grupo directivos. Comprueba las cabeceras de los 
 mensajes HTTP que se intercambian entre el servidor y el cliente. ¿Cómo 
 funciona esta autentificación?
+
+Primero, activaremos el módulo:
+
+```
+sudo a2enmod auth_digest
+```
+
+Y modificamos lo añadido en el anterior ejercicio en la configuración del
+VirtualHost:
+
+```
+<Directory /var/www/departamentos/secreto>
+                Options Indexes FollowSymLinks MultiViews
+                AuthType Digest
+                AuthName "directivos"
+                AuthUserFile "/etc/apache2/login/pass.txt"
+                Require valid-user
+</Directory>
+```
+
+Y añadiremos dos usuarios, uno que tenga acceso y otro que no:
+
+```
+vagrant@Servidor:/etc/apache2/sites-available$ sudo htdigest -c /etc/apache2/login/pass.txt directivos lora
+Adding password for lora in realm directivos.
+New password: 
+Re-type new password: 
+vagrant@Servidor:/etc/apache2/sites-available$ sudo htdigest -c /etc/apache2/login/pass.txt sinacceso manuel
+Adding password for manuel in realm sinacceso.
+New password: 
+Re-type new password: 
+```
+
+Y reiniciamos el servicio apache otra vez y comprobamos que lora tiene acceso
+mientras que manuel no.
+
+![alt text](../Imágenes/lorasi.png)
+
+![alt text](../Imágenes/lorasi2.png)
+
+![alt text](../Imágenes/manuelno.png)
+
+![alt text](../Imágenes/manuelno2.png)
+
+**En el cliente:**
+
+```
+vagrant@Cliente:~$ curl -i 'www.departamentos.iesgn.org/secreto'
+HTTP/1.1 401 Unauthorized
+Date: Tue, 27 Oct 2020 19:43:58 GMT
+Server: Apache/2.4.38 (Debian)
+WWW-Authenticate: Digest realm="directivos", nonce="useYRKyyBQA=92998a743c2095b7718b7e55196aaab8db70f099", algorithm=MD5, qop="auth"
+Content-Length: 474
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>401 Unauthorized</title>
+</head><body>
+<h1>Unauthorized</h1>
+<p>This server could not verify that you
+are authorized to access the document
+requested.  Either you supplied the wrong
+credentials (e.g., bad password), or your
+browser doesn't understand how to supply
+the credentials required.</p>
+<hr>
+<address>Apache/2.4.38 (Debian) Server at www.departamentos.iesgn.org Port 80</address>
+</body></html>
+```
+
+Con Digest ahora las credenciales están cifradas en MD5.
 
 **Tarea 4.** Vamos a combinar el control de acceso (tarea 6) y la 
 autentificación (tareas 7 y 8), y vamos a configurar el virtual host para que 
@@ -241,3 +428,28 @@ _departamentos.iesgn.org/secreto_ se hace forma directa desde la intranet,
 desde la red pública te pide la autentificación. 
 Muestra el resultado al profesor.
 
+Para ello, cambiaremos la configuración de _/secreto/_ a la siguiente:
+
+```
+<Directory /var/www/departamentos/secreto>
+                Options Indexes FollowSymLinks MultiViews
+                AuthType Digest
+                AuthName "directivos"
+                AuthUserFile "/etc/apache2/login/pass.txt"
+                <RequireAny>
+                        Require ip 192.168.100
+			Require valid-user
+                </RequireAny>
+</Directory>
+```
+
+Y reiniciamos apache2 otra vez. Ahora con las comprobaciones:
+
+Primero vamos a comprobar que desde nuestra máquina física, nos pedirá
+autentificación:
+
+![alt text](../Imágenes/digestip.png)
+
+Y ahora en el cliente, no nos pedirá confirmación ninguna:
+
+![alt text](../Imágenes/digestip2.png)
