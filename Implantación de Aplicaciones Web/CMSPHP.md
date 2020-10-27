@@ -286,3 +286,49 @@ Una vez instalado, nos aparecerá lo siguiente:
 
 Para continuar con Joomla, es necesario eliminar el directorio _installation._
 
+Y ya estaría finalizado la instalación de Joomla.
+
+![alt text](../Imágenes/inicioJoomla.png)
+
+## Tarea 5: Necesidad de otros servicios
+
+* La mayoría de los CMS tienen la posibilidad de mandar correos electrónicos 
+(por ejemplo para notificar una nueva versión, notificar un comentario,…)
+
+* Instala un servidor de correo electrónico en tu servidor. debes configurar 
+un servidor relay de correo, para ello en el fichero /etc/postfix/main.cf, 
+debes poner la siguiente línea:
+
+``` relayhost = babuino-smtp.gonzalonazareno.org```
+
+* Configura alguno de los CMS para utilizar tu servidor de correo y realiza 
+una prueba de funcionamiento.
+
+En primer lugar, vamos a instalarnos el paquete mailutils y a continuación,
+el paquete postfix.
+
+En la instalación de _Postfix_, nos pedirá que elijamos una de 4 opciones. 
+En nuestro caso, vamos a decirle local y después, nos pedirá un nombre de
+dominio. 
+
+Una vez hecho esto, modificaremos el fichero _/etc/postfix/main.cf_ para
+introducir el _relayhost y las interfaces:
+
+```
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = Servidor.example.org
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = $myhostname, Servidor, localhost.localdomain, localhost
+relayhost = babuino-smtp.gonzalonazareno.org
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_command = procmail -a "$EXTENSION"
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all to inet_iterfaces = loopback-only
+default_transport = error
+relay_transport = error
+inet_protocols = all
+```
+
+Y reiniciamos el servicio.
