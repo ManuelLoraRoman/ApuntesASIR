@@ -45,7 +45,25 @@ instalaría git en nuestro propio directorio _~/bin/_. Bien, si queremos
 realizar otro tipo de instalación, debemos hacer lo siguiente:
 
 ```
-make prefix=/usr/local all doc info --> si lo hacemos desde nuestro usuario
-make prefix=/usr/local install install-doc install-html install-info --> si lo
-hacemos desde root
+make prefix=/usr/local all doc info --> lo hacemos desde nuestro usuario
+make prefix=/usr/local install install-doc install-html install-info --> lo hacemos desde root
 ```
+
+Si queremos modificar las rutas de instalación de git, podemos usar el script
+de autoconfiguración o seguir los siguientes comandos:
+
+```
+make configure --> usuario
+./configure --prefix=/usr/local --> usuario
+make all doc --> usuario
+make install install-doc install-html --> root
+```
+
+Por otro lado, podemos sacrificar mucho más tiempo de compilación a cambio de
+un _git_ más rápido si hacemos:
+
+```
+make prefix=/usr/local profile
+make prefix=/usr/local PROFILE=BUILD install
+```
+
