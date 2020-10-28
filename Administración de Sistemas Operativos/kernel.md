@@ -87,3 +87,25 @@ Recompila los módulos cada vez que se instala un nuevo núcleo.
 ## Configuración y compilación del kernel Linux
 
 
+En primer lugar, buscaremos si tenemos _linux-source_ con y procedemos:
+
+```
+apt search linux-source=.... build-essential qtbase5-dev (instalación de un
+							  gestor visual según el
+							  paquete de linux-source)
+uname -r
+
+```
+
+Es recomendable hacerlo todo en un directorio cuyo propietario no sea root.
+
+Limpieza --> clean / mrpropper / distclean (cuando se vuelve a compilar)
+
+Configuración --> oldconfig / localmodconfig / xconfig (gráfica)
+
+```make oldconfig``` --> sobreescribe el .config
+
+Empaquetar kernel --> bindeb-pkg 
+
+Al usar make sin ningún parámetro, solo usará un procesador.
+

@@ -14,11 +14,10 @@ En nuestro caso particular, vamos a elegir el paquete _git_.
 
 El paquete _git_ está escrito en C y en Pearl.
 
-Dicho paquete nos lo descargaremos desde la siguiente URL para la distribución
-amd64:
+Nos descargaremos el directorio de _git_ desde el siguiente repositorio:
 
 ```
-https://packages.debian.org/buster/git
+
 ```
 
 Y lo enviaremos a la ubicación _/usr/local/_ para poder trabajar con ella
