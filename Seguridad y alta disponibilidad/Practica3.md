@@ -120,7 +120,15 @@ gpg --keyserver [servidor de claves] --send-keys [Mi Fingerprint]
 * Asegurate que te vuelves a bajar las claves públicas de tus compañeros que 
   tengan las tres firmas.
    
+![alt text](../Imágenes/listsignjaramillo.png)
+
+![alt text](../Imágenes/listsignfrutos.png)
+
+![alt text](../Imágenes/listsignReifs.png)
+
 **4.** Muestra las firmas que tiene tu clave pública.
+
+![alt text](../Imágenes/listsignsfinalmio.png)
 
 **5.** Comprueba que ya puedes verificar sin “problemas” una firma recibida 
 por una persona en la que confías.
