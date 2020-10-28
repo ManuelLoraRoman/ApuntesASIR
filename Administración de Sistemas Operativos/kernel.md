@@ -63,3 +63,27 @@ dmesg --> controla los logs del kérnel
 journalctl -k -f --> muestra los logs
 ```
 
+## Compilación de módulos de Linux (DKMS)
+
+```
+apt-get install build-essential --> paquete que incluye por dependencia
+				    diferentes compiladores.
+  
+apt-get install linux-headers-'uname -r' --> son necesarios los ficheros .h que
+					     se incluyen en los headers.
+  
+module-assistant --> se ha quedado obsoleto.
+  
+Se descomprime el paquete que incluye los ficheros fuentes del módulo en 
+/usr/src y se sigue el README.
+```
+
+Usaremos DKMS (Dynamic Kernel Module Support), ya que compila módulos que están
+fuera de la rama principal del kernel. Con módulos sin licencias compatibles
+con GPL o que no son libres.
+
+Recompila los módulos cada vez que se instala un nuevo núcleo.
+
+## Configuración y compilación del kernel Linux
+
+
