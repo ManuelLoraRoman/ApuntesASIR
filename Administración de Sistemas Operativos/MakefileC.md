@@ -9,61 +9,132 @@ directorio que no interfiera con tu sistema de paquetes (/opt, /usr/local, etc.)
 La corrección se hará en clase y deberás ser capaz de explicar qué son todos
 los ficheros que se hayan instalado y realizar una desinstalación limpia.
 
+Vamos a utilizar el paquete _FIGlet_. FIGlet es un programa que permite
+crear palabras por la terminal hechas con texto ordinario.
 
-En nuestro caso particular, vamos a elegir el paquete _git_.
+Nos descargaremos su repositorio desde el siguiente enlace: _https://github.com/cmatsuoka/figlet_.
 
-El paquete _git_ está escrito en C y en Pearl.
+Una vez tengamos el directorio de _figlet_ en nuestra posesión, debemos en
+primer lugar el fichero README. En este, nos comenta (en este caso), el
+proceso de instalación del paquete _figlet_.
 
-Nos descargaremos el directorio de _git_ desde el siguiente repositorio:
-
-```
-https://github.com/git/git/archive/master.zip
-```
-
-Y lo enviaremos a la ubicación _/usr/local/_ para poder trabajar con ella
-de manera segura.
-
-Y en primer lugar, nos dirigimos hacia el _README.md_ para ver que
-instrucciones podemos seguir para la instalación de dicho paquete.
-
-Lo primero que nos pone es lo siguiente:
+1. Editaremos el fichero Makefile, concretamente los parámetros llamados
+_DEFAULTFONTDIR_ y _DEFAULTFONTFILE_. El primer parámetro nos indica donde
+se guardarán los ficheros de las distintas fuentes de figlet, y el segundo
+nos indicará donde se guardará el fichero de fuente predeterminado.
+Seguiremos las recomendaciones y modificaremos las siguientes líneas:
 
 ```
-Git is a fast, scalable, distributed revision control system with an unusually rich command set that provides both high-level operations and full access to internals.
+# Where figlet will search first for fonts (the ".flf" files).
+DEFAULTFONTDIR = /usr/games/lib/figlet.dir
+# Use this definition if you can't put things in $(prefix)/share/figlet
+#DEFAULTFONTDIR = fonts
 
-Git is an Open Source project covered by the GNU General Public License version 2 (some parts of it are under different licenses, compatible with the GPLv2). It was originally written by Linus Torvalds with help of a group of hackers around the net.
-
-Please read the file INSTALL for installation instructions.
+# The filename of the font to be used if no other is specified,
+#   without suffix.(standard is recommended, but any other can be
+#   used). This font file should reside in the directory specified
+#   by DEFAULTFONTDIR.
+DEFAULTFONTFILE = standard
 ```
 
-Para instrucciones de instalación, debemos dirigirnos al fichero INSTALL.
+Una vez hecho esto, tenemos dos opciones. Primero, podemos proceder directamente
+a la compilación de FIGlet haciendo un ```make figlet``` y después copiar varios
+ficheros en sus localizaciones apropiadas, junto con el ejecutable de figlet,
+con _figlist y showfigfonts_, las fuentes y ficheros de control y la página de
+man. Esto puede llegar a resultar un tanto tedioso, por lo tanto, tenemos la
+segunda opción que es una instalación completa.
 
-Y una vez aquí, procederemos a la instalación.
-
-En principio, podríamos directamente hacer un ```make install``` y con eso ya
-instalaría git en nuestro propio directorio _~/bin/_. Bien, si queremos
-realizar otro tipo de instalación, debemos hacer lo siguiente:
-
-```
-make prefix=/usr/local all doc info --> lo hacemos desde nuestro usuario
-make prefix=/usr/local install install-doc install-html install-info --> lo hacemos desde root
-```
-
-Si queremos modificar las rutas de instalación de git, podemos usar el script
-de autoconfiguración o seguir los siguientes comandos:
+Para la instalación completa, en primer lugar debemos iniciar las variables
+BINDIR y MANDIR en el Makefile con los valores adecuados. BINDIR es la ruta
+completa del directorio donde se encuentra el ejecutable de FIGlet y MANDIR
+sería la ruta del directorio donde se encontraría la página del man de FIGlet.
 
 ```
-make configure --> usuario
-./configure --prefix=/usr/local --> usuario
-make all doc --> usuario
-make install install-doc install-html --> root
+# Where the executables should be put
+BINDIR  = /usr/games
+
+# Where the man page should be put
+MANDIR  = /usr/man/man6
 ```
 
-Por otro lado, podemos sacrificar mucho más tiempo de compilación a cambio de
-un _git_ más rápido si hacemos:
+Y una vez hecho esto, hacemos un ```make install```.
+
+La primera vez que lo ejecutamos nos salta el siguiente error:
 
 ```
-make prefix=/usr/local profile
-make prefix=/usr/local PROFILE=BUILD install
+vagrant@Makefile:~/figlet-master$ make install
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o figlet.o figlet.c
+make: gcc: Command not found
+make: *** [Makefile:65: figlet.o] Error 127
 ```
 
+Nos indica que no tenemos el paquete gcc instalado. Procedemos a instalarlo y
+volvemos a ejecutar la instrucción.
+
+```
+vagrant@Makefile:~/figlet-master$ sudo make install
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o figlet.o figlet.c
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o zipio.o zipio.c
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o crc.o crc.c
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o inflate.o inflate.c
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o utf8.o utf8.c
+gcc  -o figlet figlet.o zipio.o crc.o inflate.o utf8.o
+gcc -c -g -O2 -Wall -Wno-unused-value -DTLF_FONTS -DDEFAULTFONTDIR=\"/usr/games/lib/figlet.dir\" \
+	-DDEFAULTFONTFILE=\"standard.flf\" -o chkfont.o chkfont.c
+gcc  -o chkfont chkfont.o
+mkdir -p /usr/games
+mkdir -p /usr/man/man6/man6
+mkdir -p /usr/games/lib/figlet.dir
+cp figlet chkfont figlist showfigfonts /usr/games
+cp figlet.6 chkfont.6 figlist.6 showfigfonts.6 /usr/man/man6/man6
+cp fonts/*.flf /usr/games/lib/figlet.dir
+cp fonts/*.flc /usr/games/lib/figlet.dir
+```
+
+Y comprobamos que se ha instalado bien FIGlet.
+
+```
+vagrant@Makefile:~/figlet-master$ figlet -f standard hola
+
+| |__   ___ | | __ _
+| '_ \ / _ \| |/ _` |
+| | | | (_) | | (_| |
+|_| |_|\___/|_|\__,_|
+```
+
+Ahora vamos a probar con otro tipo de fuente:
+
+```
+vagrant@Makefile:~/figlet-master$ figlet -f slant hola
+
+   / /_  ____  / /___ _
+  / __ \/ __ \/ / __ `/
+ / / / / /_/ / / /_/ /
+/_/ /_/\____/_/\__,_/
+
+```
+
+```
+vagrant@Makefile:~/figlet-master$ figlet -f shadow hola
+ |           |
+ __ \   _ \  |  _` |
+ | | | (   | | (   |
+_| |_|\___/ _|\__,_|
+
+```
+
+Hay algunos paquetes que permiten el uso de ```make uninstall```. En el caso
+del paquete _FIGlet_, no permite el uso de dicho comando. Por lo tanto, otra
+opción para la desinstalación de dicho paquete podemos hacer lo siguiente:
+
+En primera instancia, ejecutaremos: ```whereis [paquete en cuestión]```.
+
+Así conseguimos listar los directorios donde nuestro binario ha sido instalado.
+Y uno a uno, eliminamos los directorios/ficheros que se han creado con la
+instalación.
