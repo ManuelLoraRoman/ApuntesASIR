@@ -74,7 +74,7 @@ de éste, añadiremos otro fichero _.htaccess_ que contenga la siguiente línea:
 Y cuando accedamos a dicho directorio, nos redireccionará a la página de 
 google:
 
-![alt text](https://youtu.be/F_GjzGjDah8)
+[Enlace a la comprobación](https://youtu.be/F_GjzGjDah8)
 
 * Pedir autentificación para entrar en la URL _http://host.dominio/prohibido_. 
 (No la hagas si has elegido como proveedor CDMON, en la plataforma de prueba, 
