@@ -9,14 +9,13 @@ Aquí tendrás que subir una tabla con la matriz DAFO de tu futuro negocio:
 este análisis? Intenta aproximarte lo máximo posible a la realidad.
 
 
-|---------------------------------------------------------------|
+
 |			MATRIZ	DAFO				|
-|---------------------------------------------------------------|
+|----------------|----------------------|-----------------------|
 |		 |   **FORTALEZAS**	|    **DEBILIDADES**	|
 |Análisis interno|Experiencia en el sector de la gestión de base de datos			|			|
 |		 |			|			|
-|---------------------------------------------------------------|
+|----------------|----------------------|-----------------------|
 |		 |  **OPORTUNIDADES**	|     **AMENAZAS**	|
 |Análisis externo|			|			|
 |		 |			|			|
-|---------------------------------------------------------------|
