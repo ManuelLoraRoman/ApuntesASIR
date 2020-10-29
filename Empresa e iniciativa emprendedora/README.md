@@ -8,3 +8,7 @@ Apuntes y plan de empresa de esta asignatura.
 [2. Ejercicio 1: Empresa de éxito/tipo de innovación](./Ejercicio1.md)
 
 [3. Ejercicio 2: Idea de Negocio](./ideanegocio.md)
+
+[4. Análisis DAFO de nuestra empresa](./DAFO.md)
+
+[4.1. DAFO y estrategias](./DAFO.pdf)
