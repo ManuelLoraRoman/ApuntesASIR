@@ -6,6 +6,34 @@ usuarios y el servidor.
 
 * Genera una clave privada RSA 4096
 
+Ejecutaremos el siguiente comando en la terminal de nuestra máquina:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/VPN$ ssh-keygen -t rsa -b 4096
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/manuel/.ssh/id_rsa): /home/manuel/.ssh/idVPN_rsa
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/manuel/.ssh/idVPN_rsa.
+Your public key has been saved in /home/manuel/.ssh/idVPN_rsa.pub.
+The key fingerprint is:
+SHA256:bLuo6rNA4NT4Jw1KdVE+dAl3Jkjz45Egm3I7asl1EVE manuel@debian
+The key's randomart image is:
++---[RSA 4096]----+
+|   . ++X=E.o     |
+|  + . *.B.=      |
+|.+ + + + =       |
+|= o = ..+ o      |
+| + o * .S.       |
+|. . * o. .       |
+|.  =    .        |
+| .o    . .       |
+| .++... .        |
++----[SHA256]-----+
+```
+
+Y ya tendríamos generada nuestra clave.
+
 * Genera una solicitud de firma de certificado (fichero CSR) y súbelo a 
 gestiona.
     
