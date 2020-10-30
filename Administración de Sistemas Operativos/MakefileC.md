@@ -146,3 +146,6 @@ figlet: /usr/games/figlet /usr/games/lib/figlet.dir /usr/local/bin/figlet
 Así conseguimos listar los directorios donde nuestro binario ha sido instalado.
 Y uno a uno, eliminamos los directorios/ficheros que se han creado con la
 instalación.
+
+En nuestro caso, es necesario también eliminar los ficheros _figlist_,
+_showfigfonts_ y _chkfont_.
