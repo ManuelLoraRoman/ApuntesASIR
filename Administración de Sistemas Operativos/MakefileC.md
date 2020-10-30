@@ -131,9 +131,17 @@ _| |_|\___/ _|\__,_|
 
 Hay algunos paquetes que permiten el uso de ```make uninstall```. En el caso
 del paquete _FIGlet_, no permite el uso de dicho comando. Por lo tanto, otra
-opción para la desinstalación de dicho paquete podemos hacer lo siguiente:
+opción para la desinstalación de dicho paquete que podemos hacer es la
+siguiente:
 
 En primera instancia, ejecutaremos: ```whereis [paquete en cuestión]```.
+
+En nuestro caso, los directorios se hallan en estas ubicaciones:
+
+```
+vagrant@Makefile:~$ whereis figlet
+figlet: /usr/games/figlet /usr/games/lib/figlet.dir /usr/local/bin/figlet
+```
 
 Así conseguimos listar los directorios donde nuestro binario ha sido instalado.
 Y uno a uno, eliminamos los directorios/ficheros que se han creado con la
