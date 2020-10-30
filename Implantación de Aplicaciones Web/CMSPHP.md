@@ -304,22 +304,21 @@ debes poner la siguiente línea:
 * Configura alguno de los CMS para utilizar tu servidor de correo y realiza 
 una prueba de funcionamiento.
 
-En primer lugar, vamos a instalarnos el paquete mailutils y a continuación,
-el paquete postfix.
+En primer lugar, vamos a instalarnos el paquete postfix.
 
 En la instalación de _Postfix_, nos pedirá que elijamos una de 4 opciones. 
 En nuestro caso, vamos a decirle local y después, nos pedirá un nombre de
 dominio. 
 
 Una vez hecho esto, modificaremos el fichero _/etc/postfix/main.cf_ para
-introducir el _relayhost y las interfaces:
+introducir el _relayhost y las interfaces_:
 
 ```
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = Servidor.example.org
+myhostname = cmsjoomla.com
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-mydestination = $myhostname, Servidor, localhost.localdomain, localhost
+mydestination = $myhostname, www.comsjoomla.com, localhost.localdomain, localhost
 relayhost = babuino-smtp.gonzalonazareno.org
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_command = procmail -a "$EXTENSION"
@@ -332,3 +331,15 @@ inet_protocols = all
 ```
 
 Y reiniciamos el servicio.
+
+Ahora, nos iremos a la configuración de Joomla, y en el apartado de 
+_Configuración global --> Servidor --> Configuración de email_ ponemos la
+siguiente configuración personalizada:
+
+![alt text](../Imágenes/mailjoomla.png)
+
+Y le damos al botón de _Send Test Mail_ y comprobamos que funciona 
+correctamente:
+
+![alt text](../Imágenes/Compmailjoomla.png)
+
