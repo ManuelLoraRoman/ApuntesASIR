@@ -145,6 +145,8 @@ poder mandar correos cifrados, para ello:
 **1.** Configura el cliente de correo evolution con tu cuenta de correo 
 habitual.
 
+Nosotros en principio, en la configuración de Debian, en _Cuentas en línea_
+
 **2.** Añade a la cuenta las opciones de seguridad para poder enviar correos 
 firmados con tu clave privada o cifrar los mensajes para otros destinatarios.
     

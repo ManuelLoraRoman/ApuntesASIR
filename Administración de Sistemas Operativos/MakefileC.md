@@ -18,7 +18,8 @@ Una vez tengamos el directorio de _figlet_ en nuestra posesión, debemos en
 primer lugar el fichero README. En este, nos comenta (en este caso), el
 proceso de instalación del paquete _figlet_.
 
-1. Editaremos el fichero Makefile, concretamente los parámetros llamados
+
+Editaremos el fichero Makefile, concretamente los parámetros llamados
 _DEFAULTFONTDIR_ y _DEFAULTFONTFILE_. El primer parámetro nos indica donde
 se guardarán los ficheros de las distintas fuentes de figlet, y el segundo
 nos indicará donde se guardará el fichero de fuente predeterminado.
@@ -35,6 +36,13 @@ DEFAULTFONTDIR = /usr/games/lib/figlet.dir
 #   used). This font file should reside in the directory specified
 #   by DEFAULTFONTDIR.
 DEFAULTFONTFILE = standard
+```
+Antes de modificar estos dos parámetros, también podemos modificar el parámetro
+_prefix_ que nos indicará donde instalar los archivos.
+
+```
+# Where to install files
+prefix  = /usr/local
 ```
 
 Una vez hecho esto, tenemos dos opciones. Primero, podemos proceder directamente
@@ -149,3 +157,5 @@ instalación.
 
 En nuestro caso, es necesario también eliminar los ficheros _figlist_,
 _showfigfonts_ y _chkfont_.
+
+
