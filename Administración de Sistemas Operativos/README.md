@@ -11,3 +11,5 @@
 [2. Kernel del Sistema Operativo](./kernel.md)
 
 [2.1. Compilación de un programa en C utilizando un Makefile](./MakefileC.md)
+
+[2.2. Compilación de un kérnel linux a medida](./Ejerciciokernel.md)
