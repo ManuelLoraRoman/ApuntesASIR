@@ -9,17 +9,21 @@ usuarios y el servidor.
 * Genera una solicitud de firma de certificado (fichero CSR) y súbelo a
 gestiona.
 
-Ejecutaremos el siguiente comando en la terminal de nuestra máquina:
+Ejecutaremos el siguiente comando en la terminal de nuestra máquina para la
+creación de nuestra clave privada (como root):
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/VPN$ openssl req -newkey rsa:4096 -keyout ClavePrivada.key -out MiCSR.csr
-Generating a RSA private key
-...............................................................................................................................++++
-................................................................++++
-writing new private key to 'ClavePrivada.key'
-Enter PEM pass phrase:
-Verifying - Enter PEM pass phrase:
------
+root@debian:/media/manuel/Datos/Cosas Seguridad/VPN# openssl genrsa 4096 > /etc/ssl/private/debian-manuel.key
+Generating RSA private key, 4096 bit long modulus (2 primes)
+..............................................................................................................................................................................................................................................++++
+...............................++++
+e is 65537 (0x010001)
+```
+
+Y después para la generación del SCR:
+
+```
+root@debian:/media/manuel/Datos/Cosas Seguridad/VPN# openssl req -new -key /etc/ssl/private/debian-manuel.key -out /root/debian-manuel.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -31,8 +35,8 @@ Country Name (2 letter code) [AU]:ES
 State or Province Name (full name) [Some-State]:Sevilla
 Locality Name (eg, city) []:Dos Hermanas
 Organization Name (eg, company) [Internet Widgits Pty Ltd]:IES Gonzalo Nazareno
-Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:dit.gonzalonazareno.org          
+Organizational Unit Name (eg, section) []:Informatica
+Common Name (e.g. server FQDN or YOUR name) []:debian-manuel.lora
 Email Address []:manuelloraroman@gmail.com
 
 Please enter the following 'extra' attributes
