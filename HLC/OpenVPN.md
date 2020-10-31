@@ -6,36 +6,42 @@ usuarios y el servidor.
 
 * Genera una clave privada RSA 4096
 
+* Genera una solicitud de firma de certificado (fichero CSR) y súbelo a
+gestiona.
+
 Ejecutaremos el siguiente comando en la terminal de nuestra máquina:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/VPN$ ssh-keygen -t rsa -b 4096
-Generating public/private rsa key pair.
-Enter file in which to save the key (/home/manuel/.ssh/id_rsa): /home/manuel/.ssh/idVPN_rsa
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
-Your identification has been saved in /home/manuel/.ssh/idVPN_rsa.
-Your public key has been saved in /home/manuel/.ssh/idVPN_rsa.pub.
-The key fingerprint is:
-SHA256:bLuo6rNA4NT4Jw1KdVE+dAl3Jkjz45Egm3I7asl1EVE manuel@debian
-The key's randomart image is:
-+---[RSA 4096]----+
-|   . ++X=E.o     |
-|  + . *.B.=      |
-|.+ + + + =       |
-|= o = ..+ o      |
-| + o * .S.       |
-|. . * o. .       |
-|.  =    .        |
-| .o    . .       |
-| .++... .        |
-+----[SHA256]-----+
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/VPN$ openssl req -newkey rsa:4096 -keyout ClavePrivada.key -out MiCSR.csr
+Generating a RSA private key
+...............................................................................................................................++++
+................................................................++++
+writing new private key to 'ClavePrivada.key'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:ES
+State or Province Name (full name) [Some-State]:Sevilla
+Locality Name (eg, city) []:Dos Hermanas
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:IES Gonzalo Nazareno
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:dit.gonzalonazareno.org          
+Email Address []:manuelloraroman@gmail.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:1q2w3e4r5t
+An optional company name []:
 ```
 
-Y ya tendríamos generada nuestra clave.
-
-* Genera una solicitud de firma de certificado (fichero CSR) y súbelo a 
-gestiona.
+Y ya tendríamos generada nuestra clave y una solicituda de firma de certificado.
     
 * Descarga el certificado firmado cuando esté disponible
     
