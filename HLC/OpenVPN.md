@@ -48,10 +48,41 @@ An optional company name []:
 Y ya tendríamos generada nuestra clave y una solicituda de firma de certificado.
     
 * Descarga el certificado firmado cuando esté disponible
+
+Nos descargaremos el certificado ya firmado _debian-manuel.crt_ y lo guardaremos
+en la ubicación del directorio _/etc/openvpn_.
+
+```
+manuel@debian:/etc/openvpn$ ls
+client  debian-manuel.crt  server  update-resolv-conf
+```
     
 * Instala y configura apropiadamente el cliente openvpn y muestra los 
 registros (logs) del sistema que demuestren que se ha establecido una conexión.
     
+Instalaremos el paquete _openvpn_ y crearemos un fichero _.conf_ (en nuestro
+caso se llama sputnik.conf) con la siguiente información:
+
+```
+dev tun
+remote sputnik.gonzalonazareno.org
+ifconfig 172.23.0.0 255.255.255.0
+pull
+proto tcp-client
+tls-client
+remote-cert-tls server
+ca /etc/ssl/certs/gonzalonazareno.pem            
+cert /etc/openvpn/debian-manuel.crt
+key /etc/ssl/private/debian-manuel.key
+comp-lzo
+keepalive 10 60
+log /var/log/openvpn-sputnik.log
+verb 1
+```
+
+Y reiniciamos el servicio de OpenVPN y comprobamos que se ha creado la regla de
+encaminamiento para acceder a los equipos de la 172.22.0.0/16.
+
 * Cuando hayas establecido la conexión VPN tendrás acceso a la red 
 172.22.0.0/16 a través de un túnel SSL. Compruébalo haciendo ping a 172.22.0.1.
 
