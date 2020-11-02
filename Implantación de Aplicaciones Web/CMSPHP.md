@@ -22,7 +22,20 @@ desde la dirección: www.nombrealumno-drupal.org.
 Seguiremos las mismas intrucciones que en el ejercicio de [VirtualHosting](https://github.com/ManuelLoraRoman/ApuntesASIR/blob/master/Servicios%20de%20Red%20e%20Internet/VirtualHosting.md),
 salvo que modificaremos el ServerName por _www.manuelloraroman-drupal.org_.
 
-![alt text](../Imágenes/Servername1.png)
+```
+<VirtualHost *:80>
+	# The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+	ServerName www.manuelloraroman-drupal.org
+	
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/manuelloraroman-drupal
+```
 
 * Crea un usuario en la base de datos para trabajar con la base de datos 
 donde se van a guardar los datos del CMS.
@@ -41,8 +54,13 @@ sudo tar xvf drupal.tar.gz
 sudo mv drupal-9.0.7 /var/www/nombrealumno-drupal
 sudo chown -R www-data:www-data /var/www/nombrealumno-drupal
 ```
-
-![alt text](../Imágenes/drupalinstall.png)
+```
+vagrant@buster:/home$ ls
+drupal-9.0.7  drupal.tar.gz  vagrant
+vagrant@buster:/home$ sudo mv drupal-9.0.7/ /var/wwww/manuelloraroman-drupal/
+vagrant@buster:/home$ sudo rm drupal.tar.gz
+vagrant@buster:/home$ sudo chown -R www-data:www-data /var/www/manuelloraroman-drupal
+```
 
 Una vez accedemos a la página, nos aparecerá lo siguiente:
 
@@ -119,8 +137,11 @@ seguridad de la BBDD.
 ```
 sudo mysqldump [nombre_BD] > [nombre_BD].sql
 ```
-
-![alt text](../Imágenes/respaldoBD.png)
+```
+vagrant@buster:~$ sudo mysqldump newdb > newdb.sql
+vagrant@buster:~$ ls
+documentos  newdb.sql
+```
 
 * Crea otra máquina con vagrant, conectada con una red interna a la anterior 
 y configura un servidor de base de datos. Crea un usuario en la base de datos 
