@@ -119,7 +119,20 @@ Tue Nov  3 12:02:11 2020 Initialization Sequence Completed
 Ya una vez configurado, haremos ping a la dirección 172.22.0.1:
 
 ```
-
+manuel@debian:~$ ping 172.22.0.1
+PING 172.22.0.1 (172.22.0.1) 56(84) bytes of data.
+64 bytes from 172.22.0.1: icmp_seq=1 ttl=63 time=82.5 ms
+64 bytes from 172.22.0.1: icmp_seq=2 ttl=63 time=82.8 ms
+64 bytes from 172.22.0.1: icmp_seq=3 ttl=63 time=78.9 ms
+64 bytes from 172.22.0.1: icmp_seq=4 ttl=63 time=80.6 ms
+64 bytes from 172.22.0.1: icmp_seq=5 ttl=63 time=78.4 ms
+64 bytes from 172.22.0.1: icmp_seq=6 ttl=63 time=117 ms
+64 bytes from 172.22.0.1: icmp_seq=7 ttl=63 time=270 ms
+64 bytes from 172.22.0.1: icmp_seq=8 ttl=63 time=108 ms
+^C
+--- 172.22.0.1 ping statistics ---
+8 packets transmitted, 8 received, 0% packet loss, time 19ms
+rtt min/avg/max/mdev = 78.363/112.240/269.811/61.107 ms
 ```
 
 
