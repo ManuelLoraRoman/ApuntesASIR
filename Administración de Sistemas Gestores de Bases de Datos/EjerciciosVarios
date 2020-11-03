@@ -8,7 +8,7 @@ BEFORE INSERT OR UPDATE ON emp
 FOR EACH ROW
 BEGIN
 	IF :new.job!= 'SALESMAN' AND :new.comm IS NOT NULL THEN
-		raise_application_error(-20002,'Solo los vendedores tienen permitido tener comisiones');
+		raise_application_error(-20002,'Solo los vendedores tienen comisiones');
 	END IF;
 END solovendedores;
 
@@ -20,9 +20,9 @@ END solovendedores;
 
 CREATE TABLE audit_emp
 (
-	Usuario		Varchar2(20),
-	Fecha		  Date,
-	Tipo		  Varchar2(20)
+	Usuario		VARCHAR2(20),
+	Fecha		  DATE,
+	Tipo		  VARCHAR2(20)
 );
 
 CREATE OR REPLACE TRIGGER auditoriaemp
@@ -62,15 +62,15 @@ BEGIN
 	CASE :new.job
 		WHEN 'CLERK' THEN
 			IF :new.sal<800 or :new.sal>1100 THEN
-				raise_application_error(-20001,'Un conserje no puede tener ese sueldo');
+				raise_application_error(-20001,'Un conserje no tiene ese sueldo');
 			END IF;
 		WHEN 'ANALYST' THEN
 			IF :new.sal<1200 OR :new.sal>1600 THEN
-				raise_application_error(-20002,'Un analista no puede tener ese sueldo');
+				raise_application_error(-20002,'Un analista no tiene ese sueldo');
 			END IF;
 		WHEN 'MANAGER' THEN
 			IF :new.sal<1800 OR :new.sal>2000 THEN
-				raise_application_error(-20003,'Un manager no puede tener ese sueldo');
+				raise_application_error(-20003,'Un manager no tiene ese sueldo');
 			END IF;
 	END CASE;
 END controlrangosueldos;
