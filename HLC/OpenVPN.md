@@ -83,9 +83,43 @@ verb 1
 Y reiniciamos el servicio de OpenVPN y comprobamos que se ha creado la regla de
 encaminamiento para acceder a los equipos de la 172.22.0.0/16.
 
+```
+manuel@debian:/etc/openvpn$ ip r
+default via 172.22.0.1 dev enp3s0 proto dhcp metric 100 
+169.254.0.0/16 dev enp3s0 scope link metric 1000 
+172.22.0.0/16 via 172.23.0.77 dev tun0 
+172.22.0.0/16 dev enp3s0 proto kernel scope link src 172.22.6.15 metric 100 
+172.23.0.1 via 172.23.0.77 dev tun0 
+172.23.0.77 dev tun0 proto kernel scope link src 172.23.0.78 
+```
+
+Y comprobamos también los mensajes del fichero /var/log/openvpn-sputnik.log:
+
+```
+Tue Nov  3 12:02:08 2020 WARNING: file '/etc/ssl/private/debian-manuel.key' is group or others accessible
+Tue Nov  3 12:02:08 2020 OpenVPN 2.4.7 x86_64-pc-linux-gnu [SSL (OpenSSL)] [LZO] [LZ4] [EPOLL] [PKCS11] [MH/PKTINFO] [AEAD] built on Feb 20 2019
+Tue Nov  3 12:02:08 2020 library versions: OpenSSL 1.1.1d  10 Sep 2019, LZO 2.10
+Tue Nov  3 12:02:08 2020 WARNING: using --pull/--client and --ifconfig together is probably not what you want
+Tue Nov  3 12:02:08 2020 TCP/UDP: Preserving recently used remote address: [AF_INET]92.222.86.77:1194
+Tue Nov  3 12:02:08 2020 Attempting to establish TCP connection with [AF_INET]92.222.86.77:1194 [nonblock]
+Tue Nov  3 12:02:09 2020 TCP connection established with [AF_INET]92.222.86.77:1194
+Tue Nov  3 12:02:09 2020 TCP_CLIENT link local: (not bound)
+Tue Nov  3 12:02:09 2020 TCP_CLIENT link remote: [AF_INET]92.222.86.77:1194
+Tue Nov  3 12:02:09 2020 [sputnik.gonzalonazareno.org] Peer Connection Initiated with [AF_INET]92.222.86.77:1194
+Tue Nov  3 12:02:11 2020 TUN/TAP device tun0 opened
+Tue Nov  3 12:02:11 2020 /sbin/ip link set dev tun0 up mtu 1500
+Tue Nov  3 12:02:11 2020 /sbin/ip addr add dev tun0 local 172.23.0.78 peer 172.23.0.77
+Tue Nov  3 12:02:11 2020 WARNING: this configuration may cache passwords in memory -- use the auth-nocache option to prevent this
+Tue Nov  3 12:02:11 2020 Initialization Sequence Completed
+```
+
 * Cuando hayas establecido la conexión VPN tendrás acceso a la red 
 172.22.0.0/16 a través de un túnel SSL. Compruébalo haciendo ping a 172.22.0.1.
 
+Ya una vez configurado, haremos ping a la dirección 172.22.0.1:
 
+```
+
+```
 
 
