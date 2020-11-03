@@ -73,6 +73,7 @@ siguiente comando:
 ```
 gpg --keyserver [servidor de claves] --recv-keys [Fingerprint]  
 ```
+
 ![alt text](../Imágenes/bajada1.png)
 
 ![alt text](../Imágenes/bajada2.png)
@@ -85,7 +86,26 @@ Y firmaremos las claves con:
 gpg --edit-key [Fingerprint]
 ```
 
-![alt text](../Imágenes/firmallave.png)
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --edit-key A502CC1D
+gpg (GnuPG) 2.2.12; Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+
+pub  rsa3072/1E79AF0BA502CC1D
+     creado: 2020-10-08  caduca: 2022-10-08  uso: SC  
+     confianza: desconocido   validez: total
+sub  rsa3072/B9C48525053510E1
+     creado: 2020-10-08  caduca: 2022-10-08  uso: E   
+[   total   ] (1). Javier Crespillo <crespilloberguaj@gmail.com>
+
+gpg> sign
+"Javier Crespillo <crespilloberguaj@gmail.com>" ya estaba firmada por la clave 636AE9EBCB7E3294
+Nada que firmar con la clave 636AE9EBCB7E3294
+
+gpg> quit
+```
 
 Y se la enviamos de vuelta a nuestro compañero:
 
@@ -105,11 +125,40 @@ gpg --import --import-options merge-only [clave_firmada]
 gpg --keyserver [servidor de claves] --send-keys [Mi Fingerprint]
 ```
 
-![alt text](../Imágenes/importllave.png)
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --import firmada.asc 
+gpg: clave C3B291882C4EE5DF: clave pública "Alejandro Gutierrez Valencia <tojandro@gmail.com>" importada
+gpg: Cantidad total procesada: 1
+gpg:               importadas: 1
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: nivel: 0  validez:   1  firmada:   8  confianza: 0-, 0q, 0n, 0m, 0f, 1u
+gpg: nivel: 1  validez:   8  firmada:   1  confianza: 4-, 0q, 0n, 1m, 3f, 0u
+gpg: siguiente comprobación de base de datos de confianza el: 2020-11-07
+```
 
-![alt text](../Imágenes/subidallave.png)
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --keyserver pgp.rediris.es --send-keys CB7E3294
+gpg: enviando clave 636AE9EBCB7E3294 a hkp://pgp.rediris.es
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --keyserver pgp.rediris.es --search-keys CB7E3294
+gpg: data source: http://130.206.1.8:11371
+(1)	Manuel Lora Román <manuelloraroman@gmail.com>
+	  3072 bit RSA key 636AE9EBCB7E3294, creado: 2020-10-06, caduca: 2022-10-06
+Keys 1-1 of 1 for "CB7E3294".  Introduzca número(s), O)tro, o F)in > 1
+gpg: clave 636AE9EBCB7E3294: "Manuel Lora Román <manuelloraroman@gmail.com>" sin cambios
+gpg: Cantidad total procesada: 1
+gpg:              sin cambios: 1
+```
 
-![alt text](../Imágenes/comprollavesfirm.png)
+```
+pub   rsa3072 2020-10-07 [SC] [caduca: 2020-11-07]
+      DCFB091C5495684E59BC061EA52A681834F0E596
+uid        [   total   ] José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig 3        A52A681834F0E596 2020-10-08  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig          4F54B5799987B52D 2020-10-22  Juan Antonio Reifs <initategnat9@gmail.com>
+sig          636AE9EBCB7E3294 2020-10-28  Manuel Lora Román <manuelloraroman@gmail.com>
+sub   rsa3072 2020-10-07 [E] [caduca: 2022-10-07]
+sig          A52A681834F0E596 2020-10-07  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+```
 
 * Una vez que firmes una clave se la tendrás que devolver a su dueño, para 
   que otra persona se la firme.
@@ -120,22 +169,81 @@ gpg --keyserver [servidor de claves] --send-keys [Mi Fingerprint]
 * Asegurate que te vuelves a bajar las claves públicas de tus compañeros que 
   tengan las tres firmas.
    
-![alt text](../Imágenes/listsignjaramillo.png)
+```
+pub   rsa3072 2020-10-07 [SC] [caduca: 2020-11-07]
+      DCFB091C5495684E59BC061EA52A681834F0E596
+uid        [   total   ] José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig 3        A52A681834F0E596 2020-10-08  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig          4F54B5799987B52D 2020-10-22  Juan Antonio Reifs <initategnat9@gmail.com>
+sig          636AE9EBCB7E3294 2020-10-28  Manuel Lora Román <manuelloraroman@gmail.com>
+sub   rsa3072 2020-10-07 [E] [caduca: 2022-10-07]
+sig          A52A681834F0E596 2020-10-07  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+```
 
-![alt text](../Imágenes/listsignfrutos.png)
+```
+pub   rsa3072 2020-10-22 [SC] [caduca: 2022-10-22]
+      AD19812061DA946F8DA70E0C4F54B5799987B52D
+uid        [   total   ] Juan Antonio Reifs <initategnat9@gmail.com>
+sig 3        4F54B5799987B52D 2020-10-22  Juan Antonio Reifs <initategnat9@gmail.com>
+sig          636AE9EBCB7E3294 2020-10-28  Manuel Lora Román <manuelloraroman@gmail.com>
+sig          A52A681834F0E596 2020-10-22  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig          CFCF1D130D5A52C5 2020-10-28  sergio ibañez <sergio_hd_sony@hotmail.com>
+sub   rsa3072 2020-10-22 [E] [caduca: 2022-10-22]
+sig          4F54B5799987B52D 2020-10-22  Juan Antonio Reifs <initategnat9@gmail.com>
+```
 
-![alt text](../Imágenes/listsignReifs.png)
+```
+pub   rsa3072 2020-10-06 [SC] [caduca: 2022-10-06]
+      28ED3C3112ED8846BEDFFAF657112B319F2A6170
+uid        [   total   ] Francisco Javier Madueño Jurado <frandh1997@gmail.com>
+sig 3        57112B319F2A6170 2020-10-06  Francisco Javier Madueño Jurado <frandh1997@gmail.com>
+sig          C3B291882C4EE5DF 2020-10-28  Alejandro Gutierrez Valencia <tojandro@gmail.com>
+sig          636AE9EBCB7E3294 2020-11-03  Manuel Lora Román <manuelloraroman@gmail.com>
+sig          CFCF1D130D5A52C5 2020-11-03  sergio ibañez <sergio_hd_sony@hotmail.com>
+sub   rsa3072 2020-10-06 [E] [caduca: 2022-10-06]
+sig          57112B319F2A6170 2020-10-06  Francisco Javier Madueño Jurado <frandh1997@gmail.com>
+```
 
 **4.** Muestra las firmas que tiene tu clave pública.
 
-![alt text](../Imágenes/listsignsfinalmio.png)
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --list-sigs "Manuel"
+pub   rsa3072 2020-10-06 [SC] [caduca: 2022-10-06]
+      9233303D1F5495739A6D2CB4636AE9EBCB7E3294
+uid        [  absoluta ] Manuel Lora Román <manuelloraroman@gmail.com>
+sig 3        636AE9EBCB7E3294 2020-10-06  Manuel Lora Román <manuelloraroman@gmail.com>
+sig          A52A681834F0E596 2020-10-22  José Miguel Calderón Frutos <josemiguelcalderonfrutos@gamil.com>
+sig          4F54B5799987B52D 2020-10-28  Juan Antonio Reifs <initategnat9@gmail.com>
+sig          57112B319F2A6170 2020-10-28  Francisco Javier Madueño Jurado <frandh1997@gmail.com>
+sub   rsa3072 2020-10-06 [E] [caduca: 2022-10-06]
+sig          636AE9EBCB7E3294 2020-10-06  Manuel Lora Román <manuelloraroman@gmail.com>
+```
 
 **5.** Comprueba que ya puedes verificar sin “problemas” una firma recibida 
 por una persona en la que confías.
 
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --verify saludo.txt.asc
+gpg: Firmado el mar 03 nov 2020 12:49:02 CET
+gpg:                usando RSA clave AD19812061DA946F8DA70E0C4F54B5799987B52D
+gpg: Firma correcta de "Juan Antonio Reifs <initategnat9@gmail.com>" [total]
+```
+
 **6.** Comprueba que puedes verificar sin “problemas” una firma recibida por 
 una tercera problema en la que confía una persona en la que tu confías.
 
+Nos importamos la firma de nuestro compañero Alejandro Gutierrez en el cual, no
+confiamos, pero si que lo hace nuestro compañero Fran:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad$ gpg --verify fichero.sign 
+gpg: Firmado el mar 03 nov 2020 12:48:02 CET
+gpg:                usando RSA clave 443D661D9AAF3ABAEDCA93E1C3B291882C4EE5DF
+gpg: Firma correcta de "Alejandro Gutierrez Valencia <tojandro@gmail.com>" [dudosa]
+gpg: ATENCIÓN: ¡Esta clave no está certificada con firmas de suficiente confianza!
+gpg:          No es seguro que la firma pertenezca al propietario.
+Huellas dactilares de la clave primaria: 443D 661D 9AAF 3ABA EDCA  93E1 C3B2 9188 2C4E E5DF
+```
 
 ## Tarea 2: Correo seguro con evolution/thunderbird
 
