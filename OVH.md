@@ -61,13 +61,53 @@ Editaremos el archivo _/etc/hostname y cambiar la
 línea que corresponde al hostname:
 
 ```
+pandora.iesgn10.es
+```
 
+Y ahora modificaremos el fichero de _/etc/hosts_ con la siguiente linea:
+
+```
+127.0.1.1	pandora.iesgn10.es
+```
+
+Reiniciamos la máquina, y cuando volvamos a acceder nos encontraremos lo
+siguiente:
+
+```
+manuel@debian:~$ ssh -i .ssh/manuelovh debian@146.59.196.92
+Linux pandora.iesgn11.es 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Nov  3 17:38:57 2020 from 217.217.170.105
+debian@pandora:~$ hostname -f
+pandora.iesgn10.es 
 ```
 
 * Desde el panel de control de OVH crea un registro de tipo A en la zona DNS 
 de tu dominio, para asignar el nombre elegido a tu dirección IP publica. 
 Desde este momento el acceso a la máquina por ssh será utilizando ese nombre.
    
+![alt text](../Imágenes/zonadnsovh.png)
+
+```
+manuel@debian:~$ ssh -i .ssh/manuelovh debian@pandora.iesgn10.es
+Linux pandora.iesgn10.es 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Nov  3 18:10:50 2020 from 217.217.170.105
+debian@pandora:~$ 
+```
+
 * Responde este mensaje y pon el nombre elegido. Los profesores probaremos el 
 acceso a la máquina.
 
