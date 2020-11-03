@@ -151,3 +151,124 @@ inconsistencia de los datos.
 * **Control de Eventos** 
 
 
+## Tipos de datos compuestos
+
+Ya lo hemos usado cuando realizamos un _%ROWTYPE_ o cuando hacemos un cursor.
+
+Estos son llamados registros, y permiten trabajar con múltiples datos en una 
+sola variable.
+
+* Sintaxis:
+
+TYPE NombreTipoDatos IS RECORD
+(
+	NombreCampo TipoCampo [NOT NULL] [:=ValorInicial],
+	NombreCampo TipoCampo [NOT NULL] [:=ValorInicial],
+	.....
+);
+
+Y podremos crear una variable con el tipo que hemos creado.
+
+* En TipoCampo se puede usar _%TYPE_.
+
+## Arrays
+
+Tablas usadas en tiempo de ejecución, ya que no se queda guardada.
+
+En programación, se reserva el tamaño para crear una tabla, pero con estas,
+no es necesario.
+
+* Sintaxis:
+
+Primero se declara el tipo de datos _Tabla_:
+
+TYPE TipoTablaNombresEmpleados IS TABLE OF emp.ename%TYPE
+INDEX BY BINARY_INTERGER;
+
+Y ahora declaro la variable:
+
+MiTabla TipoTablaNombresEmpleados;
+
+* Para crear un elementos:
+
+MiTabla(8):='SMITH';
+
+Si intentamos acceder a un elementos de la tabla todavía no creado, pues
+levantará una excepción _NO___DATA___FOUND_.
+
+* Operaciones (métodos):
+
+- EXISTS(n)
+
+- COUNT
+
+- FIRST
+
+- LAST
+
+- PRIOR
+
+- NEXT
+
+- DELETE
+
+- DELETE(n)
+
+* Ejemplo:
+
+TYPE tEmpleados IS RECORD
+ (
+  NUMEMP	EMP.EMPNO%TYPE,
+  NUMDEPT	EMP.DEPTNO%TYPE,
+  PUESTO	EMP.JOB%TYPE,
+  JEFE		EMP.MGR%TYPE
+ );
+
+TYPE tTablaEmpleados IS TABLE OF tEmpleados
+INDEX BY BINARY_INTEGER;
+
+ empleados tTablaEmpleados;
+
+i NUMBER;
+
+BEGIN
+	rellenar_tabla(empleados);
+
+	FOR i IN empleados.FIRST..empleados.LAST LOOP
+		DBMS_OUTPUT.PUT_LINE(empleados(i).numemp||empleados(i).numdept);
+	END LOOP;
+END;
+
+
+## Paquetes PL/SQL
+
+Las variables que se declaran en la cabecera de un paquete mantienen su valor
+durante toda la sesión, se llaman variables persistentes.
+
+* Sintaxis:
+
+CREATE OR REPLACE PACKAGE BODY NombrePaquete AS
+
+	Declaraciones de tipo y variables privados
+	Declaraciones de cursore y excepciones privados
+	....
+[BEGIN instrucciones de inicialización]
+END;
+
+## Pasos a dar para resolver problemas
+
+* Leer bien los requisitos del problema e identificar la información de la 
+tabla que debo guardar en variables persistentes.
+
+* Crear el paquete declarando los tipos de datos y las variables necesarias 
+para guardar dicha información.
+
+* Hacer un trigger before por sentencia que rellene dichas variables 
+consultando la tabla mutante.
+
+* Hacer un trigger before por fila que compruebe si el registro que se está 
+manejando cumple la condición especificada consultando las variables 
+persistentes.
+
+* En muchas ocasiones, el trigger por fila también tendrá que ir actualizando 
+la información que está en las variables
