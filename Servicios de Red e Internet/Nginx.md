@@ -191,18 +191,27 @@ creado.
 Ahora, modificaremos el fichero _iesgn.com_ con las siguientes líneas:
 
 ```
-location /index.html {
-	return 301 /principal/index.html;	
-	#try_files $uri $uri/ =404;
+location / {
+                return 301 /principal/index.html;
+                autoindex off;
+                try_files $uri $uri/ =404;
+                location /principal {
+                        disable_symlinks on;
+                        autoindex off;
+                }
         }
 
-location /principal {
-	disable_symlinks off;
-	autoindex off;
-}
 ```
+Creamos varios ficheros en el directorio principal para la comprobación.
 
+Y comprobamos:
 
+![alt text](../Imágenes/nginxoptions1.png)
+
+Si cambiamos la configuración y le cambios el parámetro _autoindex on_ a _off_
+nos saldría el siguiente resultado:
+
+![alt text](../Imágenes/nginxoptions2.png)
 
 **Tarea 4:** Si accedes a la página www.iesgn.org/principal/documentos se 
 visualizarán los documentos que hay en /srv/doc. Por lo tanto se permitirá el 
@@ -210,9 +219,182 @@ listado de fichero y el seguimiento de enlaces simbólicos siempre que sean a
 ficheros o directorios cuyo dueño sea el usuario. Muestra al profesor el 
 funcionamiento.
 
+Para ello, crearemos el directorio _/srv/doc_ y el enlace simbólico en 
+_/principal/_ llamado documentos.
+
+Después, modificaremos el fichero de configuración _iesgn.com_ con las 
+siguientes lineas:
+
+```
+location / {
+                return 301 /principal/index.html;
+                autoindex off;
+                try_files $uri $uri/ =404;
+                location /principal {
+                        autoindex on;
+                        disable_symlinks if_not_owner;
+
+                }
+        }
+```
+
+Cambios el propietario de _documentos_ al usuario debian.
+
+Una vez hecho esto, intentamos acceder a _documentos_:
+
+![alt text](../Imágenes/ifownernginx.png)
+
+Si cambiamos el propietario a root:
+
+![alt text](../Imágenes/ifownernginx2.png)
+
 **Tarea 5:** En todo el host virtual se debe redefinir los mensajes de error 
 de objeto no encontrado y no permitido. Para el ello se crearan dos ficheros 
 html dentro del directorio error. Entrega las modificaciones necesarias en la 
 configuración y una comprobación del buen funcionamiento.
 
+Editaremos el fichero _/etc/nginx/sites-avalaible/iesgn.com_ y agregaremos 
+estas lineas:
 
+```
+error_page 404 /404.html;
+        location /404.html {
+                internal;
+        }
+
+        error_page 403 /403.html;
+        location /403.html {
+                internal;
+        }
+```
+
+Y ahora provocaremos ambos errores:
+
+* 404
+
+![alt text](../Imágenes/404nginx.png)
+
+* 403
+
+![alt text](../Imágenes/403nginx.png)
+
+
+## Autentificación, Autorización y Control de Acceso
+
+**Tarea 6:** Añade al escenario otra máquina conectada por una red interna al 
+servidor. A la URL departamentos.iesgn.org/intranet sólo se debe tener acceso 
+desde el cliente de la red local, y no se pueda acceder desde la anfitriona 
+por la red pública. A la URL departamentos.iesgn.org/internet, sin embargo, 
+sólo se debe tener acceso desde la anfitriona por la red pública, y no desde 
+la red local.
+
+Hemos añadido otra máquina a la red cuya IP Flotante es 172.22.200.149 y 
+añadiremos la clave pública del profesor al fichero _authorized-keys_ como
+hicimos anteriormente.
+
+Una vez hecho esto, crearemos los dos directorios internet e intranet 
+con ficheros de prueba en el directorio departamentos.
+
+Y por último añadiremos las siguientes lineas en el fichero de configuración de
+departamentos:
+
+```
+        location / {
+                try_files $uri $uri/ =404;
+                location /intranet {
+                        allow 172.22.200.0/24;
+                        deny all;
+                }
+                location /internet {
+                        deny 172.22.200.0/24;
+                        allow all;
+                }
+        }
+```
+
+Y comprobamos las conexiones:
+
+* Si accedemos desde nuestra red interna a Intranet nos permite el acceso, pero
+no si accedemos a Internet:
+
+![alt text](../Imágenes/Intrasi.png)
+
+![alt text](../Imágenes/Intertno.png)
+  
+* Si accedemos desde una red pública a Internet nos permite el acceso, pero no
+si accedemos a Intranet:
+
+![alt text](../Imágenes/Intertsi.png)
+
+![alt text](../Imágenes/Intrano.png)
+
+**Tarea 7:** Autentificación básica. Limita el acceso a la URL 
+departamentos.iesgn.org/secreto. Comprueba las cabeceras de los mensajes HTTP 
+que se intercambian entre el servidor y el cliente.
+
+En primer lugar, nos descargaremos el paquete _apache2-utils_ para crear un
+fichero de contraseñas. Una vez descargado, creamos ese fichero:
+
+```
+debian@nginx:/etc/nginx$ sudo htpasswd -c /etc/nginx/.htpasswd usuario
+New password: 
+Re-type new password: 
+Adding password for user usuario
+debian@nginx:/etc/nginx$ 
+```
+   
+Configuramos las siguientes lineas del fichero _/etc/nginx/sites-available/departamentos.com_:
+
+```
+        location / {
+                autoindex on;
+                try_files $uri $uri/ =404;
+                location /intranet {
+                        allow 172.22.200.0/24;
+                        deny all;
+                }
+                location /internet {
+                        deny 172.22.200.0/24;
+                        allow all;
+                }
+                location /secreto {
+                        auth_basic "Administración secreto";
+                        auth_basic_user_file /etc/nginx/.htpasswd;
+                }
+        }
+```
+
+Y ahora comprobamos el funcionamiento:
+
+![alt text](../Imágenes/authnginx1.png)
+
+![alt text](../Imágenes/authnginx2.png)
+
+**Tarea 8:** Vamos a combinar el control de acceso (tarea 6) y la 
+autentificación (tarea 7), y vamos a configurar el virtual host para que se 
+comporte de la siguiente manera: el acceso a la URL 
+departamentos.iesgn.org/secreto se hace forma directa desde la intranet, 
+desde la red pública te pide la autentificación. Muestra el resultado al 
+profesor.
+
+Cambiaremos la configuración de departamentos con las siguientes lineas:
+
+```
+location /secreto {
+        satisfy any;
+        allow 172.22.200.0/24;
+        deny all;
+        auth_basic "Administración secreto";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+}
+```
+
+Y comprobamos:
+
+* Intranet:
+
+![alt text](../Imágenes/authintra.png)
+
+* Internet:
+
+![alt text](../Imágenes/authintert.png)
