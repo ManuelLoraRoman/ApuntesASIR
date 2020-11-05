@@ -272,3 +272,26 @@ persistentes.
 
 * En muchas ocasiones, el trigger por fila también tendrá que ir actualizando 
 la información que está en las variables
+
+## Resolución paso a paso
+
+```
+CREATE OR REPLACE PACKAGE ControlSUeldos
+AS
+	SueldoPresi NUMBER;
+
+TYPE tRegistroTablaSueldos IS RECORD
+(
+	DEPTNO		EMP.DEPTNO%TYPE,
+	SAL_JEFE	EMP.SAL%TYPE
+);
+
+TYPE tTablaSueldosJefes IS TABLE OF tRegistroTablaSueldos
+INDEX BY BINARY_INTEGER;
+
+SueldosJefes tTablasSueldosJefes;
+
+END ControlSueldos;
+/
+```
+

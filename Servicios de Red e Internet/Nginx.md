@@ -137,7 +137,7 @@ server {
 
         index index.html index.htm index.nginx-debian.html;
 
-        server_name www.departamentos.iesgn.org;
+        server_name departamentos.iesgn.org;
 	location / {
 
                 try_files $uri $uri/ =404;
@@ -163,7 +163,7 @@ modificaremos el _/etc/hosts_ con las siguientes lineas:
 
 ```
 172.22.200.117  www.iesgn.com
-172.22.200.117  www.departamentos.iesgn.com
+172.22.200.117  departamentos.iesgn.com
 ```
 
 Y comprobamos su funcionamiento:
@@ -171,5 +171,48 @@ Y comprobamos su funcionamiento:
 ![alt text](../Imágenes/iesgnginx.png)
 
 ![alt text](../Imágenes/departnginx.png)
+
+
+## Mapeo de URL
+
+Cambia la configuración del sitio web www.iesgn.org para que se comporte 
+de la siguiente forma:
+
+**Tarea 3:** Cuando se entre a la dirección www.iesgn.org se redireccionará 
+automáticamente a www.iesgn.org/principal, donde se mostrará el mensaje de 
+bienvenida. En el directorio principal no se permite ver la lista de los 
+ficheros, no se permite que se siga los enlaces simbólicos y no se permite 
+negociación de contenido. Muestra al profesor el funcionamiento.
+
+En primer lugar, crearemos el directorio principal en _/srv/www/iesgn/_ y
+copiaremos el index.html ubicado en _iesgn_ y lo pondremos en el directorio
+creado.
+
+Ahora, modificaremos el fichero _iesgn.com_ con las siguientes líneas:
+
+```
+location /index.html {
+	return 301 /principal/index.html;	
+	#try_files $uri $uri/ =404;
+        }
+
+location /principal {
+	disable_symlinks off;
+	autoindex off;
+}
+```
+
+
+
+**Tarea 4:** Si accedes a la página www.iesgn.org/principal/documentos se 
+visualizarán los documentos que hay en /srv/doc. Por lo tanto se permitirá el 
+listado de fichero y el seguimiento de enlaces simbólicos siempre que sean a 
+ficheros o directorios cuyo dueño sea el usuario. Muestra al profesor el 
+funcionamiento.
+
+**Tarea 5:** En todo el host virtual se debe redefinir los mensajes de error 
+de objeto no encontrado y no permitido. Para el ello se crearan dos ficheros 
+html dentro del directorio error. Entrega las modificaciones necesarias en la 
+configuración y una comprobación del buen funcionamiento.
 
 
