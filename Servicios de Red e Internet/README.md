@@ -29,3 +29,5 @@
 [5.4. Ejercicio 6: Configuración de apache mediante archivo .htaccess](./Ejerciciohtaccess.md)
 
 [5.5. Práctica: Servidor Web Nginx](./Nginx.md)
+
+[6. Instalación de un Servidor LEMP](./LEMP.md)
