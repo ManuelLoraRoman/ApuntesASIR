@@ -80,6 +80,7 @@ ubicado en _/var/www/html/_.
 
 Y comprobaremos su correcto funcionamiento:
 
+![alt text](../Imágenes/ejemplonginx.png)
 
 ## Virtual Hosting
 
@@ -101,9 +102,74 @@ parte de los departamento, el nombre de este sitio será
 departamentos.iesgn.org, y su directorio base será /srv/www/departamentos. 
 En este sitio sólo tendremos una página inicial index.html, dando la bienvenida 
 a la página de los departamentos del instituto.
-
    
 **Tarea 2:** Configura la resolución estática en los clientes y muestra el 
 acceso a cada una de las páginas.
+
+Lo primero que haremos es triplicar el fichero _/etc/nginx/sites-avalaible/default_
+y los llamaremos _iesgn.com_ y _departamentos.com_, cuyos ficheros de
+configuración son los siguientes:
+
+* iesgn.com:
+
+```
+server {
+        listen 80;
+        root /srv/www/iesgn;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name www.iesgn.org;
+	location / {
+                try_files $uri $uri/ =404;
+        }
+}
+```
+
+* departamentos.com:
+
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+	root /srv/www/departamentos;
+
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name www.departamentos.iesgn.org;
+	location / {
+
+                try_files $uri $uri/ =404;
+        }
+}
+```
+
+Una vez configurado esto, crearemos los respectivos directorios en las
+ubicaciones marcadas en el parámetro _root_.
+
+Y haremos también los enlaces simbólicos:
+
+```
+debian@nginx:/etc/nginx/sites-available$ sudo ln -s /etc/nginx/sites-available/iesgn.com /etc/nginx/sites-enabled/
+debian@nginx:/etc/nginx/sites-available$ sudo ln -s /etc/nginx/sites-available/departamentos.com /etc/nginx/sites-enabled/
+```
+
+Ahora crearemos dos index.html en los directorios _/srv/www/iesgn_ y 
+_/srv/www/departamentos_ y le ponemos una bienvenida diferente a cada una.
+
+Reiniciamos el servicio de nginx y nos dirigiremos a la máquina física y
+modificaremos el _/etc/hosts_ con las siguientes lineas:
+
+```
+172.22.200.117  www.iesgn.com
+172.22.200.117  www.departamentos.iesgn.com
+```
+
+Y comprobamos su funcionamiento:
+
+![alt text](../Imágenes/iesgnginx.png)
+
+![alt text](../Imágenes/departnginx.png)
 
 
