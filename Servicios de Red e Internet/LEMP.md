@@ -91,13 +91,17 @@ fichero default:
 
 ```sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/iesgn10```
 
+Ahora haremos un enlace simbólico de dicho fichero de configuración:
+
+```ln -s /etc/nginx/sites-available/iesgn10 /etc/nginx/sites-enabled/```
+
 Y modificaremos el fichero de configuración:
 
 ```
 server {
         listen 80 default_server;
         listen [::]:80 default_server;
-root /var/www/html;
+root /var/www/html/iesgn10;
 
 index index.html index.htm index.nginx-debian.html;
 
@@ -122,16 +126,137 @@ y lo añadiremos:
 5. Cuando se acceda al virtualhost por defecto default nos tiene que redirigir 
 al virtualhost que hemos creado en el punto anterior.
 
+Modificaremos el fichero de configuración _default_ y cambiaremos las siguientes
+lineas:
+
+```
+server {
+        listen 80;
+	root /var/www/html/default;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name default;
+
+        rewrite ^/(.*)$ http://www.iesgn10.es/$1 permanent;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+}
+```
+
+Crearemos los directorios pertinentes en _/var/www/html_ y haremos una prueba
+de funcionamiento:
+
+https://youtu.be/4YcJIGOTsPk
+
 6. Cuando se acceda a www.iesgnXX.es se nos redigirá a la página 
 www.iesgnXX.es/principal.
+
+Modificaremos el fichero de configuración de iesgn10 con las siguientes lineas:
+
+```
+location / {
+        return 301 /principal/index.html;
+        try_files $uri $uri/ =404;
+        location /principal {
+                autoindex off;
+        }
+}
+```
+
+Y aqui estaría la comprobación de dicha redirección:
+
+https://youtu.be/w3PNeOi10LU
 
 7. En la página www.iesgnXX.es/principal se debe mostrar una página web 
 estática (utiliza alguna plantilla para que tenga hoja de estilo). En esta 
 página debe aparecer tu nombre, y una lista de enlaces a las aplicaciones que 
 vamos a ir desplegando posteriormente.
 
+Nos descargaremos del siguiente enlace esta hoja de estilo, la cual
+introduciremos en nuestro directorio _/principal_:
+
+http://solucija.com/templates/distinctive.zip
+
+Modificaremos su contenido y nos quedará algo así:
+
+```
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="Robots" content="index,follow" />
+        <meta name="author" content="Luka Cvrk (www.solucija.com)" />
+        <meta name="description" content="Description" />
+        <meta name="keywords" content="key, words" />
+        <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+        <title>Distinctive - web development company</title>
+</head>
+<body>
+        <div id="content">
+                <p id="top">Página web estática del Servidor OVH</p>
+                <div id="logo">
+                        <h1><a href="index.html">OVH</a></h1>
+                </div>
+                <ul id="menu">
+                        <li class="current"><a href="#">Inicio</a></li>
+                        <li><a href="#">Nuevo</a></li>
+                        <li><a href="#">Documentos</a></li>
+                        <li><a href="#">Servicios</a></li>
+                        <li><a href="#">Sobre mi</a></li>
+                        <li><a href="#">Contacto</a></li>
+                </ul>
+                <div class="line"></div>
+                <div id="pitch">
+                        <h1>Manuel Lora Román<br />Estudiante de ASIR</h1>
+                        <h2>En esta página web estática añadiremos enlaces <br /> hacia nuestras aplicaciones.</h2>
+                </div>
+        </div>
+</body>
+</html>
+```
+
+Y accedemos a nuestra página web estática:
+
+![alt text](../Imágenes/estaticaovh.png)
+
 8. Configura el nuevo virtualhost, para que pueda ejecutar PHP. Determina que 
 configuración tiene por defecto php-fpm (socket unix o socket TCP) para 
 configurar nginx de forma adecuada.
 
+Como Nginx no tiene un procesamiento PHP nativo, hemos instalado anteriormente
+el paquete _php-fpm_.
+
+Modificaremos el fichero de configuración de iesgn10 con las siguientes lineas:
+
+```
+location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+}
+```
+
+Este nuevo bloque de ubicación administra el procesamiento de PHP orientando
+Nginx al archivo de configuración _fastcgi-php.conf_ y al archivo
+_php7.2-fpm.sock_, que declara el socket que se asocia con php-fpm.
+
 9. Crea un fichero info.php que demuestre que está funcionando el servidor LEMP.
+
+A continuación, crearemos un fichero llamado _info.php_:
+
+```
+sudo nano PHP/info.php
+```
+
+Y le introduciremos el siguiente contenido:
+
+```
+<?php
+phpinfo();
+```
+
+Y ahora comprobaremos el funcionamiento de la pila LEMP:
+
+![alt text](../Imágenes/phpovh.png)
