@@ -18,3 +18,5 @@ haciendo.
 [2.2. Práctica 2: Cifrado asimétrico con gpg y openssl](./Practicacifrado.md)
 
 [2.3. Práctica 3: Integridad, firmas y autenticación](./Practica3.md)
+
+[2.4. Práctica: Certificados digitales. HTTPS](.CertDigitales.md)
