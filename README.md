@@ -24,3 +24,7 @@ de ASIR en el Gonzalo Nazareno.
 [10. Introducción a Docusaurus](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/IntroduccionDocusaurus.md)
 
 [11. Configuración del Servidor OVH](./OVH.md)
+
+[12. Instalación y configuración inicial de los servidores](./confservidores.md)
+
+
