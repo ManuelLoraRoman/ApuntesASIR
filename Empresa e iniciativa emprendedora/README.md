@@ -12,3 +12,5 @@ Apuntes y plan de empresa de esta asignatura.
 [4. Análisis DAFO de nuestra empresa](./DAFO.md)
 
 [4.1. DAFO y estrategias](./DAFO.pdf)
+
+[5. Plan de Marketing](./PlanMarketing.md)
