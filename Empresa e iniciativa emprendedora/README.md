@@ -14,3 +14,7 @@ Apuntes y plan de empresa de esta asignatura.
 [4.1. DAFO y estrategias](./DAFO.pdf)
 
 [5. Plan de Marketing](./PlanMarketing.md)
+
+[6. Mapa de Empatia](./Mapa-de-empatia.png)
+
+[7. Video OLIGOPOLY](./Oligopolio.md)
