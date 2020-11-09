@@ -18,3 +18,5 @@ Apuntes y plan de empresa de esta asignatura.
 [6. Mapa de Empatia](./Mapa-de-empatia.png)
 
 [7. Video OLIGOPOLY](./Oligopolio.md)
+
+[8. Análisis Imagen Corporativa](./ImagenCorporativa.md)
