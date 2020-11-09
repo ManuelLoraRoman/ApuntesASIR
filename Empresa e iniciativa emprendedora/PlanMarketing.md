@@ -24,9 +24,8 @@ en el cual se aprovecharía la oportunidad para hacer dicho mantenimiento y
 no perjudicar la actividad económica de nuestro cliente.
 
 
-Llevamos una estrategia de segmentación de mercado basado en la indiferenciación,
-es decir, basándonos en las necesidades de cada cliente, nuestro servicio 
-satiface a cada cliente por igual.
+Basándonos en las necesidades de cada cliente, nuestro servicio satiface a 
+cada cliente por igual.
 
 Clientes potenciales: Page Group, Experis, ALTEN Spain, Everis Spain, entre otras.
 

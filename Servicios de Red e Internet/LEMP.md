@@ -131,14 +131,14 @@ lineas:
 
 ```
 server {
-        listen 80;
+        listen 80 default_server;
 	root /var/www/html/default;
 
         index index.html index.htm index.nginx-debian.html;
 
-        server_name default;
+        server_name _;
 
-        rewrite ^/(.*)$ http://www.iesgn10.es/$1 permanent;
+        return 301 $scheme://www.iesgn10.es$request_uri;
 
         location / {
                 try_files $uri $uri/ =404;
