@@ -279,7 +279,11 @@ linux-source-4.19.tar.xz
 9. Instala el núcleo resultando de la compilación, reinicia el equipo y 
 comprueba que funciona adecuadamente.
 
-Como cualquier paquete, lo instalaremos con dpkg.
+Como cualquier paquete, lo instalaremos con el siguiente comando:
+
+```
+sudo make install
+```
 
 10. Si ha funcionado adecuadamente, utilizamos la configuración del paso 
 anterior como punto de partida y vamos a reducir el tamaño del mismo, para 
