@@ -103,3 +103,152 @@ pantalla donde se demuestre el acceso a ellas.
 
 
 
+## HTTPS / SSL
+
+**Tarea 1:** Certificado autofirmado
+
+Esta práctica la vamos a realizar con un compañero. En un primer momento un 
+alumno creará una Autoridad Certficadora y firmará un certificado para la 
+página del otro alumno. Posteriormente se volverá a realizar la práctica con 
+los roles cambiados.
+
+Para hacer esta práctica puedes buscar información en internet, algunos 
+enlaces interesantes:
+
+* Phil’s X509/SSL Guide
+* How to setup your own CA with OpenSSL
+* Crear autoridad certificadora (CA) y certificados autofirmados en Linux
+
+El alumno que hace de Autoridad Certificadora deberá entregar una documentación donde explique los siguientes puntos:
+
+* Crear su autoridad certificadora (generar el certificado digital de la CA). 
+Mostrar el fichero de configuración de la AC.
+
+En primer lugar crearemos la clave privada para la CA:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -des3 -out ca.key 4096
+Generating RSA private key, 4096 bit long modulus (2 primes)
+.............................................++++
+...................................................................................................................................................................................................................................................................................................++++
+e is 65537 (0x010001)
+Enter pass phrase for ca.key:
+140253891232896:error:28078065:UI routines:UI_set_result_ex:result too small:../crypto/ui/ui_lib.c:905:You must type in 4 to 1023 characters
+Enter pass phrase for ca.key:
+Verifying - Enter pass phrase for ca.key:
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.key
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 ca.key
+```
+
+Ahora creamos el certificado. Este se mostrará en el nivel más alto cuando
+firmes otros certificado. Le pondremos cuando queremos que expire:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
+Enter pass phrase for ca.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:ES
+State or Province Name (full name) [Some-State]:Sevilla
+Locality Name (eg, city) []:Dos Hermanas
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Certificado Manuel Lora
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:Debian Manuel
+Email Address []:manuelloraroman@gmail.com
+```
+
+
+
+
+* Debe recibir el fichero CSR (Solicitud de Firmar un Certificado) de su 
+compañero, debe firmarlo y enviar el certificado generado a su compañero.
+
+* ¿Qué otra información debes aportar a tu compañero para que éste configure 
+de forma adecuada su servidor web con el certificado generado?
+
+El alumno que hace de administrador del servidor web, debe entregar una 
+documentación que describa los siguientes puntos:
+
+* Crea una clave privada RSA de 4096 bits para identificar el servidor.
+
+Creamos la clave privada:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -des3 -out manuelloraroman.iesgn.org.key 4096
+Generating RSA private key, 4096 bit long modulus (2 primes)
+..............................................++++
+...................................................................................................++++
+e is 65537 (0x010001)
+Enter pass phrase for manuelloraroman.iesgn.org.key:
+Verifying - Enter pass phrase for manuelloraroman.iesgn.org.key:
+```
+
+Y creamos la solicitud:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -key manuelloraroman.iesgn.org.key -out manuelloraroman.iesgn.org.csr
+Enter pass phrase for manuelloraroman.iesgn.org.key:
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:ES
+State or Province Name (full name) [Some-State]:Sevilla
+Locality Name (eg, city) []:Dos Hermanas
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Certificado Manuel Lora
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:manuelloraroman.iesgn.org
+Email Address []:manuelloraroman@gmail.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+```
+
+Si utilizamos algún servicio tipo Apache o Postfix, debemos eliminar la
+contraseña de la clave:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl rsa -in manuelloraroman.iesgn.org.key -out manuelloraroman.iesgn.org.key.insecure
+Enter pass phrase for manuelloraroman.iesgn.org.key:
+writing RSA key
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ mv manuelloraroman.iesgn.org.key manuelloraroman.iesgn.org.key.secure
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ mv manuelloraroman.iesgn.org.key.insecure manuelloraroman.iesgn.org.key
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.crt  manuelloraroman.iesgn.org.csr  manuelloraroman.iesgn.org.key.secure
+ca.key  manuelloraroman.iesgn.org.key
+```
+
+Y ponemos los permisos:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 manuelloraroman.iesgn.org.key
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 manuelloraroman.iesgn.org.key.secure 
+```
+
+* Utiliza la clave anterior para generar un CSR, considerando que deseas 
+acceder al servidor tanto con el FQDN (tunombre.iesgn.org) como con el nombre 
+de host (implica el uso de las extensiones Alt Name).
+   
+* Envía la solicitud de firma a la entidad certificadora (su compañero).
+   
+* Recibe como respuesta un certificado X.509 para el servidor firmado y el 
+certificado de la autoridad certificadora.
+   
+* Configura tu servidor web con https en el puerto 443, haciendo que las 
+peticiones http se redireccionen a https (forzar https).
+   
+* Instala ahora un servidor nginx, y realiza la misma configuración que 
+anteriormente para que se sirva la página con HTTPS.
+
+
