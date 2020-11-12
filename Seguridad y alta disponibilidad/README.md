@@ -19,4 +19,4 @@ haciendo.
 
 [2.3. Práctica 3: Integridad, firmas y autenticación](./Practica3.md)
 
-[2.4. Práctica: Certificados digitales. HTTPS](.Certdigitales.md)
+[2.4. Práctica: Certificados digitales. HTTPS](.CertDigitales.md)
