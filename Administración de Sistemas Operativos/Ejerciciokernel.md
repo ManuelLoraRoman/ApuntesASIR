@@ -262,10 +262,24 @@ Nos aparece el siguiente error. En principio nos dice que no tenemos instalado
 uno de los paquetes _libelf-dev_, _libelf-devel_ o _elfutils-libelf-devel_.
 
 Instalaremos el paquete _libelf-dev_ y procederemos a ejecutar el comando de
-nuevo:
+nuevo. Después de un tiempo compilando, nos dejará los siguientes archivos:
+
+```
+manuel@debian:~/KernelLinux$ ls
+linux-4.19.152_4.19.152-1_amd64.buildinfo
+linux-4.19.152_4.19.152-1_amd64.changes
+linux-headers-4.19.152_4.19.152-1_amd64.deb
+linux-image-4.19.152_4.19.152-1_amd64.deb
+linux-image-4.19.152-dbg_4.19.152-1_amd64.deb
+linux-libc-dev_4.19.152-1_amd64.deb
+linux-source-4.19
+linux-source-4.19.tar.xz
+```
 
 9. Instala el núcleo resultando de la compilación, reinicia el equipo y 
 comprueba que funciona adecuadamente.
+
+Como cualquier paquete, lo instalaremos con dpkg.
 
 10. Si ha funcionado adecuadamente, utilizamos la configuración del paso 
 anterior como punto de partida y vamos a reducir el tamaño del mismo, para 

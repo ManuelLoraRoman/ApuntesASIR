@@ -15,3 +15,5 @@ Apuntes y prácticas de esta asignatura.
 [3.1. Práctica: Instalación local de un CMS PHP](./CMSPHP.md)
 
 [4. Ejercicio: Desplegamdo aplicaciones flask](./EjercicioFlask.md)
+
+[4.1. Despliegue de aplicaciones python](./DesplieguePython.md)

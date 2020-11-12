@@ -182,7 +182,82 @@ Warning: Permanently added '10.0.1.12' (ECDSA) to the list of known hosts.
 **Tarea 3:** Configuración de NAT en Dulcinea (Es necesario deshabilitar la 
 seguridad en todos los puertos de dulcinea) [[https://youtu.be/jqfILWzHrS0]]
     
+Iniciaremos openstack desde la terminal. Una vez lo tengamos configurado,
+vamos a eliminar el grupo de seguridad configurado desde openstack de la
+máquina Dulcinea de la siguiente manera:
 
+```
+(openstackclient) manuel@debian:~$ openstack server remove security group Dulcinea default
+```
+
+De esta manera comprobaremos que no tenemos conectividad con Dulcinea:
+
+```
+(openstackclient) manuel@debian:~$ ping 172.22.200.146
+PING 172.22.200.146 (172.22.200.146) 56(84) bytes of data.
+^C
+--- 172.22.200.146 ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 54ms
+
+(openstackclient) manuel@debian:~$ ssh -i .ssh/clave_openstack.pem debian@172.22.200.146
+^C
+```
+
+A continuación, vamos a listar los puertos y elegiremos la dirección MAC 
+correspondiente a la máquina Dulcinea, para después realizar:
+
+```
+(openstackclient) manuel@debian:~$ openstack port set --disable-port-security 17ad903c-923a-4dec-88e5-285022b42da1
+```
+
+Como hemos deshabilitado la seguridad de los puertos, volvemos a tener
+conectividad:
+
+```
+(openstackclient) manuel@debian:~$ ping 172.22.200.146
+PING 172.22.200.146 (172.22.200.146) 56(84) bytes of data.
+64 bytes from 172.22.200.146: icmp_seq=1 ttl=61 time=230 ms
+64 bytes from 172.22.200.146: icmp_seq=2 ttl=61 time=254 ms
+64 bytes from 172.22.200.146: icmp_seq=3 ttl=61 time=111 ms
+64 bytes from 172.22.200.146: icmp_seq=4 ttl=61 time=199 ms
+^C
+--- 172.22.200.146 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 4ms
+rtt min/avg/max/mdev = 110.790/198.613/254.447/54.348 ms
+(openstackclient) manuel@debian:~$ ssh -i .ssh/clave_openstack.pem debian@172.22.200.146
+Linux dulcinea 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Nov 10 17:19:39 2020 from 172.23.0.78
+debian@dulcinea:~$
+```
+
+Realizada la deshabilitación de puertos, vamos a pasar a la configuración de NAT.
+En Dulcinea, para que está pueda funcionar como dispositivo de NAT, hay que 
+activar el bit de forward:
+
+```
+root@dulcinea:/home/debian# echo 1 > /proc/sys/net/ipv4/ip_forward
+```
+
+Esta configuración es volátil, por lo tanto, la definiremos en el fichero
+_/etc/sysctl.conf_:
+
+```
+# Uncomment the next line to enable packet forwarding for IPv4
+net.ipv4.ip_forward=1
+```
+
+Ahora definimos en la cadena POSTROUTING lo siguiente:
+
+```
+iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -o eth0 -j MASQUERADE
+```
 
 **Tarea 4:** Definición de contraseña en todas las instancias (para poder 
 modificarla desde consola en caso necesario)
