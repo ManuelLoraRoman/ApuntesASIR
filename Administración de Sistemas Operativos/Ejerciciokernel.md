@@ -282,8 +282,10 @@ comprueba que funciona adecuadamente.
 Como cualquier paquete, lo instalaremos con el siguiente comando:
 
 ```
-sudo make install
+sudo dpkg -i linux-image-4.19.152_4.19.152-1_amd64.deb
 ```
+
+Y reiniciamos la máquina.
 
 10. Si ha funcionado adecuadamente, utilizamos la configuración del paso 
 anterior como punto de partida y vamos a reducir el tamaño del mismo, para 
