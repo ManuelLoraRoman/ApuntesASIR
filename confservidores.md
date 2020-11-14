@@ -23,7 +23,7 @@ Crearemos una red llamada _red de manuel-lora_ con las siguientes opciones:
 
 Y ya tendriamos nuestra red operativa:
 
-![alt text](../Imágenes/redmanuellora.png)
+![alt text](./Imágenes/redmanuellora.png)
    
 **Tarea 2:** Creación de las instancias
 
@@ -33,7 +33,7 @@ de Debian Buster 10.6, Ubuntu 20.04 LTS y CentOS 7, con una capacidad de
 
 Estas operaciones las podemos realizar en la pestaña de Openstack _COMPUTE --> Volúmenes --> Crear Volumen_
 
-![alt text](../Imágenes/volumenesstack.png)
+![alt text](./Imágenes/volumenesstack.png)
         
 	2.1. Dulcinea:
            2.1.1. Debian Buster sobre volumen con sabor m1.mini
@@ -45,7 +45,7 @@ Estas operaciones las podemos realizar en la pestaña de Openstack _COMPUTE --> 
 Crearemos la máquina con las respectivas configuracion anteriormente comentadas,
 y nos quedaría una máquina como esta:
 
-![alt text](../Imágenes/dulcinea1.png)
+![alt text](./Imágenes/dulcinea1.png)
 	
 Y una comprobación de conectividad:
 
@@ -95,7 +95,7 @@ marcados.
 
 Al final, la máquina Sancho debería quedar de la siguiente manera:
 
-![alt text](../Imágenes/sancho1.png)
+![alt text](./Imágenes/sancho1.png)
 
 Pasaremos el par de claves a la máquina de Dulcinea mediante scp para poder 
 realizar la conectividad desde ahí. 
@@ -153,7 +153,7 @@ ubuntu@sancho:~$
 
 Haremos lo mismo que con las otras dos máquinas y tendría que quedarnos así:
 
-![alt text](../Imágenes/quijote1.png)
+![alt text](./Imágenes/quijote1.png)
 
 Y la comprobación de la conectividad:
 

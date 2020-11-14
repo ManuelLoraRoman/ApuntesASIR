@@ -92,7 +92,7 @@ pandora.iesgn10.es
 de tu dominio, para asignar el nombre elegido a tu dirección IP publica. 
 Desde este momento el acceso a la máquina por ssh será utilizando ese nombre.
    
-![alt text](../Imágenes/zonadnsovh.png)
+![alt text](./Imágenes/zonadnsovh.png)
 
 ```
 manuel@debian:~$ ssh -i .ssh/manuelovh debian@pandora.iesgn10.es
