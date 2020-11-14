@@ -285,18 +285,43 @@ Como cualquier paquete, lo instalaremos con el siguiente comando:
 sudo dpkg -i linux-image-4.19.152_4.19.152-1_amd64.deb
 ```
 
-Y reiniciamos la máquina.
+Y reiniciamos la máquina. Tras instalarlo, como esta nueva configuración del
+kernel es igual a la que ya teníamos, todo sigue funcionando adecuadamente.
 
 10. Si ha funcionado adecuadamente, utilizamos la configuración del paso 
 anterior como punto de partida y vamos a reducir el tamaño del mismo, para 
 ello vamos a seleccionar elemento a elemento.
 
 ```
-cp /boot/config-... .config
-make clean
-make xconfig
+manuel@debian:~/KernelLinux/linux-source-4.19$ cp /boot/config-4.19.0-11-amd64 ../linux-source-4.19/.config
+manuel@debian:~/KernelLinux/linux-source-4.19$ make clean
+  CLEAN   .
+  CLEAN   arch/x86/entry/vdso
+  CLEAN   arch/x86/kernel/cpu
+  CLEAN   arch/x86/kernel
+  CLEAN   arch/x86/purgatory
+  CLEAN   arch/x86/realmode/rm
+  CLEAN   arch/x86/lib
+  CLEAN   certs
+  CLEAN   drivers/firmware/efi/libstub
+  CLEAN   drivers/scsi
+  CLEAN   drivers/tty/vt
+  CLEAN   kernel
+  CLEAN   lib/raid6
+  CLEAN   lib
+  CLEAN   net/wireless
+  CLEAN   security/apparmor
+  CLEAN   security/selinux
+  CLEAN   security/tomoyo
+  CLEAN   usr
+  CLEAN   arch/x86/boot/compressed
+  CLEAN   arch/x86/boot
+  CLEAN   arch/x86/tools
+  CLEAN   .tmp_versions
 ```
    
+Y procedemos con la ejecución del comando ```make xconfig```.
+Ahora vamos a pasar a describir el ejercicio al final de los enunciados. (*)
 11. Vuelve a contar el número de componentes que se han configurado para 
 incluir en vmlinuz o como módulos.
 
@@ -310,4 +335,66 @@ el arranque.
 
 14. Continuamos reiterando el proceso poco a poco hasta conseguir el núcleo lo 
 más pequeño posible que pueda arrancar en nuestro equipo.
+
+
+
+(*) Cuando ejecutamos dicho comando, nos aparecerá la siguiente ventana con los
+diferentes módulos. Iremos poco a poco retirando módulos hasta simplificar el
+kernel al máximo.
+
+
+En nuestra primera compilación retiramos los siguientes módulos:
+
+1. General Setup
+
+* CPU Isolation --> se asegura de que cuando la CPU está corriendo tareas
+críticas, no sea disturbado por ruido.
+
+* Support initial ramdisk/ramfs compressed using bzip2, LZMA, XZ, LZO y LZ4 --> permite
+la carga de RAM inicial codificado en bzip2, LZMA, XZ, LZO, LZ4 o con un buffer
+cpio.
+
+2. Processor type and features
+
+* Intel Low Power Subsystem Support
+
+* AMD ACPI2Platform devices support
+
+* Old AMD GART IOMMU support
+
+* IBM Calgary IOMMU support
+
+* Enable support for 16-bit segments
+
+* Numa Memory Allocation and Scheduler Support --> Old style AMD Opteron NUMA detection --> Habilita la detección de topología de nodo AMD NUMA.
+
+* Enable the LDT (local descriptor table) --> permite a los programas del
+usuario instalar LDT.
+
+* Linux guest support
+
+3. Networking support
+
+* Amateur Radio support --> Si queremos conectar nuestro Linux con una radio
+amateur.
+
+* Bluetooth subsystem support
+
+* RF switch subsystem support --> si queremos tener control sobre Switches RF.
+
+4. Device Drivers
+
+* Multimedia support --> Si queremos usar webcams o otros tipos de grabadores de
+video.
+
+5. File systems
+
+* Old quota format support
+
+Esta es la primera compilación realizada. Hemos pasado de tener 3381 a tener 
+2885. 
+
+
+
+
 
