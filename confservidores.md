@@ -674,7 +674,7 @@ debian@dulcinea:~$ echo `cat .ssh/id_rsa.pub` >> .ssh/authorized_keys
 Y ya podrían acceder a la máquina con dichas claves.
 El procedimiento es el mismo para todas las máquinas.
 
-**Tarea 10:**Realiza una actualización completa de todos los servidores
+**Tarea 10:** Realiza una actualización completa de todos los servidores
 
 ```
 debian@dulcinea:~$ sudo apt-get update
@@ -751,7 +751,7 @@ No packages marked for update
 [centos@quijote ~]$ 
 ```
 
-**Tarea 11:**Configura el servidor con el nombre de dominio 
+**Tarea 11:** Configura el servidor con el nombre de dominio 
 <nombre-usuario>.gonzalonazareno.org
 
 Configuraremos el fichero _/etc/hostname_ con el nombre de:
@@ -768,7 +768,7 @@ dirección 127...... con manuel-lora.gonzalonazareno.org.
 127.0.0.1 localhost
 ```
 
-**Tarea 12:**Hasta que no esté configurado el servidor DNS, incluye resolución 
+**Tarea 12:** Hasta que no esté configurado el servidor DNS, incluye resolución 
 estática en las tres instancias tanto usando nombre completo como hostname.
 
 Modicamos el fichero /etc/hosts y editamos las siguientes lineas:
@@ -855,7 +855,7 @@ rtt min/avg/max/mdev = 0.586/0.597/0.608/0.011 ms
 [centos@quijote ~]$ 
 ```
 
-**Tarea 13:**Asegúrate que el servidor tiene sincronizado su reloj utilizando 
+**Tarea 13:** Asegúrate que el servidor tiene sincronizado su reloj utilizando 
 un servidor NTP externo.
 
 
