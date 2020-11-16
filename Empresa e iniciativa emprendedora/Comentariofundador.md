@@ -1,6 +1,6 @@
 # Comentario película "El fundador"
 
-Título: EL MUNDO PARECE SER PARA LOS DESALMADOS
+** EL MUNDO PARECE SER PARA LOS DESALMADOS **
 
 Como trabajo sobre la franquicia, os propongo realizar un comentario 
 libre tras el visionado de esta película.
