@@ -20,3 +20,5 @@ Apuntes y plan de empresa de esta asignatura.
 [7. Video OLIGOPOLY](./Oligopolio.md)
 
 [8. Análisis Imagen Corporativa](./ImagenCorporativa.md)
+
+[9. Comentario de la película "El fundador"](./Comentariofundador.md)
