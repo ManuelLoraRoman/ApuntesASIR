@@ -124,29 +124,22 @@ El alumno que hace de Autoridad Certificadora deberá entregar una documentació
 * Crear su autoridad certificadora (generar el certificado digital de la CA). 
 Mostrar el fichero de configuración de la AC.
 
-En primer lugar crearemos la clave privada para la CA:
+En primer lugar , generaremos la clave para la CA:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -des3 -out ca.key 4096
-Generating RSA private key, 4096 bit long modulus (2 primes)
-.............................................++++
-...................................................................................................................................................................................................................................................................................................++++
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -out ca.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+....................+++++
+...............+++++
 e is 65537 (0x010001)
-Enter pass phrase for ca.key:
-140253891232896:error:28078065:UI routines:UI_set_result_ex:result too small:../crypto/ui/ui_lib.c:905:You must type in 4 to 1023 characters
-Enter pass phrase for ca.key:
-Verifying - Enter pass phrase for ca.key:
 manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
 ca.key
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 ca.key
 ```
 
-Ahora creamos el certificado. Este se mostrará en el nivel más alto cuando
-firmes otros certificado. Le pondremos cuando queremos que expire:
+Una vez tengamos eso hecho, generamos un certificado autofirmado para la CA:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
-Enter pass phrase for ca.key:
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -x509 -key ca.key -out ca.crt
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -157,43 +150,235 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [AU]:ES
 State or Province Name (full name) [Some-State]:Sevilla
 Locality Name (eg, city) []:Dos Hermanas
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Certificado Manuel Lora
-Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:Debian Manuel
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Lorax CA 
+Organizational Unit Name (eg, section) []:LORAX CA
+Common Name (e.g. server FQDN or YOUR name) []:
 Email Address []:manuelloraroman@gmail.com
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.crt  ca.key
 ```
 
+Crearemos ahora el fichero de configuración llamado _ca.cnf_ cuyo contenido contendrá
+lo siguiente:
 
+```
+# we use 'ca' as the default section because we're usign the ca command
+# we use 'ca' as the default section because we're usign the ca command
+[ ca ]
+default_ca = my_ca
 
+[ my_ca ]
+#  a text file containing the next serial number to use in hex. Mandatory.
+#  This file must be present and contain a valid serial number.
+serial = ./serial
+
+# the text database file to use. Mandatory. This file must be present though
+# initially it will be empty.
+database = ./index.txt
+
+# specifies the directory where new certificates will be placed. Mandatory.
+new_certs_dir = ./newcerts
+
+# the file containing the CA certificate. Mandatory
+certificate = ./ca.crt
+
+# the file contaning the CA private key. Mandatory
+private_key = ./ca.key
+
+# the message digest algorithm. Remember to not use MD5
+default_md = sha1
+
+# for how many days will the signed certificate be valid
+default_days = 365
+
+# a section with a set of variables corresponding to DN fields
+policy = my_policy
+
+[ my_policy ]
+# if the value is "match" then the field value must match the same field in the
+# CA certificate. If the value is "supplied" then it must be present.
+# Optional means it may be present. Any fields not mentioned are silently
+# deleted.
+countryName = match
+stateOrProvinceName = supplied
+organizationName = supplied
+commonName = supplied
+organizationalUnitName = optional
+commonName = supplied
+
+[ ca ]
+default_ca = my_ca
+
+[ my_ca ]
+#  a text file containing the next serial number to use in hex. Mandatory.
+#  This file must be present and contain a valid serial number.
+serial = ./serial
+
+# the text database file to use. Mandatory. This file must be present though
+# initially it will be empty.
+database = ./index.txt
+
+# specifies the directory where new certificates will be placed. Mandatory.
+new_certs_dir = ./newcerts
+
+# the file containing the CA certificate. Mandatory
+certificate = ./ca.crt
+
+# the file contaning the CA private key. Mandatory
+private_key = ./ca.key
+
+# the message digest algorithm. Remember to not use MD5
+default_md = sha1
+
+# for how many days will the signed certificate be valid
+default_days = 365
+
+# a section with a set of variables corresponding to DN fields
+policy = my_policy
+
+[ my_policy ]
+# if the value is "match" then the field value must match the same field in the
+# CA certificate. If the value is "supplied" then it must be present.
+# Optional means it may be present. Any fields not mentioned are silently
+# deleted.
+countryName = match
+stateOrProvinceName = supplied
+organizationName = supplied
+commonName = supplied
+organizationalUnitName = optional
+commonName = supplied
+```
+
+Y después de editarlo, ejecutaremos también estos otros:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ mkdir newcerts
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ touch index.txt
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ echo '01' > serial
+```
+
+Con esto hecho, ya podríamos firmas cualquier _.csr_ que nos llegue con el comando:
+
+```
+openssl x509 -req -in [.csr] -CA ca.crt -CAkey ca.key -CAcreateserial -out [.crt]
+```
 
 * Debe recibir el fichero CSR (Solicitud de Firmar un Certificado) de su 
 compañero, debe firmarlo y enviar el certificado generado a su compañero.
 
+Recibimos el fichero _.csr_ de nuestro compañero llamado _servidor.org.csr_.
+
+Ahora procederemos a firmalo y enviárselo de vuelta:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl ca -config ca.cnf -out servidor.org.crt -infiles servidor.org.csr
+Using configuration from ca.cnf
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'ES'
+stateOrProvinceName   :ASN.1 12:'Sevilla'
+localityName          :ASN.1 12:'Dos Hermanas'
+organizationName      :ASN.1 12:'Servidor Manuel'
+commonName            :ASN.1 12:'*.servidor.org'
+Certificate is to be certified until Nov 17 17:53:08 2021 GMT (365 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.cnf  index.txt       newcerts    servidor.org.crt  servidor.org.pubkey
+ca.crt  index.txt.attr  serial      servidor.org.csr
+ca.key  index.txt.old   serial.old  servidor.org.key
+```
+
+Otra forma de firmalo, es usando un fichero de configuración que permita el uso de
+AltNames como en el 2º ejemplo de la creación del _.csr_. El contenido de ese 
+fichero tiene el siguiente contenido:
+
+```
+basicConstraints=CA:FALSE
+subjectAltName= @alt_names
+subjectKeyIdentifier = hash
+
+[ alt_names ]
+DNS.1 = manuelloraroman.iesgn.org
+DNS.2 = www.manuelloraroman.iesgn.org
+DNS.3 = debian
+```
+
+Y firmamos el _.csr_ con dicha configuración:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl ca -config ca.cnf -out servidor.org.crt -extfile ca.extensions.cnf -in servidor.org.csr 
+Using configuration from ca.cnf
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+countryName           :PRINTABLE:'ES'
+stateOrProvinceName   :ASN.1 12:'Sevilla'
+localityName          :ASN.1 12:'Dos Hermanas'
+organizationName      :ASN.1 12:'Servidor Manuel'
+organizationalUnitName:ASN.1 12:'MLR'
+commonName            :ASN.1 12:'manuelloraroman.iesgn.org'
+Certificate is to be certified until Nov 17 18:33:38 2021 GMT (365 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.cnf             index.txt.attr      serial            servidor.org.key
+ca.crt             index.txt.attr.old  serial.old        servidor.org.pubkey
+ca.extensions.cnf  index.txt.old       servidor.conf
+ca.key             newcerts            servidor.org.crt
+index.txt          oats.key            servidor.org.csr
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ 
+```
+
 * ¿Qué otra información debes aportar a tu compañero para que éste configure 
 de forma adecuada su servidor web con el certificado generado?
+
+Se le debe adjuntar también el certificado de la CA para que funciones de la manera
+correcta.
 
 El alumno que hace de administrador del servidor web, debe entregar una 
 documentación que describa los siguientes puntos:
 
 * Crea una clave privada RSA de 4096 bits para identificar el servidor.
 
-Creamos la clave privada:
+Generamos la clave privada para el servidor:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -des3 -out manuelloraroman.iesgn.org.key 4096
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl genrsa -out servidor.org.key 4096
 Generating RSA private key, 4096 bit long modulus (2 primes)
-..............................................++++
-...................................................................................................++++
+...............................................................................................................................................................................................................++++
+.........................................................................................................................................................................................................................................................++++
 e is 65537 (0x010001)
-Enter pass phrase for manuelloraroman.iesgn.org.key:
-Verifying - Enter pass phrase for manuelloraroman.iesgn.org.key:
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.crt  ca.key  servidor.org.key
 ```
 
-Y creamos la solicitud:
+Extraeremos la clave pública de la clave privada:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -key manuelloraroman.iesgn.org.key -out manuelloraroman.iesgn.org.csr
-Enter pass phrase for manuelloraroman.iesgn.org.key:
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl rsa -in servidor.org.key -pubout -out servidor.org.pubkey
+writing RSA key
+```
+
+* Utiliza la clave anterior para generar un CSR, considerando que deseas 
+acceder al servidor tanto con el FQDN (tunombre.iesgn.org) como con el nombre 
+de host (implica el uso de las extensiones Alt Name).
+
+**1era forma:**
+   
+Utilizaremos dicha clave para la generación del CSR:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -key servidor.org.key -out servidor.org.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -204,50 +389,125 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [AU]:ES
 State or Province Name (full name) [Some-State]:Sevilla
 Locality Name (eg, city) []:Dos Hermanas
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Certificado Manuel Lora
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Servidor Manuel
 Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:manuelloraroman.iesgn.org
-Email Address []:manuelloraroman@gmail.com
+Common Name (e.g. server FQDN or YOUR name) []:*.servidor.org
+Email Address []:        
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
 A challenge password []:
 An optional company name []:
-```
-
-Si utilizamos algún servicio tipo Apache o Postfix, debemos eliminar la
-contraseña de la clave:
-
-```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl rsa -in manuelloraroman.iesgn.org.key -out manuelloraroman.iesgn.org.key.insecure
-Enter pass phrase for manuelloraroman.iesgn.org.key:
-writing RSA key
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ mv manuelloraroman.iesgn.org.key manuelloraroman.iesgn.org.key.secure
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ mv manuelloraroman.iesgn.org.key.insecure manuelloraroman.iesgn.org.key
 manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
-ca.crt  manuelloraroman.iesgn.org.csr  manuelloraroman.iesgn.org.key.secure
-ca.key  manuelloraroman.iesgn.org.key
+ca.crt  ca.key  servidor.org.csr  servidor.org.key  servidor.org.pubkey
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ 
 ```
 
-Y ponemos los permisos:
+**2ª forma:**
+
+Creamos un fichero de configuración con el siguiente contenido:
 
 ```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 manuelloraroman.iesgn.org.key
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ chmod 700 manuelloraroman.iesgn.org.key.secure 
+[req]
+default_bits = 2048
+default_keyfile = oats.key
+encrypt_key = no
+default_md = sha1
+utf8 = yes
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = ES
+ST = Sevilla
+L = Dos Hermanas
+O = Servidor Manuel
+OU = MLR               
+CN = manuelloraroman.iesgn.org
+
+[v3_req]
+basicConstraints=CA:FALSE
+subjectKeyIdentifier = hash
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = manuelloraroman.iesgn.org
+DNS.2 = www.manuelloraroman.iesgn.org
+DNS.3 = debian
 ```
 
-* Utiliza la clave anterior para generar un CSR, considerando que deseas 
-acceder al servidor tanto con el FQDN (tunombre.iesgn.org) como con el nombre 
-de host (implica el uso de las extensiones Alt Name).
-   
+Y crearemos la solicitud _.csr_ con la configuración creada:
+
+```
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl req -new -out servidor.org.csr -config servidor.conf 
+Generating a RSA private key
+.+++++
+......................................................................................................................................................+++++
+writing new private key to 'oats.key'
+-----
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
+ca.cnf  index.txt       newcerts  serial.old        servidor.org.key
+ca.crt  index.txt.attr  oats.key  servidor.conf     servidor.org.pubkey
+ca.key  index.txt.old   serial    servidor.org.csr
+manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ 
+```
+
+Y se nos creará la solicitud. Esta configuración permite el uso de AltNames.
+
 * Envía la solicitud de firma a la entidad certificadora (su compañero).
    
+Le enviamos dicha solicitud a nuestro compañero encargado de la autoridad
+certificadora.
+
 * Recibe como respuesta un certificado X.509 para el servidor firmado y el 
 certificado de la autoridad certificadora.
-   
+
+Hemos recibido de nuestro compañero (CA) tanto su certificado como el nuestro firmado.
+
 * Configura tu servidor web con https en el puerto 443, haciendo que las 
 peticiones http se redireccionen a https (forzar https).
    
+Crearemos una pagina web sencilla en nuestra máquina con apache2. El fichero de 
+configuración contendrá la siguiente información:
+
+```
+<VirtualHost *:80>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        ServerName manuelloraroman.iesgn.org
+
+        SSLEngine on
+        SSLCertificateFile /media/manuel/Datos/Cosas\ Seguridad/CA/servidor.org.crt
+        SSLCertificateKeyFile /media/manuel/Datos/Cosas\ Seguridad/CA/oats.key
+        SSLCertificateChainFile /media/manuel/Datos/Cosas\ Seguridad/CA/ca.crt
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+```
+
 * Instala ahora un servidor nginx, y realiza la misma configuración que 
 anteriormente para que se sirva la página con HTTPS.
 

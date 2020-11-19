@@ -14,14 +14,19 @@ server {
         listen 80;
         listen [::]:80;
         
-	root /var/www/html/drupal-9.0.7;
+	root /var/www/portal;
         
-	index index.php index.html index.htm index.nginx-debian.html;
+	index index.php index.html;
         
 	server_name portal.iesgn10.es;
         
 	location / {
                 try_files $uri $uri/ =404;
+        }
+
+	location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
         }
 }
 ```
@@ -74,6 +79,47 @@ MariaDB [(none)]> quit
 Bye
 ```
 
+Pasamos la base de datos de desarrollo mediante _scp_ a la máquina de OVH:
+
+```
+debian@drupal:~$ sudo mysqldump newdb > drupal.sql
+debian@drupal:~$ ls
+drupal-9.0.7  drupal.sql
+debian@drupal:~$ scp -i .ssh/manuelovh drupal.sql debian@146.59.196.92:/home/debian
+drupal.sql                                    100% 7355KB  71.8KB/s   01:42    
+debian@drupal:~$ 
+```
+
+Y modificamos el fichero /etc/mysql/mariadb.conf.d/50-server.cn y cambiamos
+el parámetro _bind-address_:
+
+```
+bind-address = 127.0.1.1
+```
+
+Y por último, modificamos el fichero /var/www/html/drupal-9.0.7/sites/default/settings.php_:
+
+```
+$databases['default']['default'] = array (
+  'database' => 'db_drupal',
+  'username' => 'user_drupal',
+  'password' => 'pass_drupal',
+  'prefix' => '',
+  'host' => '127.0.1.1',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+```
+
+Y cargamos la anterior base de datos:
+
+```
+debian@pandora:~$ mysql -u user_drupal -p bd_drupal < drupal.sql 
+Enter password: 
+debian@pandora:~$
+```
+
 4. Realiza la migración de la aplicación.
 
 Para migrar nuestro drupal desde el entorno de desarrollo a producción, 
@@ -119,14 +165,55 @@ UploadedFileFactoryInterface.php              100% 1110    14.5KB/s   00:00
 
 ```
 
+Una vez hecho esto, moveremos el directorio drupal a _/var/www_ y los llamaremos portal. 
+
+Y por último, modificamos el fichero /var/www/html/drupal-9.0.7/sites/default/settings.php_:
+
+```
+$databases['default']['default'] = array (
+  'database' => 'db_drupal',
+  'username' => 'user_drupal',
+  'password' => 'pass_drupal',
+  'prefix' => '',
+  'host' => '127.0.1.1',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+```
+
+Y cuando accedamos a la página portal.iesgn10.es deberiamos ver lo siguiente:
+
+![alt text](../Imágenes/ovhphp.png)
+
+
 5. Asegurate que las URL limpias de drupal siguen funcionando en nginx.
+
+Para asegurarnos de que las URLs limpias funcionen, debemos escribir las siguiente lineas en el fichero de configuración de portal:
+
+```
+	location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri @rewrite;
+        }
+
+	location @rewrite {
+                rewrite ^/(.*)$ /index.php?q=$1;
+        }
+
+```
 
 6. La aplicación debe estar disponible en la URL: portal.iesgnXX.es (Sin 
 ningún directorio).
 
+Podemos acceder desde el siguiente enlace: [portal.iesgn10.es](http://portal.iesgn10.es/)
+
 # Instalación / migración de la aplicación Nextcloud
 
 1. Instala la aplicación web Nextcloud en tu entorno de desarrollo.
+
+
 
 2. Realiza la migración al servidor en producción, para que la aplicación sea 
 accesible en la URL: www.iesgnXX.es/cloud
