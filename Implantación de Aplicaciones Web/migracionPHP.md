@@ -193,8 +193,6 @@ Para asegurarnos de que las URLs limpias funcionen, debemos escribir las siguien
 
 ```
 	location / {
-                # First attempt to serve request as file, then
-                # as directory, then fall back to displaying a 404.
                 try_files $uri @rewrite;
         }
 
@@ -213,13 +211,173 @@ Podemos acceder desde el siguiente enlace: [portal.iesgn10.es](http://portal.ies
 
 1. Instala la aplicación web Nextcloud en tu entorno de desarrollo.
 
+Para ello, en primer lugar necesitamos una pila LAMP.
 
+Nos descargaremos el paquete de Nextcloud:
+
+```
+debian@drupal:~$ wget https://download.nextcloud.com/server/releases/nextcloud-19.0.3.tar.bz2
+```
+
+Lo descomprimimos y lo movemos hacia el directorio raiz de nuestra aplicación.
+También, le cambiaremos el propietario a dicho directorio:
+
+```
+debian@drupal:~$ sudo chown -R www-data: /var/www/html/nextcloud/
+```
+
+Una vez hecho esto, ahora descargaremos los paquetes necesarios para que nextcloud funcione:
+
+```
+debian@drupal~$ sudo apt-get install -y php-bcmath php-curl php-gd php-gmp php-imagick php-intl php-mbstring php-xml php-zip php-mysql php-pgsql
+```
+
+Descargados los paquetes, activaremos el módulo rewrite y reiniciamos el servicio de apache2.
+
+COnfiguraremos el virtualhost con las siguiente lineas:
+
+```
+<Directory /var/www/html/nextcloud>
+        AllowOverride all
+        php_value memory_limit "512M"
+</Directory>
+```
+
+Y reiniciamos otra vez el servicio. Pasando ahora a la base de datos, crearemos una nueva llamada 
+nextcloud y un usuario con privilegios para la misma:
+
+```
+debian@drupal:~$ sudo mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 185
+Server version: 10.3.23-MariaDB-0+deb10u1 Debian 10
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+MariaDB [(none)]> CREATE DATABASE nextcloud charset utf8mb4 collate utf8mb4_unicode_ci;
+Query OK, 1 row affected (0.055 sec)
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON nextcloud.* to manuel@localhost;
+Query OK, 0 rows affected (0.063 sec)
+MariaDB [(none)]> exit
+Bye
+```
+
+Ahora nos meteremos en la dirección, y comprobamos que funciona correctamente.
+
+![alt text](../Imágenes/nextcloud1.png)
 
 2. Realiza la migración al servidor en producción, para que la aplicación sea 
 accesible en la URL: www.iesgnXX.es/cloud
 
+Realizamos el mismo procedimiento hecho con drupal.
+
+1º. Comprimimos el directorio nextcloud y lo pasamos mediante scp.
+
+2º. Hacemos un backup de nuestra base de datos y la pasamos mediante scp.
+
+3º. Cambiamos propietarios en caso necesario.
+
+4º. Creamos una base de datos nueva en el entorno de producción y volcamos los datos de desarrollo.
+
+Ahora editaremos el virtualhost de _www.iesgn10.es_ con las siguiente líneas:
+
+```
+server {
+        listen 80;
+        listen [::]:80;
+
+        root /var/www/html/iesgn10;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name www.iesgn10.es;
+
+        location / {
+                return 301 /principal/index.html;
+                try_files $uri $uri/ =404;
+                location /principal {
+                        autoindex on;
+                }
+        }
+	location /nextcloud {
+                error_page 403 = /nextloud/core/templates/403.php;
+                error_page 404 = /nextcloud/core/templates/404.php;
+
+                rewrite ^/nextcloud/caldav(.*)$ /remote.php/caldav$1 redirect;
+                rewrite ^/nextcloud/carddav(.*)$ /remote.php/carddav$1 redirect;
+                rewrite ^/nextcloud/webdav(.*)$ /remote.php/webdav$1 redirect;
+
+                rewrite ^(/nextcloud/core/doc[^\/]+/)$ $1/index.html;
+
+                try_files $uri $uri/ index.php;
+
+
+        }
+	location ~ \.php(?:$|/) {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_nam$
+                fastcgi_param PATH_INFO $fastcgi_path_info;
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+                include snippets/fastcgi-php.conf;
+
+        }
+}
+```
+
+Después, nos iremos al fichero _/var/www/html/iesgn10/nextcloud/config/config.php_ y lo editaremos con
+la información referente a nuestra base de datos:
+
+```
+<?php
+$CONFIG = array (
+  'instanceid' => 'octn9fwo7oqb',
+  'passwordsalt' => 'bYMRQQOSCwJEvzaDj0LH4RsMJTaXqy',
+  'secret' => 'Lx5vA2Q3f+cg2Eywaxh4FwzHH0if5u9m3+bLgstW+F0soz/P',
+  'trusted_domains' => 
+  array (
+    0 => 'www.iesgn10.es',
+  ),
+  'datadirectory' => '/var/www/html/iesgn10/nextcloud/data',
+  'dbtype' => 'mysql',
+  'version' => '19.0.3.1',
+  'overwrite.cli.url' => 'http://www.iesgn10.es/nextcloud',
+  'dbname' => 'nextcloud',
+  'dbhost' => '127.0.1.1',
+  'dbport' => '',
+  'dbtableprefix' => 'oc_',
+  'mysql.utf8mb4' => true,
+  'dbuser' => 'nextcloud',
+  'dbpassword' => '1q2w3e4r5t',
+  'installed' => true,
+);
+
+```
+
+Procederemos también a instalar los paquetes que nos hemos instalado en desarrollo y probaremos el
+funcionamiento:
+
+![alt text](../Imágenes/nextcloud3.png)
+
+![alt text](../Imágenes/nextcloud2.png)
+
+Se puede acceder mediante el enlace: [www.iesgn10.es/nextcloud]()
+
 3. Instala en un ordenador el cliente de nextcloud y realiza la configuración 
 adecuada para acceder a "tu nube".
+
+Nos descargaremos la aplicación de Escritorio para Windows de la página principal de [Nextcloud](https://nextcloud.com/install/#install-clients)
+
+Una vez hecho eso, lo instalamos y cuando lo ejecutemos, nos pedirá que seleccionemos una dirección 
+donde está el servidor de nextcloud. Ponemos la dirección: _http://www.iesgn10.es/nextcloud_. Acto 
+seguido nos pedirá que iniciemos sesión con un usuario registrado en el servidor nuestro. Cuando lo
+hayamos hecho, ya tendríamos acceso a dicho servidor:
+
+![alt text](../Imágenes/nextcloud4.png)
+
+![alt text](../Imágenes/nextcloud5.png)
+
+![alt text](../Imágenes/nextcloud6.png)
 
 Documenta de la forma más precisa posible cada uno de los pasos que has dado, 
 y entrega pruebas de funcionamiento para comprobar el proceso que has realizado.
