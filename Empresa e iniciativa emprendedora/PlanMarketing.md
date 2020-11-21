@@ -68,4 +68,36 @@ C) **Política de Precios**
 Mi-Grate ofrece dos planes indicativos, los cuales se pueden adaptar a las 
 necesidades del cliente:
 
-* Plan básico de gestión:
+* **Plan básico de gestión**:
+
+Este plan incluye las siguientes tareas:
+
+* Decidir el SGBD idóneo, instalación y configuración.
+
+* Supervisión del diseño lógico del mismo.
+
+* Realizar el diseño físico de la base de datos, es decir, estructura de
+almacenamiento.
+
+* Creación del esquema del mismo.
+
+* Creación de cuentas de usuarios y gestión de los mismos.
+
+* Detección y resolución de problemas de rendimiento de la BD usando
+herramientos de monitorización.
+
+
+
+* **Plan avanzado de gestión**:
+
+* Las características anteriores.
+
+* Realización de copias de seguridad y auditorias de seguridad.
+
+* Migraciones e importaciones/ exportaciones.
+
+* Recuperación de instancias dañadas.
+
+* Instalación y configuración middleware de la BD.
+
+
