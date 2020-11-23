@@ -263,40 +263,22 @@ Con esto hecho, ya podríamos firmas cualquier _.csr_ que nos llegue con el coma
 openssl x509 -req -in [.csr] -CA ca.crt -CAkey ca.key -CAcreateserial -out [.crt]
 ```
 
+Aunque también se puede firmar con la configuración creada anteriormente:
+
+```
+openssl ca -config ca.cnf -out [.crt]```
+```
+
 * Debe recibir el fichero CSR (Solicitud de Firmar un Certificado) de su 
 compañero, debe firmarlo y enviar el certificado generado a su compañero.
 
 Recibimos el fichero _.csr_ de nuestro compañero llamado _servidor.org.csr_.
 
-Ahora procederemos a firmalo y enviárselo de vuelta:
+Ahora procederemos a firmalo y enviárselo de vuelta.
 
-```
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl ca -config ca.cnf -out servidor.org.crt -infiles servidor.org.csr
-Using configuration from ca.cnf
-Check that the request matches the signature
-Signature ok
-The Subject's Distinguished Name is as follows
-countryName           :PRINTABLE:'ES'
-stateOrProvinceName   :ASN.1 12:'Sevilla'
-localityName          :ASN.1 12:'Dos Hermanas'
-organizationName      :ASN.1 12:'Servidor Manuel'
-commonName            :ASN.1 12:'*.servidor.org'
-Certificate is to be certified until Nov 17 17:53:08 2021 GMT (365 days)
-Sign the certificate? [y/n]:y
-
-
-1 out of 1 certificate requests certified, commit? [y/n]y
-Write out database with 1 new entries
-Data Base Updated
-manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ ls
-ca.cnf  index.txt       newcerts    servidor.org.crt  servidor.org.pubkey
-ca.crt  index.txt.attr  serial      servidor.org.csr
-ca.key  index.txt.old   serial.old  servidor.org.key
-```
-
-Otra forma de firmalo, es usando un fichero de configuración que permita el uso de
-AltNames como en el 2º ejemplo de la creación del _.csr_. El contenido de ese 
-fichero tiene el siguiente contenido:
+Otra forma de firmalo, es usando un fichero de configuración que permita el uso 
+de AltNames como en el 2º ejemplo de la creación del _.csr_. El contenido de 
+ese fichero tiene el siguiente contenido:
 
 ```
 basicConstraints=CA:FALSE
@@ -309,7 +291,8 @@ DNS.2 = www.manuelloraroman.iesgn.org
 DNS.3 = debian
 ```
 
-Y firmamos el _.csr_ con dicha configuración:
+Pero firmaremos el _.csr_ con la configuración comentada en el anterior 
+apartado:
 
 ```
 manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$ openssl ca -config ca.cnf -out servidor.org.crt -extfile ca.extensions.cnf -in servidor.org.csr 
@@ -342,7 +325,7 @@ manuel@debian:/media/manuel/Datos/Cosas Seguridad/CA$
 * ¿Qué otra información debes aportar a tu compañero para que éste configure 
 de forma adecuada su servidor web con el certificado generado?
 
-Se le debe adjuntar también el certificado de la CA para que funciones de la manera
+Se le debe adjuntar también el certificado de la CA para que funcione de manera 
 correcta.
 
 El alumno que hace de administrador del servidor web, debe entregar una 
@@ -511,4 +494,32 @@ configuración contendrá la siguiente información:
 * Instala ahora un servidor nginx, y realiza la misma configuración que 
 anteriormente para que se sirva la página con HTTPS.
 
+Crearemos ahora la misma página, pero ahora con nginx. La configuración necesaria para el uso de 
+certificados es la siguiente:
 
+```
+server {
+
+	listen 80;
+	listen [::]:80;
+	
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html index.php;
+	
+        server_name manuelloraroman.iesgn.org;
+	
+	ssl	on;
+	ssl_certificate	/media/manuel/Datos/Cosas\ Seguridad/CA/servidor.org.crt
+	ssl_certificate_key	/media/manuel/Datos/Cosas\ Seguridad/CA/oats.key
+
+	location / {	
+			try_files $uri $uri/ =404;
+	}
+}
+```
+
+En la configuración de Nginx, el certificado firmado nuestro, ha de contener tanto el .csr firmado, como
+el certificado de la CA.
+
+Y reiniciamos el servicio.
