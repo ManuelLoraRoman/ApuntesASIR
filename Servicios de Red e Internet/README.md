@@ -31,3 +31,5 @@
 [5.5. Práctica: Servidor Web Nginx](./Nginx.md)
 
 [6. Instalación de un Servidor LEMP](./LEMP.md)
+
+[7. DNS](./DNS.md)
