@@ -62,7 +62,7 @@ sería la ruta del directorio donde se encontraría la página del man de FIGlet
 BINDIR  = /usr/games
 
 # Where the man page should be put
-MANDIR  = /usr/man/man6
+MANDIR  = /usr/share/man
 ```
 
 Y una vez hecho esto, hacemos un ```make install```.
