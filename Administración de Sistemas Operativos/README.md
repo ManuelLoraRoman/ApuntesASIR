@@ -13,3 +13,5 @@
 [2.1. Compilación de un programa en C utilizando un Makefile](./MakefileC.md)
 
 [2.2. Compilación de un kérnel linux a medida](./Ejerciciokernel.md)
+
+[3. Actualización de CentOS7 a CentOS8](./CentOS7a8.md)
