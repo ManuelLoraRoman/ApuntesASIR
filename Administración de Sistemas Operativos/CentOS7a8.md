@@ -1282,18 +1282,13 @@ Error: Transaction failed
 [root@centos-prueba ~]#
 ```
 
-Y al reiniciar el sistema, comprobamos la versión del sistema:
+Y al reiniciar el sistema, comprobamos la versión del sistema y la versión del kernel:
 
 ```
-[root@centos-prueba centos]# cat /etc/redhat-release
-CentOS Linux release 8.2.2004 (Core)
-```
-
-Y comprobamos también el kernel actualizado:
-
-```
-[centos@centos-prueba ~]$ uname -r
+[centos@quijote ~]$ uname -r
 4.18.0-193.28.1.el8_2.x86_64
+[centos@quijote ~]$ cat /etc/redhat-release
+CentOS Linux release 8.2.2004 (Core) 
+[centos@quijote ~]$ 
 ```
-
 Y ya tendríamos el upgrade a CentOS 8.
