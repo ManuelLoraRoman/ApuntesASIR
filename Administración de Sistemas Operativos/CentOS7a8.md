@@ -839,30 +839,447 @@ Eliminado:
 Ya actualizado, nos instalaremos la última versión del kernel de CentOS 8:
 
 ```
-[root@centos-prueba centos]# dnf install -y kernel-core
-CentOS-8 - AppStream                            4.4 kB/s | 4.3 kB     00:00    
-CentOS-8 - Base                                  14 kB/s | 3.9 kB     00:00    
-Dependencias resueltas.
-================================================================================
- Paquete                  Arq.      Versión                     Repo       Tam.
-================================================================================
-Instalando:
- kernel-core              x86_64    4.18.0-193.28.1.el8_2       BaseOS     28 M
-Actualizando:
- dracut                   x86_64    049-70.git20200228.el8      BaseOS    365 k
- dracut-config-generic    x86_64    049-70.git20200228.el8      BaseOS     52 k
- dracut-config-rescue     x86_64    049-70.git20200228.el8      BaseOS     54 k
- dracut-network           x86_64    049-70.git20200228.el8      BaseOS    100 k
-.
-.
-.
-¡Listo!
+[root@centos-prueba ~]# dnf install -y kernel-core
+Last metadata expiration check: 0:12:18 ago on Wed 25 Nov 2020 08:18:24 AM UTC.
+Dependencies resolved.
+=========================================================================================================
+ Package                 Architecture       Version                             Repository          Size
+=========================================================================================================
+Installing:
+ kernel-core             x86_64             4.18.0-193.28.1.el8_2               BaseOS              28 M
+
+Transaction Summary
+=========================================================================================================
+Install  1 Package
+
+Total download size: 28 M
+Installed size: 60 M
+Downloading Packages:
+kernel-core-4.18.0-193.28.1.el8_2.x86_64.rpm                             4.6 MB/s |  28 MB     00:06    
+---------------------------------------------------------------------------------------------------------
+Total                                                                    4.3 MB/s |  28 MB     00:06     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                 1/1 
+  Installing       : kernel-core-4.18.0-193.28.1.el8_2.x86_64                                        1/1 
+  Running scriptlet: kernel-core-4.18.0-193.28.1.el8_2.x86_64                                        1/1 
+  Verifying        : kernel-core-4.18.0-193.28.1.el8_2.x86_64                                        1/1 
+
+Installed:
+  kernel-core-4.18.0-193.28.1.el8_2.x86_64                                                               
+
+Complete!
 ```
 
 E instalaremos los paquetes mínimos del sistema:
 
 ```
 [root@centos-prueba centos]# dnf -y groupupdate "Core" "Minimal Install" --allowerasing --skip-broken
+Last metadata expiration check: 0:14:03 ago on Wed 25 Nov 2020 08:18:24 AM UTC.
+Dependencies resolved.
+=========================================================================================================
+ Package                         Arch      Version                                    Repository    Size
+=========================================================================================================
+Installing group/module packages:
+ NetworkManager                  x86_64    1:1.22.8-5.el8_2                           BaseOS       2.3 M
+ NetworkManager-team             x86_64    1:1.22.8-5.el8_2                           BaseOS       136 k
+ NetworkManager-tui              x86_64    1:1.22.8-5.el8_2                           BaseOS       306 k
+ biosdevname                     x86_64    0.7.3-2.el8                                BaseOS        44 k
+ dnf-plugin-spacewalk            noarch    2.8.5-11.module_el8.1.0+211+ad6c0bc7       AppStream     24 k
+ dnf-plugins-core                noarch    4.0.12-4.el8_2                             BaseOS        64 k
+ firewalld                       noarch    0.8.0-4.el8                                BaseOS       482 k
+ iprutils                        x86_64    2.4.18.1-1.el8                             BaseOS       256 k
+ iwl100-firmware                 noarch    39.31.5.1-97.el8.1                         BaseOS       167 k
+ iwl1000-firmware                noarch    1:39.31.5.1-97.el8.1                       BaseOS       230 k
+ iwl105-firmware                 noarch    18.168.6.1-97.el8.1                        BaseOS       251 k
+ iwl135-firmware                 noarch    18.168.6.1-97.el8.1                        BaseOS       260 k
+ iwl2000-firmware                noarch    18.168.6.1-97.el8.1                        BaseOS       254 k
+ iwl2030-firmware                noarch    18.168.6.1-97.el8.1                        BaseOS       262 k
+ iwl3160-firmware                noarch    1:25.30.13.0-97.el8.1                      BaseOS       1.7 M
+ iwl3945-firmware                noarch    15.32.2.9-97.el8.1                         BaseOS       105 k
+ iwl4965-firmware                noarch    228.61.2.24-97.el8.1                       BaseOS       118 k
+ iwl5000-firmware                noarch    8.83.5.1_1-97.el8.1                        BaseOS       311 k
+ iwl5150-firmware                noarch    8.24.2.2-97.el8.1                          BaseOS       163 k
+ iwl6000-firmware                noarch    9.221.4.1-97.el8.1                         BaseOS       184 k
+ iwl6000g2a-firmware             noarch    18.168.6.1-97.el8.1                        BaseOS       326 k
+ iwl6050-firmware                noarch    41.28.5.1-97.el8.1                         BaseOS       259 k
+ iwl7260-firmware                noarch    1:25.30.13.0-97.el8.1                      BaseOS        10 M
+ lsscsi                          x86_64    0.30-1.el8                                 BaseOS        69 k
+ plymouth                        x86_64    0.9.3-16.el8                               AppStream    114 k
+ prefixdevname                   x86_64    0.1.0-6.el8                                BaseOS       466 k
+ rng-tools                       x86_64    6.8-3.el8                                  BaseOS        59 k
+ sssd-common                     x86_64    2.2.3-20.el8                               BaseOS       1.5 M
+ sssd-kcm                        x86_64    2.2.3-20.el8                               BaseOS       218 k
+ yum                             noarch    4.2.17-7.el8_2                             BaseOS       191 k
+Installing dependencies:
+ NetworkManager-libnm            x86_64    1:1.22.8-5.el8_2                           BaseOS       1.7 M
+ c-ares                          x86_64    1.13.0-5.el8                               BaseOS        93 k
+ firewalld-filesystem            noarch    0.8.0-4.el8                                BaseOS        75 k
+ ipset                           x86_64    7.1-1.el8                                  BaseOS        45 k
+ ipset-libs                      x86_64    7.1-1.el8                                  BaseOS        71 k
+ iptables-ebtables               x86_64    1.8.4-10.el8_2.1                           BaseOS        70 k
+ libdhash                        x86_64    0.5.0-39.el8                               BaseOS        34 k
+ libgudev                        x86_64    232-4.el8                                  BaseOS        33 k
+ libldb                          x86_64    2.0.7-3.el8                                BaseOS       180 k
+ libsss_certmap                  x86_64    2.2.3-20.el8                               BaseOS       136 k
+ libsss_idmap                    x86_64    2.2.3-20.el8                               BaseOS       107 k
+ libsss_nss_idmap                x86_64    2.2.3-20.el8                               BaseOS       114 k
+ libtalloc                       x86_64    2.2.0-7.el8                                BaseOS        49 k
+ libtdb                          x86_64    1.4.2-2.el8                                BaseOS        59 k
+ libtevent                       x86_64    0.10.0-2.el8                               BaseOS        49 k
+ nftables                        x86_64    1:0.9.3-12.el8_2.1                         BaseOS       311 k
+ plymouth-core-libs              x86_64    0.9.3-16.el8                               AppStream    115 k
+ plymouth-scripts                x86_64    0.9.3-16.el8                               AppStream     42 k
+ python3-dateutil                noarch    1:2.6.1-6.el8                              BaseOS       251 k
+ python3-dnf-plugin-spacewalk    noarch    2.8.5-11.module_el8.1.0+211+ad6c0bc7       AppStream     30 k
+ python3-dnf-plugins-core        noarch    4.0.12-4.el8_2                             BaseOS       204 k
+ python3-firewall                noarch    0.8.0-4.el8                                BaseOS       389 k
+ python3-hwdata                  noarch    2.3.6-3.el8                                AppStream     39 k
+ python3-librepo                 x86_64    1.11.0-3.el8_2                             BaseOS        52 k
+ python3-netifaces               x86_64    0.10.6-4.el8                               AppStream     25 k
+ python3-newt                    x86_64    0.52.20-11.el8                             AppStream     64 k
+ python3-nftables                x86_64    1:0.9.3-12.el8_2.1                         BaseOS        25 k
+ python3-pyOpenSSL               noarch    18.0.0-1.el8                               AppStream    103 k
+ python3-rhn-client-tools        x86_64    2.8.16-13.module_el8.1.0+211+ad6c0bc7      AppStream    108 k
+ python3-rhnlib                  noarch    2.8.6-8.module_el8.1.0+211+ad6c0bc7        AppStream     77 k
+ python3-slip                    noarch    0.6.4-11.el8                               BaseOS        39 k
+ python3-slip-dbus               noarch    0.6.4-11.el8                               BaseOS        39 k
+ rhn-client-tools                x86_64    2.8.16-13.module_el8.1.0+211+ad6c0bc7      AppStream    385 k
+ sssd-client                     x86_64    2.2.3-20.el8                               BaseOS       171 k
+Installing weak dependencies:
+ libsss_autofs                   x86_64    2.2.3-20.el8                               BaseOS       105 k
+ libsss_sudo                     x86_64    2.2.3-20.el8                               BaseOS       103 k
+ sssd-nfs-idmap                  x86_64    2.2.3-20.el8                               BaseOS       101 k
+Enabling module streams:
+ satellite-5-client                        1.0                                                          
+Installing Environment Groups:
+ Minimal Install                                                                                        
+Installing Groups:
+ Core                                                                                                   
+
+Transaction Summary
+=========================================================================================================
+Install  67 Packages
+
+Total download size: 26 M
+Installed size: 143 M
+Downloading Packages:
+(1/67): plymouth-core-libs-0.9.3-16.el8.x86_64.rpm                       636 kB/s | 115 kB     00:00    
+(2/67): plymouth-0.9.3-16.el8.x86_64.rpm                                 624 kB/s | 114 kB     00:00    
+(3/67): plymouth-scripts-0.9.3-16.el8.x86_64.rpm                         5.6 MB/s |  42 kB     00:00    
+(4/67): dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch  49 kB/s |  24 kB     00:00    
+(5/67): python3-hwdata-2.3.6-3.el8.noarch.rpm                            126 kB/s |  39 kB     00:00    
+(6/67): python3-dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc  94 kB/s |  30 kB     00:00    
+(7/67): python3-netifaces-0.10.6-4.el8.x86_64.rpm                        230 kB/s |  25 kB     00:00    
+(8/67): python3-newt-0.52.20-11.el8.x86_64.rpm                           406 kB/s |  64 kB     00:00    
+(9/67): python3-pyOpenSSL-18.0.0-1.el8.noarch.rpm                        560 kB/s | 103 kB     00:00    
+(10/67): python3-rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7. 750 kB/s | 108 kB     00:00    
+(11/67): python3-rhnlib-2.8.6-8.module_el8.1.0+211+ad6c0bc7.noarch.rpm   478 kB/s |  77 kB     00:00    
+(12/67): rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64.r 1.9 MB/s | 385 kB     00:00    
+(13/67): NetworkManager-team-1.22.8-5.el8_2.x86_64.rpm                   884 kB/s | 136 kB     00:00    
+(14/67): NetworkManager-1.22.8-5.el8_2.x86_64.rpm                        4.7 MB/s | 2.3 MB     00:00    
+(15/67): biosdevname-0.7.3-2.el8.x86_64.rpm                              1.0 MB/s |  44 kB     00:00    
+(16/67): NetworkManager-tui-1.22.8-5.el8_2.x86_64.rpm                    1.1 MB/s | 306 kB     00:00    
+(17/67): NetworkManager-libnm-1.22.8-5.el8_2.x86_64.rpm                  3.3 MB/s | 1.7 MB     00:00    
+(18/67): dnf-plugins-core-4.0.12-4.el8_2.noarch.rpm                      2.5 MB/s |  64 kB     00:00    
+(19/67): firewalld-filesystem-0.8.0-4.el8.noarch.rpm                     622 kB/s |  75 kB     00:00    
+(20/67): firewalld-0.8.0-4.el8.noarch.rpm                                2.7 MB/s | 482 kB     00:00    
+(21/67): iprutils-2.4.18.1-1.el8.x86_64.rpm                              4.5 MB/s | 256 kB     00:00    
+(22/67): c-ares-1.13.0-5.el8.x86_64.rpm                                  293 kB/s |  93 kB     00:00    
+(23/67): ipset-7.1-1.el8.x86_64.rpm                                      403 kB/s |  45 kB     00:00    
+(24/67): ipset-libs-7.1-1.el8.x86_64.rpm                                 642 kB/s |  71 kB     00:00    
+(25/67): iwl100-firmware-39.31.5.1-97.el8.1.noarch.rpm                   4.6 MB/s | 167 kB     00:00    
+(26/67): iwl1000-firmware-39.31.5.1-97.el8.1.noarch.rpm                  5.4 MB/s | 230 kB     00:00    
+(27/67): iwl105-firmware-18.168.6.1-97.el8.1.noarch.rpm                  8.5 MB/s | 251 kB     00:00    
+(28/67): iptables-ebtables-1.8.4-10.el8_2.1.x86_64.rpm                   627 kB/s |  70 kB     00:00    
+(29/67): iwl135-firmware-18.168.6.1-97.el8.1.noarch.rpm                  1.5 MB/s | 260 kB     00:00    
+(30/67): iwl2030-firmware-18.168.6.1-97.el8.1.noarch.rpm                 1.8 MB/s | 262 kB     00:00    
+(31/67): iwl2000-firmware-18.168.6.1-97.el8.1.noarch.rpm                 1.2 MB/s | 254 kB     00:00    
+(32/67): iwl4965-firmware-228.61.2.24-97.el8.1.noarch.rpm                6.7 MB/s | 118 kB     00:00    
+(33/67): iwl3945-firmware-15.32.2.9-97.el8.1.noarch.rpm                  867 kB/s | 105 kB     00:00    
+(34/67): iwl5000-firmware-8.83.5.1_1-97.el8.1.noarch.rpm                 1.4 MB/s | 311 kB     00:00    
+(35/67): iwl3160-firmware-25.30.13.0-97.el8.1.noarch.rpm                 5.3 MB/s | 1.7 MB     00:00    
+(36/67): iwl5150-firmware-8.24.2.2-97.el8.1.noarch.rpm                   869 kB/s | 163 kB     00:00    
+(37/67): iwl6000g2a-firmware-18.168.6.1-97.el8.1.noarch.rpm              8.9 MB/s | 326 kB     00:00    
+(38/67): iwl6000-firmware-9.221.4.1-97.el8.1.noarch.rpm                  1.4 MB/s | 184 kB     00:00    
+(39/67): iwl6050-firmware-41.28.5.1-97.el8.1.noarch.rpm                  1.6 MB/s | 259 kB     00:00    
+(40/67): libdhash-0.5.0-39.el8.x86_64.rpm                                301 kB/s |  34 kB     00:00    
+(41/67): libgudev-232-4.el8.x86_64.rpm                                   235 kB/s |  33 kB     00:00    
+(42/67): libldb-2.0.7-3.el8.x86_64.rpm                                   913 kB/s | 180 kB     00:00    
+(43/67): libsss_autofs-2.2.3-20.el8.x86_64.rpm                           564 kB/s | 105 kB     00:00    
+(44/67): libsss_certmap-2.2.3-20.el8.x86_64.rpm                          502 kB/s | 136 kB     00:00    
+(45/67): libsss_idmap-2.2.3-20.el8.x86_64.rpm                            422 kB/s | 107 kB     00:00    
+(46/67): libsss_nss_idmap-2.2.3-20.el8.x86_64.rpm                        295 kB/s | 114 kB     00:00    
+(47/67): libsss_sudo-2.2.3-20.el8.x86_64.rpm                             310 kB/s | 103 kB     00:00    
+(48/67): iwl7260-firmware-25.30.13.0-97.el8.1.noarch.rpm                 8.6 MB/s |  10 MB     00:01    
+(49/67): libtalloc-2.2.0-7.el8.x86_64.rpm                                303 kB/s |  49 kB     00:00    
+(50/67): libtdb-1.4.2-2.el8.x86_64.rpm                                   353 kB/s |  59 kB     00:00    
+(51/67): libtevent-0.10.0-2.el8.x86_64.rpm                               415 kB/s |  49 kB     00:00    
+(52/67): lsscsi-0.30-1.el8.x86_64.rpm                                    576 kB/s |  69 kB     00:00    
+(53/67): prefixdevname-0.1.0-6.el8.x86_64.rpm                            5.8 MB/s | 466 kB     00:00    
+(54/67): nftables-0.9.3-12.el8_2.1.x86_64.rpm                            1.8 MB/s | 311 kB     00:00    
+(55/67): python3-dateutil-2.6.1-6.el8.noarch.rpm                         1.5 MB/s | 251 kB     00:00    
+(56/67): python3-dnf-plugins-core-4.0.12-4.el8_2.noarch.rpm              690 kB/s | 204 kB     00:00    
+(57/67): python3-firewall-0.8.0-4.el8.noarch.rpm                         1.2 MB/s | 389 kB     00:00    
+(58/67): python3-librepo-1.11.0-3.el8_2.x86_64.rpm                       196 kB/s |  52 kB     00:00    
+(59/67): python3-nftables-0.9.3-12.el8_2.1.x86_64.rpm                    238 kB/s |  25 kB     00:00    
+(60/67): rng-tools-6.8-3.el8.x86_64.rpm                                  6.0 MB/s |  59 kB     00:00    
+(61/67): python3-slip-0.6.4-11.el8.noarch.rpm                            357 kB/s |  39 kB     00:00    
+(62/67): python3-slip-dbus-0.6.4-11.el8.noarch.rpm                       359 kB/s |  39 kB     00:00    
+(63/67): sssd-client-2.2.3-20.el8.x86_64.rpm                             1.3 MB/s | 171 kB     00:00    
+(64/67): sssd-kcm-2.2.3-20.el8.x86_64.rpm                                1.1 MB/s | 218 kB     00:00    
+(65/67): sssd-nfs-idmap-2.2.3-20.el8.x86_64.rpm                          678 kB/s | 101 kB     00:00    
+(66/67): sssd-common-2.2.3-20.el8.x86_64.rpm                             5.1 MB/s | 1.5 MB     00:00    
+(67/67): yum-4.2.17-7.el8_2.noarch.rpm                                   1.4 MB/s | 191 kB     00:00    
+---------------------------------------------------------------------------------------------------------
+Total                                                                    5.3 MB/s |  26 MB     00:04     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                 1/1 
+  Installing       : libtalloc-2.2.0-7.el8.x86_64                                                   1/67 
+  Installing       : libtevent-0.10.0-2.el8.x86_64                                                  2/67 
+  Installing       : libtdb-1.4.2-2.el8.x86_64                                                      3/67 
+  Running scriptlet: libtdb-1.4.2-2.el8.x86_64                                                      3/67 
+  Installing       : libldb-2.0.7-3.el8.x86_64                                                      4/67 
+  Installing       : libsss_certmap-2.2.3-20.el8.x86_64                                             5/67 
+  Running scriptlet: libsss_certmap-2.2.3-20.el8.x86_64                                             5/67 
+  Installing       : libsss_idmap-2.2.3-20.el8.x86_64                                               6/67 
+  Running scriptlet: libsss_idmap-2.2.3-20.el8.x86_64                                               6/67 
+  Installing       : libdhash-0.5.0-39.el8.x86_64                                                   7/67 
+  Installing       : NetworkManager-libnm-1:1.22.8-5.el8_2.x86_64                                   8/67 
+  Running scriptlet: NetworkManager-libnm-1:1.22.8-5.el8_2.x86_64                                   8/67 
+  Running scriptlet: NetworkManager-1:1.22.8-5.el8_2.x86_64                                         9/67 
+  Installing       : NetworkManager-1:1.22.8-5.el8_2.x86_64                                         9/67 
+  Running scriptlet: NetworkManager-1:1.22.8-5.el8_2.x86_64                                         9/67 
+  Installing       : sssd-nfs-idmap-2.2.3-20.el8.x86_64                                            10/67 
+  Installing       : python3-slip-0.6.4-11.el8.noarch                                              11/67 
+  Installing       : python3-slip-dbus-0.6.4-11.el8.noarch                                         12/67 
+  Installing       : python3-librepo-1.11.0-3.el8_2.x86_64                                         13/67 
+  Installing       : python3-dateutil-1:2.6.1-6.el8.noarch                                         14/67 
+  Installing       : python3-dnf-plugins-core-4.0.12-4.el8_2.noarch                                15/67 
+  Installing       : dnf-plugins-core-4.0.12-4.el8_2.noarch                                        16/67 
+  Installing       : nftables-1:0.9.3-12.el8_2.1.x86_64                                            17/67 
+  Running scriptlet: nftables-1:0.9.3-12.el8_2.1.x86_64                                            17/67 
+  Installing       : python3-nftables-1:0.9.3-12.el8_2.1.x86_64                                    18/67 
+  Installing       : python3-firewall-0.8.0-4.el8.noarch                                           19/67 
+  Installing       : libsss_sudo-2.2.3-20.el8.x86_64                                               20/67 
+  Running scriptlet: libsss_sudo-2.2.3-20.el8.x86_64                                               20/67 
+  Installing       : libsss_nss_idmap-2.2.3-20.el8.x86_64                                          21/67 
+  Running scriptlet: libsss_nss_idmap-2.2.3-20.el8.x86_64                                          21/67 
+  Installing       : sssd-client-2.2.3-20.el8.x86_64                                               22/67 
+  Running scriptlet: sssd-client-2.2.3-20.el8.x86_64                                               22/67 
+  Installing       : libsss_autofs-2.2.3-20.el8.x86_64                                             23/67 
+  Installing       : libgudev-232-4.el8.x86_64                                                     24/67 
+  Installing       : iptables-ebtables-1.8.4-10.el8_2.1.x86_64                                     25/67 
+  Running scriptlet: iptables-ebtables-1.8.4-10.el8_2.1.x86_64                                     25/67 
+  Installing       : ipset-libs-7.1-1.el8.x86_64                                                   26/67 
+  Running scriptlet: ipset-libs-7.1-1.el8.x86_64                                                   26/67 
+  Installing       : ipset-7.1-1.el8.x86_64                                                        27/67 
+  Installing       : firewalld-filesystem-0.8.0-4.el8.noarch                                       28/67 
+  Installing       : c-ares-1.13.0-5.el8.x86_64                                                    29/67 
+  Running scriptlet: c-ares-1.13.0-5.el8.x86_64                                                    29/67 
+  Running scriptlet: sssd-common-2.2.3-20.el8.x86_64                                               30/67 
+  Installing       : sssd-common-2.2.3-20.el8.x86_64                                               30/67 
+  Running scriptlet: sssd-common-2.2.3-20.el8.x86_64                                               30/67 
+  Installing       : python3-pyOpenSSL-18.0.0-1.el8.noarch                                         31/67 
+  Installing       : python3-rhnlib-2.8.6-8.module_el8.1.0+211+ad6c0bc7.noarch                     32/67 
+  Installing       : python3-newt-0.52.20-11.el8.x86_64                                            33/67 
+  Installing       : python3-netifaces-0.10.6-4.el8.x86_64                                         34/67 
+  Installing       : python3-hwdata-2.3.6-3.el8.noarch                                             35/67 
+  Installing       : rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64                 36/67 
+  Running scriptlet: rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64                 36/67 
+  Installing       : python3-rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64         37/67 
+  Installing       : python3-dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch      38/67 
+  Running scriptlet: dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch              39/67 
+  Installing       : dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch              39/67 
+  Running scriptlet: dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch              39/67 
+  Installing       : plymouth-core-libs-0.9.3-16.el8.x86_64                                        40/67 
+  Running scriptlet: plymouth-core-libs-0.9.3-16.el8.x86_64                                        40/67 
+  Installing       : plymouth-scripts-0.9.3-16.el8.x86_64                                          41/67 
+  Installing       : plymouth-0.9.3-16.el8.x86_64                                                  42/67 
+  Installing       : sssd-kcm-2.2.3-20.el8.x86_64                                                  43/67 
+  Running scriptlet: sssd-kcm-2.2.3-20.el8.x86_64                                                  43/67 
+  Installing       : firewalld-0.8.0-4.el8.noarch                                                  44/67 
+  Running scriptlet: firewalld-0.8.0-4.el8.noarch                                                  44/67 
+  Installing       : NetworkManager-team-1:1.22.8-5.el8_2.x86_64                                   45/67 
+  Installing       : NetworkManager-tui-1:1.22.8-5.el8_2.x86_64                                    46/67 
+  Installing       : yum-4.2.17-7.el8_2.noarch                                                     47/67 
+Error unpacking rpm package yum-4.2.17-7.el8_2.noarch
+  Running scriptlet: rng-tools-6.8-3.el8.x86_64                                                    48/67 
+error: unpacking of archive failed on file /etc/yum/protected.d: cpio: File from package already exists as a directory in system
+error: yum-4.2.17-7.el8_2.noarch: install failed
+
+  Installing       : rng-tools-6.8-3.el8.x86_64                                                    48/67 
+  Running scriptlet: rng-tools-6.8-3.el8.x86_64                                                    48/67 
+  Installing       : prefixdevname-0.1.0-6.el8.x86_64                                              49/67 
+  Installing       : lsscsi-0.30-1.el8.x86_64                                                      50/67 
+  Installing       : iwl7260-firmware-1:25.30.13.0-97.el8.1.noarch                                 51/67 
+  Installing       : iwl6050-firmware-41.28.5.1-97.el8.1.noarch                                    52/67 
+  Installing       : iwl6000g2a-firmware-18.168.6.1-97.el8.1.noarch                                53/67 
+  Installing       : iwl6000-firmware-9.221.4.1-97.el8.1.noarch                                    54/67 
+  Installing       : iwl5150-firmware-8.24.2.2-97.el8.1.noarch                                     55/67 
+  Installing       : iwl5000-firmware-8.83.5.1_1-97.el8.1.noarch                                   56/67 
+  Installing       : iwl4965-firmware-228.61.2.24-97.el8.1.noarch                                  57/67 
+  Installing       : iwl3945-firmware-15.32.2.9-97.el8.1.noarch                                    58/67 
+  Installing       : iwl3160-firmware-1:25.30.13.0-97.el8.1.noarch                                 59/67 
+  Installing       : iwl2030-firmware-18.168.6.1-97.el8.1.noarch                                   60/67 
+  Installing       : iwl2000-firmware-18.168.6.1-97.el8.1.noarch                                   61/67 
+  Installing       : iwl135-firmware-18.168.6.1-97.el8.1.noarch                                    62/67 
+  Installing       : iwl105-firmware-18.168.6.1-97.el8.1.noarch                                    63/67 
+  Installing       : iwl1000-firmware-1:39.31.5.1-97.el8.1.noarch                                  64/67 
+  Installing       : iwl100-firmware-39.31.5.1-97.el8.1.noarch                                     65/67 
+  Installing       : iprutils-2.4.18.1-1.el8.x86_64                                                66/67 
+  Running scriptlet: iprutils-2.4.18.1-1.el8.x86_64                                                66/67 
+  Installing       : biosdevname-0.7.3-2.el8.x86_64                                                67/67 
+  Running scriptlet: sssd-common-2.2.3-20.el8.x86_64                                               67/67 
+  Running scriptlet: biosdevname-0.7.3-2.el8.x86_64                                                67/67 
+  Verifying        : dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch               1/67 
+  Verifying        : plymouth-0.9.3-16.el8.x86_64                                                   2/67 
+  Verifying        : plymouth-core-libs-0.9.3-16.el8.x86_64                                         3/67 
+  Verifying        : plymouth-scripts-0.9.3-16.el8.x86_64                                           4/67 
+  Verifying        : python3-dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch       5/67 
+  Verifying        : python3-hwdata-2.3.6-3.el8.noarch                                              6/67 
+  Verifying        : python3-netifaces-0.10.6-4.el8.x86_64                                          7/67 
+  Verifying        : python3-newt-0.52.20-11.el8.x86_64                                             8/67 
+  Verifying        : python3-pyOpenSSL-18.0.0-1.el8.noarch                                          9/67 
+  Verifying        : python3-rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64         10/67 
+  Verifying        : python3-rhnlib-2.8.6-8.module_el8.1.0+211+ad6c0bc7.noarch                     11/67 
+  Verifying        : rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64                 12/67 
+  Verifying        : NetworkManager-1:1.22.8-5.el8_2.x86_64                                        13/67 
+  Verifying        : NetworkManager-libnm-1:1.22.8-5.el8_2.x86_64                                  14/67 
+  Verifying        : NetworkManager-team-1:1.22.8-5.el8_2.x86_64                                   15/67 
+  Verifying        : NetworkManager-tui-1:1.22.8-5.el8_2.x86_64                                    16/67 
+  Verifying        : biosdevname-0.7.3-2.el8.x86_64                                                17/67 
+  Verifying        : c-ares-1.13.0-5.el8.x86_64                                                    18/67 
+  Verifying        : dnf-plugins-core-4.0.12-4.el8_2.noarch                                        19/67 
+  Verifying        : firewalld-0.8.0-4.el8.noarch                                                  20/67 
+  Verifying        : firewalld-filesystem-0.8.0-4.el8.noarch                                       21/67 
+  Verifying        : iprutils-2.4.18.1-1.el8.x86_64                                                22/67 
+  Verifying        : ipset-7.1-1.el8.x86_64                                                        23/67 
+  Verifying        : ipset-libs-7.1-1.el8.x86_64                                                   24/67 
+  Verifying        : iptables-ebtables-1.8.4-10.el8_2.1.x86_64                                     25/67 
+  Verifying        : iwl100-firmware-39.31.5.1-97.el8.1.noarch                                     26/67 
+  Verifying        : iwl1000-firmware-1:39.31.5.1-97.el8.1.noarch                                  27/67 
+  Verifying        : iwl105-firmware-18.168.6.1-97.el8.1.noarch                                    28/67 
+  Verifying        : iwl135-firmware-18.168.6.1-97.el8.1.noarch                                    29/67 
+  Verifying        : iwl2000-firmware-18.168.6.1-97.el8.1.noarch                                   30/67 
+  Verifying        : iwl2030-firmware-18.168.6.1-97.el8.1.noarch                                   31/67 
+  Verifying        : iwl3160-firmware-1:25.30.13.0-97.el8.1.noarch                                 32/67 
+  Verifying        : iwl3945-firmware-15.32.2.9-97.el8.1.noarch                                    33/67 
+  Verifying        : iwl4965-firmware-228.61.2.24-97.el8.1.noarch                                  34/67 
+  Verifying        : iwl5000-firmware-8.83.5.1_1-97.el8.1.noarch                                   35/67 
+  Verifying        : iwl5150-firmware-8.24.2.2-97.el8.1.noarch                                     36/67 
+  Verifying        : iwl6000-firmware-9.221.4.1-97.el8.1.noarch                                    37/67 
+  Verifying        : iwl6000g2a-firmware-18.168.6.1-97.el8.1.noarch                                38/67 
+  Verifying        : iwl6050-firmware-41.28.5.1-97.el8.1.noarch                                    39/67 
+  Verifying        : iwl7260-firmware-1:25.30.13.0-97.el8.1.noarch                                 40/67 
+  Verifying        : libdhash-0.5.0-39.el8.x86_64                                                  41/67 
+  Verifying        : libgudev-232-4.el8.x86_64                                                     42/67 
+  Verifying        : libldb-2.0.7-3.el8.x86_64                                                     43/67 
+  Verifying        : libsss_autofs-2.2.3-20.el8.x86_64                                             44/67 
+  Verifying        : libsss_certmap-2.2.3-20.el8.x86_64                                            45/67 
+  Verifying        : libsss_idmap-2.2.3-20.el8.x86_64                                              46/67 
+  Verifying        : libsss_nss_idmap-2.2.3-20.el8.x86_64                                          47/67 
+  Verifying        : libsss_sudo-2.2.3-20.el8.x86_64                                               48/67 
+  Verifying        : libtalloc-2.2.0-7.el8.x86_64                                                  49/67 
+  Verifying        : libtdb-1.4.2-2.el8.x86_64                                                     50/67 
+  Verifying        : libtevent-0.10.0-2.el8.x86_64                                                 51/67 
+  Verifying        : lsscsi-0.30-1.el8.x86_64                                                      52/67 
+  Verifying        : nftables-1:0.9.3-12.el8_2.1.x86_64                                            53/67 
+  Verifying        : prefixdevname-0.1.0-6.el8.x86_64                                              54/67 
+  Verifying        : python3-dateutil-1:2.6.1-6.el8.noarch                                         55/67 
+  Verifying        : python3-dnf-plugins-core-4.0.12-4.el8_2.noarch                                56/67 
+  Verifying        : python3-firewall-0.8.0-4.el8.noarch                                           57/67 
+  Verifying        : python3-librepo-1.11.0-3.el8_2.x86_64                                         58/67 
+  Verifying        : python3-nftables-1:0.9.3-12.el8_2.1.x86_64                                    59/67 
+  Verifying        : python3-slip-0.6.4-11.el8.noarch                                              60/67 
+  Verifying        : python3-slip-dbus-0.6.4-11.el8.noarch                                         61/67 
+  Verifying        : rng-tools-6.8-3.el8.x86_64                                                    62/67 
+  Verifying        : sssd-client-2.2.3-20.el8.x86_64                                               63/67 
+  Verifying        : sssd-common-2.2.3-20.el8.x86_64                                               64/67 
+  Verifying        : sssd-kcm-2.2.3-20.el8.x86_64                                                  65/67 
+  Verifying        : sssd-nfs-idmap-2.2.3-20.el8.x86_64                                            66/67 
+  Verifying        : yum-4.2.17-7.el8_2.noarch                                                     67/67 
+
+Installed:
+  NetworkManager-1:1.22.8-5.el8_2.x86_64                                                                 
+  NetworkManager-libnm-1:1.22.8-5.el8_2.x86_64                                                           
+  NetworkManager-team-1:1.22.8-5.el8_2.x86_64                                                            
+  NetworkManager-tui-1:1.22.8-5.el8_2.x86_64                                                             
+  biosdevname-0.7.3-2.el8.x86_64                                                                         
+  c-ares-1.13.0-5.el8.x86_64                                                                             
+  dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch                                       
+  dnf-plugins-core-4.0.12-4.el8_2.noarch                                                                 
+  firewalld-0.8.0-4.el8.noarch                                                                           
+  firewalld-filesystem-0.8.0-4.el8.noarch                                                                
+  iprutils-2.4.18.1-1.el8.x86_64                                                                         
+  ipset-7.1-1.el8.x86_64                                                                                 
+  ipset-libs-7.1-1.el8.x86_64                                                                            
+  iptables-ebtables-1.8.4-10.el8_2.1.x86_64                                                              
+  iwl100-firmware-39.31.5.1-97.el8.1.noarch                                                              
+  iwl1000-firmware-1:39.31.5.1-97.el8.1.noarch                                                           
+  iwl105-firmware-18.168.6.1-97.el8.1.noarch                                                             
+  iwl135-firmware-18.168.6.1-97.el8.1.noarch                                                             
+  iwl2000-firmware-18.168.6.1-97.el8.1.noarch                                                            
+  iwl2030-firmware-18.168.6.1-97.el8.1.noarch                                                            
+  iwl3160-firmware-1:25.30.13.0-97.el8.1.noarch                                                          
+  iwl3945-firmware-15.32.2.9-97.el8.1.noarch                                                             
+  iwl4965-firmware-228.61.2.24-97.el8.1.noarch                                                           
+  iwl5000-firmware-8.83.5.1_1-97.el8.1.noarch                                                            
+  iwl5150-firmware-8.24.2.2-97.el8.1.noarch                                                              
+  iwl6000-firmware-9.221.4.1-97.el8.1.noarch                                                             
+  iwl6000g2a-firmware-18.168.6.1-97.el8.1.noarch                                                         
+  iwl6050-firmware-41.28.5.1-97.el8.1.noarch                                                             
+  iwl7260-firmware-1:25.30.13.0-97.el8.1.noarch                                                          
+  libdhash-0.5.0-39.el8.x86_64                                                                           
+  libgudev-232-4.el8.x86_64                                                                              
+  libldb-2.0.7-3.el8.x86_64                                                                              
+  libsss_autofs-2.2.3-20.el8.x86_64                                                                      
+  libsss_certmap-2.2.3-20.el8.x86_64                                                                     
+  libsss_idmap-2.2.3-20.el8.x86_64                                                                       
+  libsss_nss_idmap-2.2.3-20.el8.x86_64                                                                   
+  libsss_sudo-2.2.3-20.el8.x86_64                                                                        
+  libtalloc-2.2.0-7.el8.x86_64                                                                           
+  libtdb-1.4.2-2.el8.x86_64                                                                              
+  libtevent-0.10.0-2.el8.x86_64                                                                          
+  lsscsi-0.30-1.el8.x86_64                                                                               
+  nftables-1:0.9.3-12.el8_2.1.x86_64                                                                     
+  plymouth-0.9.3-16.el8.x86_64                                                                           
+  plymouth-core-libs-0.9.3-16.el8.x86_64                                                                 
+  plymouth-scripts-0.9.3-16.el8.x86_64                                                                   
+  prefixdevname-0.1.0-6.el8.x86_64                                                                       
+  python3-dateutil-1:2.6.1-6.el8.noarch                                                                  
+  python3-dnf-plugin-spacewalk-2.8.5-11.module_el8.1.0+211+ad6c0bc7.noarch                               
+  python3-dnf-plugins-core-4.0.12-4.el8_2.noarch                                                         
+  python3-firewall-0.8.0-4.el8.noarch                                                                    
+  python3-hwdata-2.3.6-3.el8.noarch                                                                      
+  python3-librepo-1.11.0-3.el8_2.x86_64                                                                  
+  python3-netifaces-0.10.6-4.el8.x86_64                                                                  
+  python3-newt-0.52.20-11.el8.x86_64                                                                     
+  python3-nftables-1:0.9.3-12.el8_2.1.x86_64                                                             
+  python3-pyOpenSSL-18.0.0-1.el8.noarch                                                                  
+  python3-rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64                                  
+  python3-rhnlib-2.8.6-8.module_el8.1.0+211+ad6c0bc7.noarch                                              
+  python3-slip-0.6.4-11.el8.noarch                                                                       
+  python3-slip-dbus-0.6.4-11.el8.noarch                                                                  
+  rhn-client-tools-2.8.16-13.module_el8.1.0+211+ad6c0bc7.x86_64                                          
+  rng-tools-6.8-3.el8.x86_64                                                                             
+  sssd-client-2.2.3-20.el8.x86_64                                                                        
+  sssd-common-2.2.3-20.el8.x86_64                                                                        
+  sssd-kcm-2.2.3-20.el8.x86_64                                                                           
+  sssd-nfs-idmap-2.2.3-20.el8.x86_64                                                                     
+
+Failed:
+  yum-4.2.17-7.el8_2.noarch                                                                              
+
+Error: Transaction failed
+[root@centos-prueba ~]#
 ```
 
 Y al reiniciar el sistema, comprobamos la versión del sistema:
@@ -870,6 +1287,13 @@ Y al reiniciar el sistema, comprobamos la versión del sistema:
 ```
 [root@centos-prueba centos]# cat /etc/redhat-release
 CentOS Linux release 8.2.2004 (Core)
+```
+
+Y comprobamos también el kernel actualizado:
+
+```
+[centos@centos-prueba ~]$ uname -r
+4.18.0-193.28.1.el8_2.x86_64
 ```
 
 Y ya tendríamos el upgrade a CentOS 8.
