@@ -1292,3 +1292,8 @@ CentOS Linux release 8.2.2004 (Core)
 [centos@quijote ~]$ 
 ```
 Y ya tendríamos el upgrade a CentOS 8.
+
+**¡¡¡IMPORTANTE!!!**
+
+Cuando reiniciamos el sistema, debido a que la máquina está en openstack, la red de Quijote se reiniciará
+por el servicio de _cloud.init_ y habría que configurarla de nuevo.
