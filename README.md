@@ -1,3 +1,5 @@
+<div align="center">
+
 # Apuntes
 
 Esto es una recopilación de apuntes del 2º año del curso
@@ -31,4 +33,4 @@ de ASIR en el Gonzalo Nazareno.
 
 [12. Instalación y configuración inicial de los servidores](./confservidores.md)
 
-
+</div>
