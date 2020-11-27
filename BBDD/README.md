@@ -14,4 +14,6 @@ Apuntes, boletines y prácticas de BBDD.
 
 [2.3. Ejercicios Varios: Boletin 1](./EjerciciosVarios)
 
+[2.4. Fase 4: Hotel Rural](./fase4.md)
+
 </div>
