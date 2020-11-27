@@ -3,6 +3,7 @@
 Esto es una recopilación de apuntes del 2º año del curso
 de ASIR en el Gonzalo Nazareno.
 
+## Materias
 
 [1. Administración de Sistemas Gestores de Bases de datos](./BBDD)
 
@@ -17,6 +18,8 @@ de ASIR en el Gonzalo Nazareno.
 [6. Seguridad y alta disponibilidad](./SAD)
 
 [7. Servicios de Red e Internet](./SRI)
+
+## Cursos y guías sobre instalación y demás
 
 [8. Introducción a MarkDown](./IntroduccionAMarkDown.md)
 
