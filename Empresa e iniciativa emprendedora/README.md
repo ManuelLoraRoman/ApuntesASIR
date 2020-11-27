@@ -1,5 +1,6 @@
-# Empresa e iniciativa emprendedora
+<div align="center">
 
+# Empresa e iniciativa emprendedora
 
 Apuntes y plan de empresa de esta asignatura.
 
@@ -22,3 +23,5 @@ Apuntes y plan de empresa de esta asignatura.
 [8. Análisis Imagen Corporativa](./ImagenCorporativa.md)
 
 [9. Comentario de la película "El fundador"](./Comentariofundador.md)
+
+</div>

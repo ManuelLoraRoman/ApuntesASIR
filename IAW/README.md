@@ -1,3 +1,5 @@
+<div align="center">
+
 # Implantación de Aplicaciones Web
 
 Apuntes y prácticas de esta asignatura.
@@ -19,3 +21,5 @@ Apuntes y prácticas de esta asignatura.
 [4.1. Despliegue de aplicaciones python](./DesplieguePython.md)
 
 [5. Instalación/migración de aplicaciones web PHP](./migracionPHP.md)
+
+</div>

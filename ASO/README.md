@@ -1,3 +1,5 @@
+<div align="center">
+
 # Administración de Sistemas Operativos
 
 [1. Documentación de la instalación de Debian](./DocumentacionDebian.md)
@@ -15,3 +17,5 @@
 [2.2. Compilación de un kérnel linux a medida](./Ejerciciokernel.md)
 
 [3. Actualización de CentOS7 a CentOS8](./CentOS7a8.md)
+
+</div>

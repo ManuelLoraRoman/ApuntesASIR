@@ -1,5 +1,6 @@
-# Administración de Sistemas Gestores de Bases de Datos
+<div align="center">
 
+# Administración de Sistemas Gestores de Bases de Datos
 
 Apuntes, boletines y prácticas de BBDD.
 
@@ -12,3 +13,5 @@ Apuntes, boletines y prácticas de BBDD.
 [2.2. Ejercicio 2: Boletin 1](./Ejercicio_2)
 
 [2.3. Ejercicios Varios: Boletin 1](./EjerciciosVarios)
+
+</div>

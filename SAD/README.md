@@ -1,3 +1,5 @@
+<div align="center">
+
 # Apuntes y Prácticas de Seguridad Informática
 
 Aquí se encuentran apuntes que vayamos dando en clase, y las prácticas que vaya
@@ -20,3 +22,5 @@ haciendo.
 [2.3. Práctica 3: Integridad, firmas y autenticación](./Practica3.md)
 
 [2.4. Práctica: Certificados digitales. HTTPS](./CertDigitales.md)
+
+</div>
