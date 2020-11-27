@@ -4,19 +4,19 @@ Esto es una recopilación de apuntes del 2º año del curso
 de ASIR en el Gonzalo Nazareno.
 
 
-[1. Administración de Sistemas Gestores de Bases de datos](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Administraci%C3%B3n%20de%20Sistemas%20Gestores%20de%20Bases%20de%20Datos)
+[1. Administración de Sistemas Gestores de Bases de datos](./BBDD)
 
-[2. Administración de Sistemas Operativos](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Administraci%C3%B3n%20de%20Sistemas%20Operativos)
+[2. Administración de Sistemas Operativos](./ASO)
 
 [3. Empresa e iniciativa emprendedora](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Empresa%20e%20iniciativa%20emprendedora)
 
-[4. HLC](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/HLC)
+[4. Introducción al Cloud Computing](./HLC)
 
-[5. Implantación de Aplicaciones Web](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Implantaci%C3%B3n%20de%20Aplicaciones%20Web)
+[5. Implantación de Aplicaciones Web](./IAW)
 
-[6. Seguridad y alta disponibilidad](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Seguridad%20y%20alta%20disponibilidad)
+[6. Seguridad y alta disponibilidad](./SAD)
 
-[7. Servicios de Red e Internet](https://github.com/ManuelLoraRoman/ApuntesASIR/tree/master/Servicios%20de%20Red%20e%20Internet)
+[7. Servicios de Red e Internet](./SRI)
 
 [8. Introducción a MarkDown](./IntroduccionAMarkDown.md)
 
