@@ -20,12 +20,26 @@ Al fichero de configuración del servidor web, debemos añadirle las siguientes
 líneas:
 
 ```
-location ~ /\.well-known/acme-challenge/ {
-        allow all;
-}
+listen [::]:443 ssl ipv6only=on;
+listen 443 ssl;
+ssl_certificate /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem;
+include /etc/letsencrypt/options-ssl-nginx.conf; 
+ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-location / {
-	return 301 https://......;
+server {
+    if ($host = portal.iesgn10.es) {
+        return 301 https://$host$request_uri;
+    }
+
+
+        listen 80;
+        listen [::]:80;
+
+        server_name portal.iesgn10.es;
+    return 404;
+
+
 }
 ```
 
@@ -111,76 +125,82 @@ Created symlink /etc/systemd/system/timers.target.wants/certbot.timer → /lib/s
 Processing triggers for man-db (2.8.5-2) ...
 ```
 
-Descargado el paquete, modificaremos el fichero de configuración de nuestro virtualhost con las
-siguientes lineas:
-
-```
-location ~ /.well-known {
-	allow all;
-}
-```
-
-Y pasamos a la creación del certificado usando certbot:
-
-```
-cerbot certonly
-```
-
 Antes de seguir, debemos parar el servicio de nginx, ya que Certbot se coloca en el puerto 80 para
 escuchar al servicio de nuestra página.
 
-Se nos aparecerá un menú interactivo en el cual tendremos que ir introduciendo información:
+Nos instalaremos a continuación el paquete ```python-certbot-nginx``` y este paquete permitirá la 
+integración de HTTPS automáticamente.
 
 ```
-debian@pandora:~$ sudo certbot certonly
+debian@pandora:~$ sudo certbot --nginx -d portal.iesgn10.es
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
-
-How would you like to authenticate with the ACME CA?
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-1: Spin up a temporary webserver (standalone)
-2: Place files in webroot directory (webroot)
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 1
-Plugins selected: Authenticator standalone, Installer None
-Please enter in your domain name(s) (comma and/or space separated)  (Enter 'c'
-to cancel): www.iesgn10.es
+Plugins selected: Authenticator nginx, Installer nginx
 Obtaining a new certificate
 Performing the following challenges:
-http-01 challenge for www.iesgn10.es
+http-01 challenge for portal.iesgn10.es
 Waiting for verification...
 Cleaning up challenges
+Deploying Certificate to VirtualHost /etc/nginx/sites-enabled/portal
+
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: No redirect - Make no further changes to the webserver configuration.
+2: Redirect - Make all requests redirect to secure HTTPS access. Choose this for
+new sites, or if you're confident your site works on HTTPS. You can undo this
+change by editing your web server's configuration.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+Deploying Certificate to VirtualHost /etc/nginx/sites-enabled/portal
+nginx: [error] invalid PID number "" in "/run/nginx.pid"
+
+Please choose whether or not to redirect HTTP traffic to HTTPS, removing HTTP access.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: No redirect - Make no further changes to the webserver configuration.
+2: Redirect - Make all requests redirect to secure HTTPS access. Choose this for
+new sites, or if you're confident your site works on HTTPS. You can undo this
+change by editing your web server's configuration.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+Redirecting all traffic on port 80 to ssl in /etc/nginx/sites-enabled/portal
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Your existing certificate has been successfully renewed, and the new certificate
+has been installed.
+
+The new certificate covers the following domains: https://portal.iesgn10.es
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=portal.iesgn10.es
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem
+   /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem
    Your key file has been saved at:
-   /etc/letsencrypt/live/www.iesgn10.es/privkey.pem
-   Your cert will expire on 2021-02-23. To obtain a new or tweaked
-   version of this certificate in the future, simply run certbot
-   again. To non-interactively renew *all* of your certificates, run
-   "certbot renew"
+   /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem
+   Your cert will expire on 2021-02-27. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot again
+   with the "certonly" option. To non-interactively renew *all* of
+   your certificates, run "certbot renew"
  - If you like Certbot, please consider supporting our work by:
 
    Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
    Donating to EFF:                    https://eff.org/donate-le
-```
 
-Hecho esto, podremos volver a activar el servicio de nginx y visualizar la información del certificado:
-
-```
-debian@pandora:~$ sudo certbot certificates
-Saving debug log to /var/log/letsencrypt/letsencrypt.log
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Found the following certs:
-  Certificate Name: www.iesgn10.es
-    Domains: www.iesgn10.es
-    Expiry Date: 2021-02-23 12:16:06+00:00 (VALID: 89 days)
-    Certificate Path: /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem
-    Private Key Path: /etc/letsencrypt/live/www.iesgn10.es/privkey.pem
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 debian@pandora:~$
 ```
+
+Una vez hayamos terminado con la instalación del certificado, ejecutaremos el siguiente comando:
+
+```
+debian@pandora:~$ sudo fuser -k 443/tcp
+443/tcp:             12688 12748
+debian@pandora:~$ sudo systemctl restart nginx.service 
+```
+
+Nos permitirá usar el puerto 443 para la redirección por HTTPS.
+
+Una vez hecho esto, ya tendremos la redirección de HTTP a HTTPS.
 
 3. Utiliza dos ficheros de configuración de nginx: uno para la configuración del virtualhost 
 HTTP y otro para la configuración del virtualhost HTTPS.
@@ -188,10 +208,158 @@ HTTP y otro para la configuración del virtualhost HTTPS.
 4. Realiza una redirección o una reescritura para que cuando accedas a HTTP te redirija al 
 sitio HTTPS.
 
+Video de comprobación nº1 [aquí](https://youtu.be/JR9gzd7riwg).
+
+Video de comprobación nº2 [aquí](https://youtu.be/nyV75GqiyDc).
+
 5. Comprueba que se ha creado una tarea cron que renueva el certificado cada 3 meses.
 
 6. Comprueba que las páginas son accesible por HTTPS y visualiza los detalles del certificado 
 que has creado.
 
+```
+debian@pandora:~$ sudo certbot certificates
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Found the following certs:
+  Certificate Name: portal.iesgn10.es
+    Domains: portal.iesgn10.es
+    Expiry Date: 2021-02-27 10:04:09+00:00 (VALID: 89 days)
+    Certificate Path: /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem
+  Certificate Name: www.iesgn10.es
+    Domains: www.iesgn10.es
+    Expiry Date: 2021-02-27 10:18:36+00:00 (VALID: 89 days)
+    Certificate Path: /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem
+    Private Key Path: /etc/letsencrypt/live/www.iesgn10.es/privkey.pem
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```
+
 7. Modifica la configuración del cliente de Nextcloud para comprobar que sigue en funcionamiento 
 con HTTPS.
+
+Mi configuración en iesgn10:
+
+```
+server {
+
+        root /var/www/html/iesgn10;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name www.iesgn10.es;
+
+        location / {
+                return 301 /principal/index.html;
+                #return 301 https://$host$request_uri;
+                try_files $uri $uri/ =404;
+                location /principal {
+                        autoindex on;
+                }
+        }
+
+        location /nextcloud {
+                error_page 403 = /nextloud/core/templates/403.php;
+                error_page 404 = /nextcloud/core/templates/404.php;
+
+                rewrite ^/nextcloud/caldav(.*)$ /remote.php/caldav$1 redirect;
+                rewrite ^/nextcloud/carddav(.*)$ /remote.php/carddav$1 redirect;
+                rewrite ^/nextcloud/webdav(.*)$ /remote.php/webdav$1 redirect;
+
+                rewrite ^(/nextcloud/core/doc[^\/]+/)$ $1/index.html;
+
+                try_files $uri $uri/ index.php;
+
+
+        }
+
+        location ~ \.php(?:$|/) {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_param PATH_INFO $fastcgi_path_info;
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+                include snippets/fastcgi-php.conf;
+
+        }
+
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.iesgn10.es/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+
+server {
+    if ($host = www.iesgn10.es) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+        listen 80;
+        listen [::]:80;
+
+        server_name www.iesgn10.es;
+    return 404; # managed by Certbot
+
+
+}
+```
+Mi configuración en portal:
+
+```
+server {
+
+        root /var/www/portal;
+
+        index index.html index.php;
+
+        server_name portal.iesgn10.es;
+
+        location / {
+                try_files $uri @rewrite;
+        }
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+        }
+
+        location @rewrite {
+                rewrite ^/(.*)$ /index.php?q=$1;
+        }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    if ($host = portal.iesgn10.es) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+        listen 80;
+        listen [::]:80;
+
+        server_name portal.iesgn10.es;
+	return 404; # managed by Certbot
+
+}
+```
+
+Comprobación nextcloud:
+
+![alt text](../Imágenes/HTTPSNextcloud.png)
