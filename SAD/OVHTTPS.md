@@ -360,6 +360,4 @@ server {
 }
 ```
 
-Comprobación nextcloud:
-
-![alt text](../Imágenes/HTTPSNextcloud.png)
+La comprobación esta incluida en el video anteriormente mostrado.
