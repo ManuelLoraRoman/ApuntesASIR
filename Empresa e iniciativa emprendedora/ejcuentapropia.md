@@ -105,3 +105,16 @@
 
 * Responsabilidad --> limitada al capital aportado en la sociedad.
 
+
+
+Para nuestra empresa, la elección más acertada sería la de ser empresario
+individual (autónomo). Hemos tomado esta decisión, debido a que los trámites y 
+costes de constitución son mucho más baratos y sencillos que en su 
+contrapartida, la sociedad limitada. También son más asequibles los costes de
+gestoría puesto que la contabilidad es más sencilla.
+
+Puede que en un futuro, se plantee la posibilidad de cambiar la forma jurídica
+hacia una Sociedad de Responsabilidad limitada, ya que nos ofrece mejor imagen,
+más profesional, y los impuestos que se pagan en la SL son fijos en comparación
+a los impuestos del IRPF sobre los autónomos. También, en caso necesario, 
+tendríamos mayor acceso a los créditos bancarios.
