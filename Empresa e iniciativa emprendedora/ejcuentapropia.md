@@ -105,6 +105,6 @@
 
 * Capital Social Mínimo --> mínimo fijado en los Estatutos.
 
-* Responsabilidad -->
+* Responsabilidad --> limitada al capital aportado en la sociedad.
 
 </div>

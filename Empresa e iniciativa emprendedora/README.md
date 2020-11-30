@@ -24,4 +24,5 @@ Apuntes y plan de empresa de esta asignatura.
 
 [9. Comentario de la película "El fundador"](./Comentariofundador.md)
 
+[10. Ejercicio de trabajo por cuenta propia](./ejcuentapropia.md)
 </div>
