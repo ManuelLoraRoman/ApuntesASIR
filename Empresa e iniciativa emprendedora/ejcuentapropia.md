@@ -1,5 +1,3 @@
-<div align="center">
-
 # Cuenta propia
 
 1. **Empresario individual**
@@ -107,4 +105,3 @@
 
 * Responsabilidad --> limitada al capital aportado en la sociedad.
 
-</div>
