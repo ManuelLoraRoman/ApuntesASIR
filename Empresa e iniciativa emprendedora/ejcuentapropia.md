@@ -1,4 +1,8 @@
+<div align="center">
+
 # Cuenta propia
+
+</div>
 
 1. **Empresario individual**
 
