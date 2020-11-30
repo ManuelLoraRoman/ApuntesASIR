@@ -205,6 +205,8 @@ Una vez hecho esto, ya tendremos la redirección de HTTP a HTTPS.
 3. Utiliza dos ficheros de configuración de nginx: uno para la configuración del virtualhost 
 HTTP y otro para la configuración del virtualhost HTTPS.
 
+Efectivamente, hemos usado dos ficheros de configuración para ambos virtual host.
+
 4. Realiza una redirección o una reescritura para que cuando accedas a HTTP te redirija al 
 sitio HTTPS.
 
@@ -213,6 +215,8 @@ Video de comprobación nº1 [aquí](https://youtu.be/JR9gzd7riwg).
 Video de comprobación nº2 [aquí](https://youtu.be/nyV75GqiyDc).
 
 5. Comprueba que se ha creado una tarea cron que renueva el certificado cada 3 meses.
+
+
 
 6. Comprueba que las páginas son accesible por HTTPS y visualiza los detalles del certificado 
 que has creado.
@@ -244,14 +248,37 @@ Mi configuración en iesgn10:
 ```
 server {
 
+        listen 80;
+
+        #root /var/www/html/iesgn10;
+
+        #index index.html index.htm index.nginx-debian.html;
+
+        server_name www.iesgn10.es;
+
+        rewrite ^/$ https://www.iesgn10.es/principal redirect;
+}
+```
+
+```
+server {
+        listen [::]:443 ssl; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem; # manag$
+        ssl_certificate_key /etc/letsencrypt/live/www.iesgn10.es/privkey.pem; # man$
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
         root /var/www/html/iesgn10;
 
         index index.html index.htm index.nginx-debian.html;
 
         server_name www.iesgn10.es;
 
+        rewrite ^/$ https://www.iesgn10.es/principal redirect;
+
         location / {
-                return 301 /principal/index.html;
+                #return 301 /principal/index.html;
                 #return 301 https://$host$request_uri;
                 try_files $uri $uri/ =404;
                 location /principal {
@@ -281,45 +308,54 @@ server {
                 fastcgi_param PATH_INFO $fastcgi_path_info;
                 fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
                 include snippets/fastcgi-php.conf;
-
         }
 
 
-    listen [::]:443 ssl; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/www.iesgn10.es/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/www.iesgn10.es/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
 }
 
-
-server {
-    if ($host = www.iesgn10.es) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-        listen 80;
-        listen [::]:80;
-
-        server_name www.iesgn10.es;
-    return 404; # managed by Certbot
-
-
-}
 ```
+
 Mi configuración en portal:
 
 ```
 server {
 
+        listen 80;
+
+#       root /var/www/portal;
+
+        # Add index.php to the list if you are using PHP
+        #index index.html index.php; 
+
+        server_name portal.iesgn10.es;
+
+        rewrite ^/$ https://portal.iesgn10.es redirect;
+
+}
+```
+
+```
+server {
+
+        listen [::]:443 ssl ipv6only=on; # managed by Certbot
+        listen 443 ssl; # managed by Certbot
+        ssl_certificate /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem; # ma$
+        ssl_certificate_key /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem; # $
+        include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
         root /var/www/portal;
 
+        # Add index.php to the list if you are using PHP
         index index.html index.php;
 
         server_name portal.iesgn10.es;
+
+#       rewrite ^/$ https://portal.iesgn10.es redirect;
+#       return 301 $scheme://portal.iesgn10.es$request_uri;
+#       return 301 http://portal.iesgn10.es$request_uri;
+#       return 301 http://portal.iesgn10.es;
 
         location / {
                 try_files $uri @rewrite;
@@ -333,29 +369,6 @@ server {
         location @rewrite {
                 rewrite ^/(.*)$ /index.php?q=$1;
         }
-
-    listen [::]:443 ssl ipv6only=on; # managed by Certbot
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/portal.iesgn10.es/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/portal.iesgn10.es/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-
-}
-
-
-server {
-    if ($host = portal.iesgn10.es) {
-        return 301 https://$host$request_uri;
-    } # managed by Certbot
-
-
-        listen 80;
-        listen [::]:80;
-
-        server_name portal.iesgn10.es;
-	return 404; # managed by Certbot
 
 }
 ```
