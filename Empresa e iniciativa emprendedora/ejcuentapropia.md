@@ -119,6 +119,6 @@ gestoría puesto que la contabilidad es más sencilla.
 
 Puede que en un futuro, se plantee la posibilidad de cambiar la forma jurídica
 hacia una Sociedad de Responsabilidad limitada, ya que nos ofrece mejor imagen,
-más profesional, y los impuestos que se pagan en la SL son fijos en comparación
-a los impuestos del IRPF sobre los autónomos. También, en caso necesario, 
-tendríamos mayor acceso a los créditos bancarios.
+más profesionalidad, y los impuestos que se pagan en la SL son fijos en 
+comparación a los impuestos del IRPF sobre los autónomos. También, en caso 
+necesario,  tendríamos mayor acceso a los créditos bancarios.
