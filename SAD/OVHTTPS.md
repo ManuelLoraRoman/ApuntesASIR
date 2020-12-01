@@ -239,6 +239,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 */12 * * * root test -x /usr/bin/certbot -a \! -d /run/systemd/system && perl -e 'sleep int(rand(43200))' && certbot -q renew
 ```
 
+Tendríamos que cambiar el valor 43200 al equivalente a 3 meses (129600)
+
 6. Comprueba que las páginas son accesible por HTTPS y visualiza los detalles del certificado 
 que has creado.
 
