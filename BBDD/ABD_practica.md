@@ -18,7 +18,7 @@ Primero, procederemos a instalarnos en Debian 10 el servidor Postgres mediante
 la descarga del paquete llamado _postgresql-11_:
 
 ```
-manuel@debian:~$ sudo apt-get install postgresql-11
+debian@bbdd:~$ sudo apt-get install postgresql-11
 Leyendo lista de paquetes... Hecho
 Creando árbol de dependencias       
 Leyendo la información de estado... Hecho
@@ -64,7 +64,7 @@ inicializarse. Para comprobar si efectivamente lo está, ejecutamos uno de los
 dos comandos:
 
 ```
-manuel@debian:~$ pg_isready
+debian@bbdd:~$ pg_isready
 /var/run/postgresql:5432 - aceptando conexiones
 
 manuel@debian:~$ sudo systemctl status postgresql
@@ -85,19 +85,19 @@ siguiente. Como al instalarse el servidor se nos crea automáticamente un
 nuevo usuario llamado "postgres", vamos a cambiar la contraseña:
 
 ```
-manuel@debian:~$ sudo passwd postgres
+debian@bbdd:~$ sudo passwd postgres
 Nueva contraseña: 
 Vuelva a escribir la nueva contraseña: 
 passwd: contraseña actualizada correctamente
-manuel@debian:~$ sudo su postgres
-postgres@debian:/home/manuel$ exit
+debian@bbdd:~$ sudo su postgres
+postgres@debian:/home/debian$ exit
 exit
 ```
 
 A continuación, crearemos un nuevo usuario para el gestor con:
 
 ``` 
-postgres@debian:/home/manuel$ createuser -s manuel -P 
+postgres@bbdd:/home/debian$ createuser -s manuel -P 
 Ingrese la contraseña para el nuevo rol: 
 Ingrésela nuevamente: 
 ```
@@ -108,8 +108,8 @@ Ahora vamos a proceder a crear propiamente la base de datos. Para ello vamos a
 ejecutar:
 
 ```
-manuel@debian:~$ createdb bbddprueba
-manuel@debian:~$ psql bbddprueba 
+debian@bbdd:~$ createdb bbddprueba
+debian@bbdd:~$ psql bbddprueba 
 psql (11.9 (Debian 11.9-0+deb10u1))
 Digite «help» para obtener ayuda.
 
@@ -246,10 +246,7 @@ _/etc/postgresql/11/main/pg_hba.conf_ y cambiamos la siguiente información:
 
 ```
 # IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
-host    all             all             172.22.0.0/24           md5
-host    all             all             149.59.196.0/32         md5
-host    bbddprueba	all		149.59.196.92/32	md5
+host    all             all             0.0.0.0/0            md5
 ```
 
 Una vez ya configurado, reiniciamos el servicio de Postgresql.
@@ -258,8 +255,42 @@ Ahora para comprobar que efectivamente nos podemos conectar mediante un usuario
 a nuestro servidor, nos meteremos en una máquina cuya IP es 172.22.200.190
 (IP permitida) y nos descargaremos el paquete ```postgresql-cliente-11```.
 
-Una vez descargado, comprobamos la conexión:
+Una vez descargado, comprobamos la conexión desde la máquina cliente:
 
 ```
+manuel@debian:~$ psql -h 172.22.200.117 -p 5432 -U bbdd -d bbddprueba
+Contraseña para usuario bbdd: 
+psql (11.9 (Debian 11.9-0+deb10u1))
+conexión SSL (protocolo: TLSv1.3, cifrado: TLS_AES_256_GCM_SHA384, bits: 256, compresión: desactivado)
+Digite «help» para obtener ayuda.
 
+bbddprueba=# \dt
+             Listado de relaciones
+ Esquema |       Nombre        | Tipo  | Dueño  
+---------+---------------------+-------+--------
+ public  | habitaciones        | tabla | debian
+ public  | regimenes           | tabla | debian
+ public  | temporadas          | tabla | debian
+ public  | tipos_de_habitacion | tabla | debian
+(4 filas)
+
+bbddprueba=# 
 ```
+
+Tras indagar en el problema hallado con el problema de conexión al permitir 
+solamente la red X (aún teniendo la configuración correctamente), hemos acordado
+con el profesor que permitamos todo, y continuar con los ejercicios.
+
+* Prueba desde un cliente remoto el intérprete de comandos de MongoDB.
+
+* Realización de una aplicación web en cualquier lenguaje que conecte con el 
+servidor MySQL desde un cliente remoto tras autenticarse y muestre alguna 
+información almacenada en el mismo.
+
+
+
+* Instalación de SQL Developer sobre Windows como cliente remoto de ORACLE.
+
+
+
+* Instalación y prueba desde un cliente remoto de Oracle Enterprise Manager.
