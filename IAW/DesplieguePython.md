@@ -421,3 +421,99 @@ Prueba de funcionamiento:
 imagen de fondo de la aplicación? ¿Se ve de forma adecuada la hoja de estilo 
 de la zona de administración?. Para arreglarlo puedes encontrar documentación 
 en How to use Django with Apache and mod_wsgi.
+
+Ubicaremos el contenido estático descargado al instalar django en nuestro
+directorio del entorno virtual. Una vez ubicado, vamos a hacer un alias 
+en nuestro fichero de configuración de apache2:
+
+```
+Alias /static /var/www/app_python/django_tutorial-master/polls/static/
+
+<Directory /var/www/app_python/django_tutorial-master/polls/static>
+          Require all granted
+</Directory>
+```
+
+Y una vez hecho esto, ya podemos ver el contenido estático de polls:
+
+![alt text](../Imágenes/pollsstatic2.png)
+
+* Desactiva en la configuración (fichero settings.py) el modo debug a False. 
+Para que los errores de ejecución no den información sensible de la aplicación.
+
+Nos iremos al fichero settings.py y cambiaremos el modo DEBUG a false. No se
+debe correr el servidor en producción con el modo DEBUG activado.
+
+```
+DEBUG = False
+```
+
+* Muestra la página funcionando. En la zona de administración se debe ver de 
+forma adecuada la hoja de estilo.
+
+![alt text](../Imágenes/pythonorg.png)
+
+## Tarea 3: Modificación de nuestra aplicación
+
+Vamos a realizar cambios en el entorno de desarrollo y posteriormente vamos a 
+subirlas a producción. Vamos a realizar tres modificaciones (entrega una captura
+de pantalla donde se ven cada una de ellas). Recuerda que primero lo haces en 
+el entrono de desarrollo, y luego tendrás que llevar los cambios a producción:
+
+* Modifica la página inicial donde se ven las encuestas para que aparezca tu 
+nombre: Para ello modifica el archivo 
+_django_tutorial/polls/templates/polls/index.html_.
+
+Modificaremos dicho fichero con la siguiente información:
+
+```
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+<div>
+
+<h3>Encuestas</div>
+<p> Mi Nombre es Manuel Lora Román</p>
+
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_tex$
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+```
+
+Y la comprobación:
+
+![alt text](../Imágenes/pollsstatic.png)
+
+* Modifica la imagen de fondo que se ve en la aplicación.
+
+Modificaremos de nuevo el fichero _index.html_ con las siguientes lineas:
+
+```
+```
+
+* Vamos a crear una nueva tabla en la base de datos, para ello sigue los 
+siguientes pasos:
+
+Añadimos las siguientes lineas en el fichero _polls/models.py_:
+
+```
+class Categoria(models.Model):
+        Abr = models.CharField(max_length=4)
+        Nombre = models.CharField(max_length=50)
+
+        def __str__(self):
+                return self.Abr+" - "+self.Nombre
+```
+
+* Crea una nueva migración: python3 manage.py makemigrations.
+
+```
+
+```
+
