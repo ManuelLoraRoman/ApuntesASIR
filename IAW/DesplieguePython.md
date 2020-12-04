@@ -485,10 +485,7 @@ Modificaremos dicho fichero con la siguiente información en desarrollo:
 {% endif %}
 ```
 Una vez hayamos terminado, hacemos un push, y después un pull en producción.
-
-Aquí la comprobación de que el cambio se ha registrado:
-
-![alt text](../Imágenes/pollsstatic.png)
+Pasaremos al siguiente ejercicio para hacer ambas comprobaciones.
 
 * Modifica la imagen de fondo que se ve en la aplicación.
 
