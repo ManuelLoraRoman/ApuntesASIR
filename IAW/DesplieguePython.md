@@ -150,7 +150,6 @@ Superuser created successfully.
 url \polls.
 
 
-![alt text](../Imágenes/polls.png)
 
 ![alt text](../Imágenes/polls1.png)
 
