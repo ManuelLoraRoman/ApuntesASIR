@@ -464,7 +464,7 @@ el entrono de desarrollo, y luego tendrás que llevar los cambios a producción:
 nombre: Para ello modifica el archivo 
 _django_tutorial/polls/templates/polls/index.html_.
 
-Modificaremos dicho fichero con la siguiente información:
+Modificaremos dicho fichero con la siguiente información en desarrollo:
 
 ```
 {% load static %}
@@ -485,17 +485,34 @@ Modificaremos dicho fichero con la siguiente información:
     <p>No polls are available.</p>
 {% endif %}
 ```
+Una vez hayamos terminado, hacemos un push, y después un pull en producción.
 
-Y la comprobación:
+Aquí la comprobación de que el cambio se ha registrado:
 
 ![alt text](../Imágenes/pollsstatic.png)
 
 * Modifica la imagen de fondo que se ve en la aplicación.
 
-Modificaremos de nuevo el fichero _index.html_ con las siguientes lineas:
+Para ello, nos dirigimos hacia el directorio de contenido estático, y en la
+pestaña de body, modificamos el parámetro background:
 
 ```
+li a {
+    color: green;
+    background-color: blanchedalmond;
+}
+
+body {
+    background: white url("images/background.jpg");
+}
+
 ```
+
+Y cambiamos background.jpg por fondo.png.
+
+Y ahora la comprobación en producción:
+
+![alt text](../Imágenes/fondopython.png)
 
 * Vamos a crear una nueva tabla en la base de datos, para ello sigue los 
 siguientes pasos:
@@ -516,4 +533,24 @@ class Categoria(models.Model):
 ```
 
 ```
+
+* Y realiza la migración: python3 manage.py migrate
+
+```
+
+```
+
+* Añade el nuevo modelo al sitio de administración de django:
+
+```
+from django.contrib import admin
+
+from .models import Choice, Question, Categoria
+.
+.
+.
+admin.site.register(Question, QuestionAdmin)
+admini.site.register(Categoria)
+```
+
 
