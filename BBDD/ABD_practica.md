@@ -283,6 +283,192 @@ con el profesor que permitamos todo, y continuar con los ejercicios.
 
 * Prueba desde un cliente remoto el intérprete de comandos de MongoDB.
 
+En primer lugar instalaremos en una máquina, el servidor de MongoDB. Para ello,
+debemos realizar los siguientes pasos:
+
+Primero, debemos ejecutar el siguiente comando para añadir las keys necesarias
+del servidor de MongoDB:
+
+```
+vagrant@mongo:~$ wget https://www.mongodb.org/static/pgp/server-4.4.asc -qO- | sudo apt-key add -
+OK
+```
+
+Después, editaremos el fichero _/etc/apt/sources.list.d/mongodb-org.list_ y le
+añadiremos la siguiente línea:
+
+```
+deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main
+```
+
+Hecho esto, hacemos un update del sistema y a continuación, nos descargamos el 
+paquete llamado _mongodb-org_:
+
+```
+vagrant@mongo:~$ sudo apt-get install mongodb-org
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  mongodb-database-tools mongodb-org-database-tools-extra mongodb-org-mongos
+  mongodb-org-server mongodb-org-shell mongodb-org-tools
+The following NEW packages will be installed:
+  mongodb-database-tools mongodb-org mongodb-org-database-tools-extra
+  mongodb-org-mongos mongodb-org-server mongodb-org-shell mongodb-org-tools
+0 upgraded, 7 newly installed, 0 to remove and 55 not upgraded.
+Need to get 104 MB of archives.
+After this operation, 200 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-database-tools amd64 100.2.1 [54.5 MB]
+Get:2 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org-shell amd64 4.4.2 [13.2 MB]
+Get:3 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org-server amd64 4.4.2 [20.4 MB]
+Get:4 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org-mongos amd64 4.4.2 [15.7 MB]
+Get:5 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org-database-tools-extra amd64 4.4.2 [5,636 B]
+Get:6 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org-tools amd64 4.4.2 [2,892 B]
+Get:7 http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4/main amd64 mongodb-org amd64 4.4.2 [3,520 B]
+Fetched 104 MB in 23s (4,496 kB/s)                                             
+Selecting previously unselected package mongodb-database-tools.
+(Reading database ... 32165 files and directories currently installed.)
+Preparing to unpack .../0-mongodb-database-tools_100.2.1_amd64.deb ...
+Unpacking mongodb-database-tools (100.2.1) ...
+Selecting previously unselected package mongodb-org-shell.
+Preparing to unpack .../1-mongodb-org-shell_4.4.2_amd64.deb ...
+Unpacking mongodb-org-shell (4.4.2) ...
+Selecting previously unselected package mongodb-org-server.
+Preparing to unpack .../2-mongodb-org-server_4.4.2_amd64.deb ...
+Unpacking mongodb-org-server (4.4.2) ...
+Selecting previously unselected package mongodb-org-mongos.
+Preparing to unpack .../3-mongodb-org-mongos_4.4.2_amd64.deb ...
+Unpacking mongodb-org-mongos (4.4.2) ...
+Selecting previously unselected package mongodb-org-database-tools-extra.
+Preparing to unpack .../4-mongodb-org-database-tools-extra_4.4.2_amd64.deb ...
+Unpacking mongodb-org-database-tools-extra (4.4.2) ...
+Selecting previously unselected package mongodb-org-tools.
+Preparing to unpack .../5-mongodb-org-tools_4.4.2_amd64.deb ...
+Unpacking mongodb-org-tools (4.4.2) ...
+Selecting previously unselected package mongodb-org.
+Preparing to unpack .../6-mongodb-org_4.4.2_amd64.deb ...
+Unpacking mongodb-org (4.4.2) ...
+Setting up mongodb-org-server (4.4.2) ...
+Setting up mongodb-org-shell (4.4.2) ...
+Setting up mongodb-database-tools (100.2.1) ...
+Setting up mongodb-org-mongos (4.4.2) ...
+Setting up mongodb-org-database-tools-extra (4.4.2) ...
+Setting up mongodb-org-tools (4.4.2) ...
+Setting up mongodb-org (4.4.2) ...
+Processing triggers for man-db (2.8.5-2) ...
+```
+
+Una vez hecho esto, debemos activar el servicio con:
+
+```
+sudo systemctl restart mongod.service
+```
+
+Ahora configuraremos el acceso. En primer lugar ejecutamos mongo:
+
+```
+vagrant@mongo:~$ mongo
+MongoDB shell version v4.4.2
+connecting to: mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("39a6b935-e95c-495c-b6c5-e37471fbe92c") }
+MongoDB server version: 4.4.2
+---
+The server generated these startup warnings when booting: 
+        2020-12-05T17:39:41.197+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+        2020-12-05T17:39:41.656+00:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+> 
+```
+
+Y ahora seleccionamos la base de datos admin y creamos un usuario:
+
+```
+> use admin
+switched to db admin
+> db.createUser({user: "mongodb", pwd: "1q2w3e4r5t", roles: [{role: "root", db: "admin"}]})
+Successfully added user: {
+	"user" : "mongodb",
+	"roles" : [
+		{
+			"role" : "root",
+			"db" : "admin"
+		}
+	]
+}
+> exit
+bye
+```
+
+Con esto, ya podremos ejecutar el servicio de MongoDB correctamente. Ahora, 
+para poder acceder remotamente, debemos modificar el fichero _/etc/mongod.conf_,
+la directiva de _bindIP_:
+
+```
+net:
+  port: 27017
+  bindIp: 127.0.0.1
+```
+
+Y modificamos dicho parámetro por _0.0.0.0_.
+
+En caso necesario, si tenemos activado el firewall UFW, debemos añadir la regla:
+
+```
+sudo ufw allow 27017/tcp
+```
+
+Ahora pasando al cliente, seguiremos los mismo pasos hasta llegar a iniciar el 
+servicio por primera vez, y para conectarnos debemos ejecutar el siguiente
+comando:
+
+```
+vagrant@mongocliente:~$ mongo --host 172.28.128.7 -u mongodb
+MongoDB shell version v4.4.2
+Enter password: 
+connecting to: mongodb://172.28.128.7:27017/?compressors=disabled&gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("e7777754-7e99-46ba-a9fa-e22516c95c8d") }
+MongoDB server version: 4.4.2
+Welcome to the MongoDB shell.
+For interactive help, type "help".
+For more comprehensive documentation, see
+	https://docs.mongodb.com/
+Questions? Try the MongoDB Developer Community Forums
+	https://community.mongodb.com
+---
+The server generated these startup warnings when booting: 
+        2020-12-05T17:52:27.652+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+        2020-12-05T17:52:28.359+00:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+---
+---
+        Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+        metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+        The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+        and anyone you share the URL with. MongoDB may use this information to make product
+        improvements and to suggest MongoDB products and deployment options to you.
+
+        To enable free monitoring, run the following command: db.enableFreeMonitoring()
+        To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+> exit
+bye
+```
+
+Y ya nos podríamos conectar.
+
+
 * Realización de una aplicación web en cualquier lenguaje que conecte con el 
 servidor MySQL desde un cliente remoto tras autenticarse y muestre alguna 
 información almacenada en el mismo.
@@ -291,6 +477,141 @@ información almacenada en el mismo.
 
 * Instalación de SQL Developer sobre Windows como cliente remoto de ORACLE.
 
+En primer lugar, nos descargaremos el archivo .zip de SQL Developer de la 
+sección de descarga de recursos de la página web de Oracle.
 
+Una vez descargado, extraeremos dicho archivo y ejecutaremos el binario
+SQLDeveloper.exe.
+
+Y empezará la instalación. Nos dirá si queremos importar alguna configuración
+anterior. Le damos que no y una vez haya terminado la instalación, nos 
+aparece la ventana de inicio de SQL Developer:
+
+![alt text](../Imágenes/sqldevinicio.png)
+
+Una vez aquí, pulsamos el botón verde e intentamos rellenar la información
+necesaria para conectarnos al servidor de Oracle que queramos. 
+
+Ejemplo:
+
+```
+
+```
 
 * Instalación y prueba desde un cliente remoto de Oracle Enterprise Manager.
+
+Nos descargamos flashplayer de la siguiente [página](https://get.adobe.com/flashplayer/).
+
+Una vez descargado el archivo .tar.gz, lo descomprimimos y después ejecutamos
+los siguientes comandos:
+
+```
+manuel@debian:~/Descargas/flashplayer$ sudo cp libflashplayer.so /usr/lib/mozilla/plugins/
+manuel@debian:~/Descargas/flashplayer$ sudo cp -r usr/* /usr/
+```
+
+Ahora instalaremos Oracle para tener un Servidor con el que conectarnos.
+
+Primero, nos descargaremos los siguientes paquetes:
+
+```
+build-essential sysstat unzip libstdc++5 pdksh numactl expat libaio-dev 
+unixodbc-dev  lesstif2-dev elfutils libelf-dev
+```
+
+Añadiremos las siguientes líneas en el fichero _/etc/sysctl.conf_:
+
+```
+kernel.shmmax=536870912
+kernel.shmall=2097152
+fs.file-max=6815744
+net.ipv4.ip_local_port_range = 9000 65500
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048586
+fs.aio-max-nr = 1048576
+kernel.sem = 250 32000 100 128
+```
+
+Y actualizaremos los cambios:
+
+```
+root@servidorOracle:/home/vagrant# sysctl -p
+kernel.shmmax = 536870912
+kernel.shmall = 2097152
+fs.file-max = 6815744
+net.ipv4.ip_local_port_range = 9000 65500
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048586
+fs.aio-max-nr = 1048576
+kernel.sem = 250 32000 100 128
+```
+
+Cambiamos el valor a 3 del _runlevel_ con el siguiente comando:
+
+```
+root@servidorOracle:~# sudo systemctl set-default multi-user.target
+Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
+```
+
+Reiniciamos y comprobamos:
+
+```
+vagrant@servidorOracle:~$ sudo systemctl get-default
+multi-user.target
+```
+
+Ahora crearemos los siguientes enlaces simbólicos necesarios:
+
+```
+root@servidorOracle:/home/vagrant# mkdir /usr/lib64
+root@servidorOracle:/home/vagrant# ln -s /usr/bin/basename /bin/basename
+root@servidorOracle:/home/vagrant# ln -s /usr/bin/awk /bin/awk
+root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libc_nonshared.a /usr/lib64/
+root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libpthread_nonshared.a /usr/lib64/
+root@servidorOracle:/home/vagrant# ln -s /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib
+root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib64/
+```
+
+Y ahora creamos un usuario de Oracle y un grupo dba:
+
+```
+root@servidorOracle:/home/vagrant# groupadd dba
+root@servidorOracle:/home/vagrant# useradd -d /home/oracle -m -g dba -G dba -s /bin/bash oracle
+root@servidorOracle:/home/vagrant# passwd oracle
+Nueva contraseña: 
+Vuelva a escribir la nueva contraseña: 
+passwd: contraseña actualizada correctamente
+```
+
+También necesitamos unos directorios y los permisos pertinentes:
+
+```
+root@servidorOracle:/home/vagrant# mkdir -p /opt/oracle/product/11.2.0.1
+root@servidorOracle:/home/vagrant# mkdir /opt/oraInventory
+root@servidorOracle:/home/vagrant# mkdir /opt/oradata
+
+root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oracle/
+root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oraInventory/
+root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oradata/
+
+```
+
+Ahora editaremos el fichero _/etc/security/limits.conf_ para dar privilegios al
+usuario:
+
+```
+oracle soft nproc 2047
+oracle hard nproc 16384
+oracle soft nofile 1024
+oracle hard nofile 65536
+oracle soft stack 10240
+```
+
+Para finalizar, añadimos algunas variables de entorno:
+
+```
+
