@@ -130,3 +130,83 @@ comando:
 ```
 ldapadd -x -D "cn=admin,dc=loquesea" -f persona1.ldif -W
 ```
+
+## Instalación de certificado raíz de una CA local en Linux
+
+Cuando vayamos a verificar una conexión, para ver si confiamos en dicha conexión
+nuestro sistema mirará el fichero _/etc/ssl/certs/ca-certificates.crt_ cuyo
+contenido es la concatenación de todos los certificados que tenemos instalado
+en Mozilla.
+
+Cuando tengamos descargado nuestro certificado lo moveremos al directorio 
+anteriormente nombrado, y después ejecutaremos este comando:
+
+```
+sudo update-ca-certificates
+```
+
+Y se creará un enlace simbólico hacia _/usr/local/share/ca-certificates/mozilla_.
+
+
+Apache Directory Studio es un cliente LDAP que usaremos como complemento a los
+ldap-utils. Se conectará de la misma manera que nos conectamos a una base de 
+datos. útil si hacemos cambios pequeños. Si por el contrario hacemos cambios
+masivos, mejor por consola.
+
+Para añadir unidades organizativas a la estructura del árbol, haremos:
+
+```
+sudo ldapadd -x -D "[loquesea]" -W -f .ldif
+```
+
+La rama People sirve para guardar personas y la rama Group para grupos.
+
+Ahora vamos a pasar a la creación de usuarios pertenecientes a una cuenta POSIX.
+Para ello, usaremos el objectClass posixAccount. 
+
+Ejemplo: usuario1.ldif
+
+```
+dn: cn=grupo1,ou=Group,dc=ldap-test,dc=gonzalonazareno,dc=org
+objectClass: posixGroup
+cn: grupo1
+gidNumber: 2000
+
+dn: uid=usuario1,ou=People,dc=ldap-test,dc=gonzalonazareno,dc=org
+uid: usuario1
+cn: Usuario de prueba
+objectClass: posixAccount
+objectClass: account
+userPassword: {MD5} [loquesea] --> hash de la contraseña (se usa el comando
+slappasswd)
+loginShell: /bin/bash
+uidNumber: 2000  --> importante que sea a partir del 2000 para que no solape con los usuarios locales (1000)
+gidNumber: 2000
+homeDIrectory: /home/usuario1
+gecos: Usuario de prueba
+```
+
+En la búsqueda anónima no sale el atributo de la contraseña. Para poder 
+visualizarla debemos iniciar sesión con algún usuario pero este se verá 
+codificada con base64. 
+
+Para modificar un objeto, usaremos el comando ldapmodify. 
+
+Ejemplo: usuario1-1.ldif
+
+```
+dn: uid=usuario1,ou=People,dc=ldap-test,dc=gonzalonazareno,dc=org
+changetype: modify
+add: objectClass
+objectClass: inetOrgPerson
+-
+add: mail
+mail: usuario1@gonzalonazareno.org
+-
+replace: cn
+cn:: [loquesea] en base64
+```
+
+Y le pasamos esta modificación con el comando ldapmodify con los parámetros 
+que hemos usado anteriormente.
+
