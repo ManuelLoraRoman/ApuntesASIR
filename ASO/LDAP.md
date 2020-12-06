@@ -68,3 +68,65 @@ sistema, y nuestro objetivo es identificar y valorar donde se deben guardar en
 los atributos.
 
 Los demás niveles de jerarquía, tienen que poner en el _dn_ la ruta completa.
+
+Con LDAP, buscando similitudes a las base de datos, nos saltamos directamente
+los CREATE / ALTER TABLE, para pasarnos directamente a la inserción de datos.
+
+Dicha inserción se hace con los esquemas de LDAP. Cuando implementemos en LDAP,
+podemos utilizar objetos cuyo ObjectClass estén cargado dentro de los esquemas
+del servidor LDAP.
+
+
+## Instalación de un servidor LDAP
+
+El paquete que proporciona el servicio de LDAP se llama _slapd_ y antes de eso,
+debemos tener definido correctamente nuestro hostname.
+
+* slapcat permite un volcado en bruto de los objetos.
+
+* Al hacer un ```dpkg reconfigure -plow slapd``` permite configurar el servidor.
+
+## Ficheros y directorios de configuración
+
+El fichero _/etc/default/slpad_ permite cambiar varios directorios de ruta, y
+alguna configuración más de conectividad (parámetros del demonio de LDAP).
+
+El directorio _/etc/ldap/slap.d_ contiene fichero .ldif que definen al servidor
+LDAP. En dicho directorio se encuentra un respaldo de la base de datos 
+(oldcDatabase) pero realmente, la base de datos se encuentra en formato binario
+en _/var/lib/ldap_.
+
+El conjunto de herramientas del paquete ldap-utils permite varias 
+funcionalidades muy útiles para la configuración del servidor LDAP.
+
+El comando ldapsearch se asemeja a una consulta en una base de datos. El 
+parámetro -x es para no hacerlo con un mecanismo de autenticación, -D se usa
+para filtrar por el nombre distintivo (entre comillas), -W es para que nos
+pregunte por la contraseña y -b para que busque por una base en concreto.
+Si queremos acceder remotamente, usamos el parámetro -h para indicar la 
+dirección del host.
+
+En el fichero _/etc/ldap/ldap.conf_ podemos cambiar algunos de los parámetros de
+búsqueda. De esta manera, podemos ahorrarnos el incorporar los parámetros 
+anteriormente definidos para facilitar la búsqueda.
+
+## Creación de objetos
+
+Ejemplo: persona1.ldif
+
+```
+dn: cn= Manuel Lora, dc= [la base que sea] # Nombre Distinguido
+objectClass: person
+objectClass: inetOrgPerson
+sn: Lora # Apellido
+cn: Manuel Lora # Nombre Completo
+gn: Manuel # Nombre
+description: Datos de usuario
+```
+
+Una vez hayamos terminado, debemos añadirlo al servidor con el siguiente 
+comando:
+
+```
+ldapadd -x -D "cn=admin,dc=loquesea" -f persona1.ldif -W
+```
