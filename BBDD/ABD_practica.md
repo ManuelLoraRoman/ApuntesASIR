@@ -515,103 +515,110 @@ Ahora instalaremos Oracle para tener un Servidor con el que conectarnos.
 Primero, nos descargaremos los siguientes paquetes:
 
 ```
-build-essential sysstat unzip libstdc++5 pdksh numactl expat libaio-dev 
-unixodbc-dev  lesstif2-dev elfutils libelf-dev
+build-essential sysstat unzip libstdc++5 numactl expat libaio-dev 
+unixodbc-dev lesstif2-dev elfutils libelf-dev binutils libcap-dev gcc g++
+ksh xorg xauth rpm libxcb1-dev libxau-dev libxtst-dev libxi-dev 
 ```
 
-Añadiremos las siguientes líneas en el fichero _/etc/sysctl.conf_:
+Añadiremos los grupos y usuarios pertinentes:
 
 ```
-kernel.shmmax=536870912
-kernel.shmall=2097152
-fs.file-max=6815744
-net.ipv4.ip_local_port_range = 9000 65500
-net.core.rmem_default = 262144
-net.core.rmem_max = 4194304
-net.core.wmem_default = 262144
-net.core.wmem_max = 1048586
+addgroup --system oinstall
+addgroup --system dba
+adduser --system --ingroup oinstall -shell /bin/bash oracle
+adduser oracle dba
+passwd oracle
+```
+
+Y los directorios:
+
+```
+mkdir -p /opt/oracle/product/12.2.0.1
+mkdir -p /opt/oraInventory
+chown -R oracle:dba /opt/ora*
+```
+
+A continuación, crearemos los enlaces simbólicos necesarios:
+
+```
+ln -s /usr/bin/awk /bin/awk
+ln -s /usr/bin/basename /bin/basename
+ln -s /usr/bin/rpm /bin/rpm
+ln -s /usr/lib/x86_64-linux-gnu /usr/lib64
+```
+
+Crearemos los límites del sistema:
+
+```
+echo """
+## Valor del número máximo de manejadores de archivos. ##
+fs.file-max = 65536
 fs.aio-max-nr = 1048576
+## Valor de los parámetros de semáforo en el orden listado. ##
+## semmsl, semmns, semopm, semmni ##
 kernel.sem = 250 32000 100 128
+## Valor de los tamaños de segmento de memoria compartida. ##
+## (Oracle recomienda total de RAM -1 byte) 2GB ##
+kernel.shmmax = 2107670527
+kernel.shmall = 514567
+kernel.shmmni = 4096
+## Valor del rango de números de puerto. ##
+net.ipv4.ip_local_port_range = 1024 65000
+## Valor del número gid del grupo dba. ##
+vm.hugetlb_shm_group = 121
+## Valor del número de páginas de memoria. ##
+vm.nr_hugepages = 64
+""" > /etc/sysctl.d/local-oracle.conf
 ```
 
-Y actualizaremos los cambios:
+Y tras esto, cargaremos dichas variables con el siguiente comando:
 
 ```
-root@servidorOracle:/home/vagrant# sysctl -p
-kernel.shmmax = 536870912
-kernel.shmall = 2097152
-fs.file-max = 6815744
-net.ipv4.ip_local_port_range = 9000 65500
-net.core.rmem_default = 262144
-net.core.rmem_max = 4194304
-net.core.wmem_default = 262144
-net.core.wmem_max = 1048586
-fs.aio-max-nr = 1048576
-kernel.sem = 250 32000 100 128
+sysctl -p /etc/sysctl.d/local-oracle.conf
 ```
 
-Cambiamos el valor a 3 del _runlevel_ con el siguiente comando:
+Y una vez hecho, realizaremos un configuración de seguridad:
 
 ```
-root@servidorOracle:~# sudo systemctl set-default multi-user.target
-Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
+echo """
+## Número máximo de procesos disponibles para un solo usuario. ##
+oracle          soft    nproc           2047
+oracle          hard    nproc           16384
+## Número máximo de descriptores de archivo abiertos para un solo usuario. ##
+oracle          soft    nofile          1024
+oracle          hard    nofile          65536
+## Cantidad de RAM para el uso de páginas de memoria. ##
+oracle          soft    memlock         204800
+oracle          hard    memlock         204800
+""" > /etc/security/limits.d/local-oracle.conf
 ```
 
-Reiniciamos y comprobamos:
+Creamos las variables de entorno para Oracle:
 
 ```
-vagrant@servidorOracle:~$ sudo systemctl get-default
-multi-user.target
+echo """
+## Nombre del equipo ##
+export ORACLE_HOSTNAME=localhost
+## Usuario con permiso en archivos Oracle. ##
+export ORACLE_OWNER=oracle
+## Directorio que almacenará los distintos servicios de Oracle. ##
+export ORACLE_BASE=/opt/oracle
+## Directorio que almacenará la base de datos Oracle. ##
+export ORACLE_HOME=/opt/oracle/product/12.2.0.1/dbhome_1
+## Nombre único de la base de datos. ##
+export ORACLE_UNQNAME=oraname
+## Identificador de servicio de escucha. ##
+export ORACLE_SID=orasid
+## Ruta a archivos binarios. ##
+export PATH=$PATH:/opt/oracle/product/12.2.0.1/dbhome_1/bin
+## Ruta a la biblioteca. ##
+export LD_LIBRARY_PATH=/opt/oracle/product/12.2.0.1/dbhome_1/lib
+## Idioma
+export NLS_LANG='SPANISH_SPAIN.AL32UTF8'
+""" >> /etc/bash.bashrc
 ```
 
-Ahora crearemos los siguientes enlaces simbólicos necesarios:
+Una vez hayamos hecho esto, nos descargamos la versión de Oracle que queramos.
+Nos descargamos el fichero .zip y los descomprimimos.
 
-```
-root@servidorOracle:/home/vagrant# mkdir /usr/lib64
-root@servidorOracle:/home/vagrant# ln -s /usr/bin/basename /bin/basename
-root@servidorOracle:/home/vagrant# ln -s /usr/bin/awk /bin/awk
-root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libc_nonshared.a /usr/lib64/
-root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libpthread_nonshared.a /usr/lib64/
-root@servidorOracle:/home/vagrant# ln -s /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib
-root@servidorOracle:/home/vagrant# ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib64/
-```
-
-Y ahora creamos un usuario de Oracle y un grupo dba:
-
-```
-root@servidorOracle:/home/vagrant# groupadd dba
-root@servidorOracle:/home/vagrant# useradd -d /home/oracle -m -g dba -G dba -s /bin/bash oracle
-root@servidorOracle:/home/vagrant# passwd oracle
-Nueva contraseña: 
-Vuelva a escribir la nueva contraseña: 
-passwd: contraseña actualizada correctamente
-```
-
-También necesitamos unos directorios y los permisos pertinentes:
-
-```
-root@servidorOracle:/home/vagrant# mkdir -p /opt/oracle/product/11.2.0.1
-root@servidorOracle:/home/vagrant# mkdir /opt/oraInventory
-root@servidorOracle:/home/vagrant# mkdir /opt/oradata
-
-root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oracle/
-root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oraInventory/
-root@servidorOracle:/home/vagrant# chown oracle:dba -R /opt/oradata/
-
-```
-
-Ahora editaremos el fichero _/etc/security/limits.conf_ para dar privilegios al
-usuario:
-
-```
-oracle soft nproc 2047
-oracle hard nproc 16384
-oracle soft nofile 1024
-oracle hard nofile 65536
-oracle soft stack 10240
-```
-
-Para finalizar, añadimos algunas variables de entorno:
-
-```
 
