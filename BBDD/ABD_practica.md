@@ -512,113 +512,333 @@ manuel@debian:~/Descargas/flashplayer$ sudo cp -r usr/* /usr/
 
 Ahora instalaremos Oracle para tener un Servidor con el que conectarnos.
 
-Primero, nos descargaremos los siguientes paquetes:
+Instalaremos la versión 19c para CentOS 8.
+
+En primer lugar, ejecutaremos un update a la máquina antes de instalar 
+cualquier servidor. Una vez hecho esto, deshabilitaremos _Transparent HugePages_
+ya que puede causar un retraso en el acceso a la memoria, pudiendo resultar en 
+problemas con las bases de datos de Oracle.
+
+Para ello, ejecutaremos lo siguiente para comprobar que efectivamente está 
+activado por defecto:
 
 ```
-build-essential sysstat unzip libstdc++5 numactl expat libaio-dev 
-unixodbc-dev lesstif2-dev elfutils libelf-dev binutils libcap-dev gcc g++
-ksh xorg xauth rpm libxcb1-dev libxau-dev libxtst-dev libxi-dev 
+[root@localhost ~]# cat /sys/kernel/mm/transparent_hugepage/enabled
+[always] madvise never
 ```
 
-Añadiremos los grupos y usuarios pertinentes:
+Entonces, para desactivarlo, modificaremos el fichero _/etc/default/grub_
+añadiendo al final de la línea de _GRUB___CMDLINE___LINUX_
 
 ```
-addgroup --system oinstall
-addgroup --system dba
-adduser --system --ingroup oinstall -shell /bin/bash oracle
-adduser oracle dba
-passwd oracle
+transparent_hugepage=never
 ```
 
-Y los directorios:
+Hecho esto, generamos el fichero _/boot/grub2/grub.cfg_ usando las configuraciones
+modificadas:
 
 ```
-mkdir -p /opt/oracle/product/12.2.0.1
-mkdir -p /opt/oraInventory
-chown -R oracle:dba /opt/ora*
+[root@localhost ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+done
 ```
 
-A continuación, crearemos los enlaces simbólicos necesarios:
+Después de esto, reiniciamos la máquina para guardar los cambios.
+
+Y al volver a comprobar el estado:
 
 ```
-ln -s /usr/bin/awk /bin/awk
-ln -s /usr/bin/basename /bin/basename
-ln -s /usr/bin/rpm /bin/rpm
-ln -s /usr/lib/x86_64-linux-gnu /usr/lib64
+[root@localhost ~]# cat /sys/kernel/mm/transparent_hugepage/enabled
+always madvise [never]
 ```
 
-Crearemos los límites del sistema:
+Ahora, pasaremos a la instalación de paquetería necesaria antes de instalar
+Oracle:
 
 ```
-echo """
-## Valor del número máximo de manejadores de archivos. ##
-fs.file-max = 65536
-fs.aio-max-nr = 1048576
-## Valor de los parámetros de semáforo en el orden listado. ##
-## semmsl, semmns, semopm, semmni ##
+[root@localhost ~]# yum install -y bc \
+> binutils \
+> elfutils-libelf \
+> elfutils-libelf-devel \
+> fontconfig-devel \
+> glibc \
+> glibc-devel \
+> ksh \
+> libaio \
+> libaio-devel \
+> libXrender \
+> libXrender-devel \
+> libX11 \
+> libXau \
+> libXi \
+> libXtst \
+> libgcc \
+> librdmacm-devel \
+> libstdc++ \
+> libstdc++-devel \
+> libxcb \
+> make \
+> net-tools \
+> smartmontools \
+> sysstat \
+> unzip \
+> libnsl \
+> libnsl2
+```
+
+Una vez descargado los paquetes necesarios, pasaremos a la creación de usuarios
+y grupos para Oracle:
+
+```
+[root@localhost ~]# groupadd -g 1501 oinstall
+[root@localhost ~]# groupadd -g 1502 dba
+[root@localhost ~]# groupadd -g 1503 oper
+[root@localhost ~]# groupadd -g 1504 backupdba
+[root@localhost ~]# groupadd -g 1505 dgdba
+[root@localhost ~]# groupadd -g 1506 kmdba
+[root@localhost ~]# groupadd -g 1507 racdba
+[root@localhost ~]# useradd -u 1501 -g oinstall -G dba,oper,backupdba,dgdba,kmdba,racdba oracle
+[root@localhost ~]# echo "oracle" | passwd oracle --stdin
+Changing password for user oracle.
+passwd: all authentication tokens updated successfully.
+```
+
+Ahora crearemos una configuración llamada _/etc/security/limits.d/30-oracle.conf_
+para marcar los límites de seguridad del usuario de Oracle:
+
+```
+oracle   soft   nofile    1024
+oracle   hard   nofile    65536
+oracle   soft   nproc    16384
+oracle   hard   nproc    16384
+oracle   soft   stack    10240
+oracle   hard   stack    32768
+oracle   hard   memlock    134217728
+oracle   soft   memlock    134217728
+```
+
+Ahora ajustaremos los parámetros del kernel de CentOS 8 editando la 
+configuración del fichero _/etc/sysctl.d/98-oracle.conf:
+
+```
+fs.file-max = 6815744
 kernel.sem = 250 32000 100 128
-## Valor de los tamaños de segmento de memoria compartida. ##
-## (Oracle recomienda total de RAM -1 byte) 2GB ##
-kernel.shmmax = 2107670527
-kernel.shmall = 514567
 kernel.shmmni = 4096
-## Valor del rango de números de puerto. ##
-net.ipv4.ip_local_port_range = 1024 65000
-## Valor del número gid del grupo dba. ##
-vm.hugetlb_shm_group = 121
-## Valor del número de páginas de memoria. ##
-vm.nr_hugepages = 64
-""" > /etc/sysctl.d/local-oracle.conf
+kernel.shmall = 1073741824
+kernel.shmmax = 4398046511104
+kernel.panic_on_oops = 1
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048576
+net.ipv4.conf.all.rp_filter = 2
+net.ipv4.conf.default.rp_filter = 2
+fs.aio-max-nr = 1048576
+net.ipv4.ip_local_port_range = 9000 65500
 ```
 
-Y tras esto, cargaremos dichas variables con el siguiente comando:
+Y recargamos los parámetros del kernel con el siguiente comando:
 
 ```
-sysctl -p /etc/sysctl.d/local-oracle.conf
+[root@localhost ~]# sysctl -p
 ```
 
-Y una vez hecho, realizaremos un configuración de seguridad:
+De manera persistente, configuramos SELinux en modo permisivo:
 
 ```
-echo """
-## Número máximo de procesos disponibles para un solo usuario. ##
-oracle          soft    nproc           2047
-oracle          hard    nproc           16384
-## Número máximo de descriptores de archivo abiertos para un solo usuario. ##
-oracle          soft    nofile          1024
-oracle          hard    nofile          65536
-## Cantidad de RAM para el uso de páginas de memoria. ##
-oracle          soft    memlock         204800
-oracle          hard    memlock         204800
-""" > /etc/security/limits.d/local-oracle.conf
+[root@localhost ~]# sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/sysconfig/selinux
+[root@localhost ~]# setenforce permissive
 ```
 
-Creamos las variables de entorno para Oracle:
+A continuación, permitiremos el puerto de escucha de Oracle SQL en el firewall 
+de CentOs:
 
 ```
-echo """
-## Nombre del equipo ##
+[root@localhost ~]# firewall-cmd --permanent --add-port=1521/tcp
+success
+[root@localhost ~]# firewall-cmd --reload
+success
+```
+
+Ahora pasaremos a la creación de directorios y ajuste de permisos y propietarios
+para Oracle:
+
+```
+[root@localhost ~]# mkdir -p /u01/app/oracle/product/19.3.0/dbhome_1
+[root@localhost ~]# mkdir -p /u02/oradata
+[root@localhost ~]# chown -R oracle:oinstall /u01 /u02
+[root@localhost ~]# chmod -R 775 /u01 /u02
+```
+
+Con esto, creamos 2 directorios, uno para Oracle RDBMS y otro para Oracle 
+Databases.
+
+Ahora configuraremos el entorno de CentOs para el usuario de Oracle:
+
+* Nos conectamos con el usuario oracle
+
+* Editamos el fichero _.bash_profile y añadimos la siguiente configuración:
+
+```
+# Oracle Settings
+export TMP=/tmp
+export TMPDIR=$TMP
+
 export ORACLE_HOSTNAME=localhost
-## Usuario con permiso en archivos Oracle. ##
-export ORACLE_OWNER=oracle
-## Directorio que almacenará los distintos servicios de Oracle. ##
-export ORACLE_BASE=/opt/oracle
-## Directorio que almacenará la base de datos Oracle. ##
-export ORACLE_HOME=/opt/oracle/product/12.2.0.1/dbhome_1
-## Nombre único de la base de datos. ##
-export ORACLE_UNQNAME=oraname
-## Identificador de servicio de escucha. ##
-export ORACLE_SID=orasid
-## Ruta a archivos binarios. ##
-export PATH=$PATH:/opt/oracle/product/12.2.0.1/dbhome_1/bin
-## Ruta a la biblioteca. ##
-export LD_LIBRARY_PATH=/opt/oracle/product/12.2.0.1/dbhome_1/lib
-## Idioma
-export NLS_LANG='SPANISH_SPAIN.AL32UTF8'
-""" >> /etc/bash.bashrc
+export ORACLE_UNQNAME=cdb1
+export ORACLE_BASE=/u01/app/oracle
+export ORACLE_HOME=$ORACLE_BASE/product/19.3.0/dbhome_1
+export ORA_INVENTORY=/u01/app/oraInventory
+export ORACLE_SID=cdb1
+export PDB_NAME=pdb1
+export DATA_DIR=/u02/oradata
+
+export PATH=$ORACLE_HOME/bin:$PATH
+
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
+export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
 ```
 
-Una vez hayamos hecho esto, nos descargamos la versión de Oracle que queramos.
-Nos descargamos el fichero .zip y los descomprimimos.
+* Y ejecutamos dicho fichero para que se quede el entorno cambiado para esta
+sesión:
 
+```
+[oracle@localhost ~]$ source ~/.bash_profile
+```
 
+Ahora instalaremos Oracle en modo silencioso. Para ello, nos descargamos 
+Oracle Database 19c y lo transferimos al directorio del usuario oracle.
+
+Descomprimimos el fichero en el directorio _$ORACLE___HOME_:
+
+```
+[oracle@localhost ~]$ unzip LINUX.X64_193000_db_home.zip -d $ORACLE_HOME
+```
+
+Debido a que el instalador de Oracle Database 19c tiene problemas detectando
+el SO de CentOS 8, podemos trabajar con ello ejecutando el siguiente comando:
+
+```
+[oracle@localhost ~]$ export CV_ASSUME_DISTID=RHEL8.0 
+```
+
+A continuación, nos dirigimos al directorio $ORACLE_HOME y procedemos a la 
+instalación:
+
+```
+[oracle@localhost dbhome_1]$ ./runInstaller -ignorePrereq -waitforcompletion -silent \
+> oracle.install.option=INSTALL_DB_SWONLY \
+> ORACLE_HOSTNAME=${ORACLE_HOSTNAME} \
+> UNIX_GROUP_NAME=oinstall \
+> INVENTORY_LOCATION=${ORA_INVENTORY} \
+> ORACLE_HOME=${ORACLE_HOME} \
+> ORACLE_BASE=${ORACLE_BASE} \
+> oracle.install.db.InstallEdition=EE \
+> oracle.install.db.OSDBA_GROUP=dba \
+> oracle.install.db.OSBACKUPDBA_GROUP=backupdba \
+> oracle.install.db.OSDGDBA_GROUP=dgdba \
+> oracle.install.db.OSKMDBA_GROUP=kmdba \
+> oracle.install.db.OSRACDBA_GROUP=racdba \
+> SECURITY_UPDATES_VIA_MYORACLESUPPORT=false \
+> DECLINE_SECURITY_UPDATES=true
+```
+
+Una vez instalado, ejecutaremos lo siguiente:
+
+```
+[oracle@localhost dbhome_1]$ su -
+Password:
+Last login: Tue Apr 28 14:09:02 PKT 2020 on pts/2
+[root@localhost ~]# /u01/app/oraInventory/orainstRoot.sh
+Changing permissions of /u01/app/oraInventory.
+Adding read,write permissions for group.
+Removing read,write,execute permissions for world.
+
+Changing groupname of /u01/app/oraInventory to oinstall.
+The execution of the script is complete.
+[root@localhost ~]# /u01/app/oracle/product/19.3.0/dbhome_1/root.sh
+Check /u01/app/oracle/product/19.3.0/dbhome_1/install/root_oracle-db-19c.centlinux.com_2020-04-28_15-01-30-090367646.log for the output of root script
+```
+
+Y ya tendriamos Oracle Database 19c instalado en CentOS 8.
+
+Ahora configuramos Oracle Listener y creamos una base de datos:
+
+```
+[oracle@localhost ~]$ lsnrctl start
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 28-APR-2020 15:04:29
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Starting /u01/app/oracle/product/19.3.0/dbhome_1/bin/tnslsnr: please wait...
+
+TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Log messages written to /u01/app/oracle/diag/tnslsnr/oracle-db-19c/listener/alert/log.xml
+Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521)))
+
+Connecting to (ADDRESS=(PROTOCOL=tcp)(HOST=)(PORT=1521))
+STATUS of the LISTENER
+------------------------
+Alias                     LISTENER
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                28-APR-2020 15:04:30
+Uptime                    0 days 0 hr. 0 min. 0 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Log File         /u01/app/oracle/diag/tnslsnr/oracle-db-19c/listener/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=localhost)(PORT=1521)))
+The listener supports no services
+The command completed successfully
+```
+
+Y ahora creamos la base de datos:
+
+```
+[oracle@localhost ~]$ dbca -silent -createDatabase \
+> -templateName General_Purpose.dbc \
+> -gdbname ${ORACLE_SID} -sid  ${ORACLE_SID} \
+> -responseFile NO_VALUE \
+> -characterSet AL32UTF8 \
+> -sysPassword V3ryStr@ng \
+> -systemPassword V3ryStr@ng \
+> -createAsContainerDatabase true \
+> -numberOfPDBs 1 \
+> -pdbName ${PDB_NAME} \
+> -pdbAdminPassword V3ryStr@ng \
+> -databaseType MULTIPURPOSE \
+> -automaticMemoryManagement false \
+> -totalMemory 800 \
+> -storageType FS \
+> -datafileDestination "${DATA_DIR}" \
+> -redoLogFileSize 50 \
+> -emConfiguration NONE \
+> -ignorePreReqs
+Prepare for db operation
+8% complete
+Copying database files
+31% complete
+Creating and starting Oracle instance
+32% complete
+36% complete
+40% complete
+43% complete
+46% complete
+Completing Database Creation
+51% complete
+53% complete
+54% complete
+Creating Pluggable Databases
+58% complete
+77% complete
+Executing Post Configuration Actions
+100% complete
+Database creation complete. For details check the logfiles at:
+ /u01/app/oracle/cfgtoollogs/dbca/cdb1.
+Database Information:
+Global Database Name:cdb1
+System Identifier(SID):cdb1
+Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/cdb1/cdb1.log" for further details.
+```
