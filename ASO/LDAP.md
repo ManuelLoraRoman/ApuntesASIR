@@ -53,8 +53,6 @@ alias.
 Una característica más, es que hay un atributo que distingue el Objeto en la
 herarquia y se conoce como RDN (Relative Distinguished Name).
 
-Ejemplo:
-
 Los ficheros están en un formato llamado ldif
 
 Los atributos se definen con un nombre, dos puntos y un valor.

@@ -473,7 +473,228 @@ Y ya nos podríamos conectar.
 servidor MySQL desde un cliente remoto tras autenticarse y muestre alguna 
 información almacenada en el mismo.
 
+Instalamos el paquete _mariadb-server_ en nuestra máquina. Una vez instalado
+ejecutaremos lo siguiente:
 
+```
+root@ldapej:~# mysql_secure_installation 
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MariaDB to secure it, we'll need the current
+password for the root user.  If you've just installed MariaDB, and
+you haven't set the root password yet, the password will be blank,
+so you should just press enter here.
+
+Enter current password for root (enter for none): 
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB
+root user without the proper authorisation.
+
+Set root password? [Y/n] Y
+New password: 
+Re-enter new password: 
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+
+By default, a MariaDB installation has an anonymous user, allowing anyone
+to log into MariaDB without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] Y
+ ... Success!
+
+Normally, root should only be allowed to connect from 'localhost'.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n] Y
+ ... Success!
+
+By default, MariaDB comes with a database named 'test' that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n] Y
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n] Y
+ ... Success!
+
+Cleaning up...
+
+All done!  If you've completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
+```
+
+Después crearemos una nueva base de datos con un usuario con privilegios sobre
+dicha base de datos:
+
+```
+debian@ldapej:~$ sudo mysql -u root -p
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 57
+Server version: 10.3.23-MariaDB-0+deb10u1 Debian 10
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE newdb;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> CREATE USER manuel@localhost IDENTIFIED BY '1q2w3e4r5t'
+    -> ;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON newdb.* to manuel@localhost;
+Query OK, 0 rows affected (0.001 sec)
+```
+
+Hecho esto, poblaremos dicha base de datos:
+
+```
+MariaDB [newdb]> create table temporadas
+    -> (
+    -> codigo varchar(9),
+    -> Nombre varchar(35),
+    -> constraint pk_temporadas primary key (codigo)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.120 sec)
+
+MariaDB [newdb]> create table regimenes
+    -> (
+    -> codigo varchar(9),
+    -> Nombre varchar(35),
+    -> constraint pk_regimenes primary key (codigo),
+    -> constraint contenido_codigo check( codigo in ('AD','MP','PC','TI'))
+    -> );
+Query OK, 0 rows affected, 1 warning (0.097 sec)
+
+MariaDB [newdb]> create table tipos_de_habitacion
+    -> (
+    -> codigo varchar(9),
+    -> nombre varchar(35),
+    -> constraint pk_tipohabit primary key (codigo)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.085 sec)
+
+MariaDB [newdb]> create table habitaciones
+    -> (
+    -> numero varchar(4),
+    -> codigotipo varchar(9),
+    -> constraint pk_habitaciones primary key (numero),
+    -> constraint fk_habitaciones foreign key (codigotipo) references tipos_de_habitacion(codigo)
+    -> );
+Query OK, 0 rows affected, 1 warning (0.186 sec)
+
+MariaDB [newdb]> insert into temporadas
+    -> values ('01','Baja');
+Query OK, 1 row affected (0.012 sec)
+
+MariaDB [newdb]> insert into temporadas
+    -> values ('02','Alta');
+Query OK, 1 row affected (0.018 sec)
+
+MariaDB [newdb]> insert into temporadas
+    -> values ('03','Especial');
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [newdb]> insert into regimenes
+    -> values ('AD','Alojamiento y Desayuno');
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [newdb]> insert into regimenes
+    -> values ('MP','Media pension');
+Query OK, 1 row affected (0.029 sec)
+
+MariaDB [newdb]> insert into regimenes
+    -> values ('PC','Pension completa');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [newdb]> insert into regimenes
+    -> values ('TI','Todo incluido');
+Query OK, 1 row affected (0.003 sec)
+
+MariaDB [newdb]> insert into tipos_de_habitacion
+    -> values ('01','Habitacion individual');
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [newdb]> insert into tipos_de_habitacion
+    -> values ('02','Habitacion doble');
+Query OK, 1 row affected (0.014 sec)
+
+MariaDB [newdb]> insert into tipos_de_habitacion
+    -> values ('03','Habitacion triple');
+Query OK, 1 row affected (0.011 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('00','01');
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('01','02');
+Query OK, 1 row affected (0.011 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('02','03');
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('03','01');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('04','02');
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('05','02');
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('06','02');
+Query OK, 1 row affected (0.015 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('07','02');
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('08','03');
+Query OK, 1 row affected (0.013 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('09','02');
+Query OK, 1 row affected (0.016 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('10','01');
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [newdb]> insert into habitaciones
+    -> values ('11','03');
+Query OK, 1 row affected (0.020 sec) 
+```
+
+Una vez hecho esto, instalaremos el paquete de apache2 y configuraremos un
+virtualhost:
+
+```
 
 * Instalación de SQL Developer sobre Windows como cliente remoto de ORACLE.
 
@@ -726,14 +947,14 @@ A continuación, nos dirigimos al directorio $ORACLE_HOME y procedemos a la
 instalación:
 
 ```
-[oracle@localhost dbhome_1]$ ./runInstaller -ignorePrereq -waitforcompletion -silent \
+[oracle@localhost dbhome_1]$ ./runInstaller  -waitforcompletion -silent \
 > oracle.install.option=INSTALL_DB_SWONLY \
 > ORACLE_HOSTNAME=${ORACLE_HOSTNAME} \
-> UNIX_GROUP_NAME=oinstall \
+> UNIX_GROUP_NAME=kdm \
 > INVENTORY_LOCATION=${ORA_INVENTORY} \
 > ORACLE_HOME=${ORACLE_HOME} \
-> ORACLE_BASE=${ORACLE_BASE} \
-> oracle.install.db.InstallEdition=EE \
+> ORACLE_BASE=${BASE} \
+> oracle.install.db.InstallEdition=EB \
 > oracle.install.db.OSDBA_GROUP=dba \
 > oracle.install.db.OSBACKUPDBA_GROUP=backupdba \
 > oracle.install.db.OSDGDBA_GROUP=dgdba \
@@ -809,8 +1030,8 @@ Y ahora creamos la base de datos:
 > -pdbName ${PDB_NAME} \
 > -pdbAdminPassword V3ryStr@ng \
 > -databaseType MULTIPURPOSE \
-> -automaticMemoryManagement false \
-> -totalMemory 800 \
+> -memoryMgmtType auto_sga \
+> -totalMemory 1536 \
 > -storageType FS \
 > -datafileDestination "${DATA_DIR}" \
 > -redoLogFileSize 50 \
@@ -842,3 +1063,4 @@ Global Database Name:cdb1
 System Identifier(SID):cdb1
 Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/cdb1/cdb1.log" for further details.
 ```
+
