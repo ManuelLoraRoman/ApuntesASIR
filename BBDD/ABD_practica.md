@@ -691,10 +691,104 @@ MariaDB [newdb]> insert into habitaciones
 Query OK, 1 row affected (0.020 sec) 
 ```
 
-Una vez hecho esto, instalaremos el paquete de apache2 y configuraremos un
-virtualhost:
+Una vez hecho esto, instalaremos el paquete de apache2 y el paquete que
+permite el uso de php y configuraremos un virtualhost:
 
 ```
+<VirtualHost *:80>
+        ServerName www.mysql_app.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+```
+
+Nos descargamos el paquete php y ejecutamos el siguiente comando:
+
+```
+debian@ldapej:~$ echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/phpinfo.php
+<?php phpinfo(); ?>
+```
+
+Y ahora crearemos 3 ficheros en el DocumentRoot: otro index.html, datos.php,
+y all.php.
+
+Configuración index.html:
+
+```
+
+<!DOCTYPE html>
+<html lang="es">
+  <head></head>
+        <body style= "background: green">
+        <title>Aplicación Mysql: Manuel Lora Román</title>
+         <form action="all.php" name="form" method="POST">
+                <p>Usuario:</p>
+                <input type="text" name="user">
+                <p>Contraseña:</p>
+                <input type="password" name="pw">
+                <p>Base de datos:</p>
+                <input type="text" name="db">
+                <p></p>
+                <input type="submit" name="Enviar" value"Enviar" />
+         </form>
+        </body>
+</html>
+```
+
+
+```
+<?php
+
+$server = "172.22.201.0";
+$user = $_POST['user'];
+$pw = $_POST['pw'];
+$db = $_POST['db'];
+$connect = new mysqli($server, $user, $pw, $db);
+
+if ($connect->connect_error) {
+        die("ERROR. <br> Alguno de los parametros introducidos son incorrectos.");
+}
+
+
+$sql = "select table_name from information_schema.tables where table_schema like '$db'";
+
+echo '<html>';
+echo '<body style= "background: blue">';
+
+$result = $connect->query($sql);
+if ($result->num_rows > 0) {
+        echo "Base de datos $db";
+        echo "<br>";
+        echo "<br>";
+        while($row = $result->fetch_assoc()) {
+                echo "<form method=post action=tabla.php>";
+                echo "<input type=hidden name=user value={$user}>";
+                echo "<input type=hidden name=pw value={$pw}>";
+                echo "<input type=hidden name=db value={$db}>";
+                echo "<input type=submit name=table value={$row['table_name']}>";
+                echo "<br>";
+                echo "</form>";
+
+        }
+} else {
+        echo "La tabla esta vacia";
+}
+
+echo '</body>';
+echo '</html>';
+
+$connect->close();
+
+?>
+```
+
+Y la comprobación:
+
+![alt text](../Imágenes/formmysql.png)
 
 * Instalación de SQL Developer sobre Windows como cliente remoto de ORACLE.
 
@@ -711,27 +805,19 @@ aparece la ventana de inicio de SQL Developer:
 ![alt text](../Imágenes/sqldevinicio.png)
 
 Una vez aquí, pulsamos el botón verde e intentamos rellenar la información
-necesaria para conectarnos al servidor de Oracle que queramos. 
+necesaria para conectarnos al servidor de Oracle que queramos (en nuestro caso,
+el servidor creado anteriormente). 
 
 Ejemplo:
 
-```
+![alt text](../Imágenes/sqldevinicio.png)
 
-```
+![alt text](../Imágenes/estadocorrectosqldev.png)
+
+![alt text](../Imágenes/conexioncorrectasqldev.png)
+
 
 * Instalación y prueba desde un cliente remoto de Oracle Enterprise Manager.
-
-Nos descargamos flashplayer de la siguiente [página](https://get.adobe.com/flashplayer/).
-
-Una vez descargado el archivo .tar.gz, lo descomprimimos y después ejecutamos
-los siguientes comandos:
-
-```
-manuel@debian:~/Descargas/flashplayer$ sudo cp libflashplayer.so /usr/lib/mozilla/plugins/
-manuel@debian:~/Descargas/flashplayer$ sudo cp -r usr/* /usr/
-```
-
-Ahora instalaremos Oracle para tener un Servidor con el que conectarnos.
 
 Instalaremos la versión 19c para CentOS 8.
 
@@ -947,14 +1033,14 @@ A continuación, nos dirigimos al directorio $ORACLE_HOME y procedemos a la
 instalación:
 
 ```
-[oracle@localhost dbhome_1]$ ./runInstaller  -waitforcompletion -silent \
+[oracle@localhost dbhome_1]$ ./runInstaller -ignorePrereq -waitforcompletion -silent \
 > oracle.install.option=INSTALL_DB_SWONLY \
 > ORACLE_HOSTNAME=${ORACLE_HOSTNAME} \
-> UNIX_GROUP_NAME=kdm \
+> UNIX_GROUP_NAME=oinstall \
 > INVENTORY_LOCATION=${ORA_INVENTORY} \
 > ORACLE_HOME=${ORACLE_HOME} \
-> ORACLE_BASE=${BASE} \
-> oracle.install.db.InstallEdition=EB \
+> ORACLE_BASE=${ORACLE_BASE} \
+> oracle.install.db.InstallEdition=EE \
 > oracle.install.db.OSDBA_GROUP=dba \
 > oracle.install.db.OSBACKUPDBA_GROUP=backupdba \
 > oracle.install.db.OSDGDBA_GROUP=dgdba \
@@ -1064,3 +1150,69 @@ System Identifier(SID):cdb1
 Look at the log file "/u01/app/oracle/cfgtoollogs/dbca/cdb1/cdb1.log" for further details.
 ```
 
+Ahora nos conectaremos como root y ejecutaremos lo siguiente para habilitar el 
+comienzo automático de la base de datos de Oracle:
+
+```
+[root@localhost ~]# sed -i 's/:N$/:Y/g' /etc/oratab
+```
+
+Nos conectamos a continuación usando sqlplus:
+
+```
+[oracle@localhost ~]$ sqlplus / as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Tue Apr 28 15:57:06 2020
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL>
+```
+Ahora, para simplificar la creación de las bases de datos, ejecutaremos:
+
+```
+SQL> ALTER SYSTEM SET DB_CREATE_FILE_DEST='/u02/oradata' SCOPE=BOTH;
+
+System altered.
+```
+
+Antes de esto, debemos ejecutar _startup_ para iniciar Oracle:
+
+```
+SQL> startup
+ORACLE instance started.
+
+Total System Global Area 1207955552 bytes
+Fixed Size 9134176 bytes
+Variable Size 318767104 bytes
+Database Buffers 872415232 bytes
+Redo Buffers 7639040 bytes
+Database mounted.
+Database opened.
+```
+
+También habilitaremos el comienzo automático de las "pluggable databases":
+
+```
+SQL> ALTER PLUGGABLE DATABASE PDB1 SAVE STATE;
+
+Pluggable database altered.
+```
+
+Ahora pasaremos a la creación de tablas:
+
+![alt text](../Imágenes/tabla1.png)
+
+![alt text](../Imágenes/tabla2.png)
+
+![alt text](../Imágenes/tabla3.png)
+
+![alt text](../Imágenes/ejemplostabla1.png)
+
+![alt text](../Imágenes/ejemplostabla2.png)
