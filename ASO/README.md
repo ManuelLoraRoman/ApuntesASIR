@@ -20,4 +20,6 @@
 
 [4. Servidor LDAP](./LDAP.md)
 
+[4.1. Tareas LDAP](./TareasLDAP.md)
+
 </div>
