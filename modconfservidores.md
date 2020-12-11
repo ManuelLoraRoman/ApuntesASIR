@@ -56,13 +56,167 @@ dicha interfaz de red:
 Ahora configuramos de nuevo las reglas de iptable, y añadimos una nueva:
 
 ```
-root@manuel-lora:/home/debian# iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -o eth2 -j MASQUERADE
+root@manuel-lora:/home/debian# iptables -t nat -A POSTROUTING -s 10.0.2.0/24 -o eth1 -j MASQUERADE
 ```
 
-Antes de meter a Freston en la nueva red, la incorporamos en nuestra red a la
+Antes de meter a Freston en la red de manuel-lora, la incorporamos en nuestra red a la
 que se le puede asignar una IP Flotante, para poder añadirle una contraseña al
 usuario debian.
 
 Una vez configurado esto, la quitamos de la red, y la metemos en la red 
-anteriormente creada.
- 
+de manuel-lora. Como no hemos configurado el DHCP en la red y no
+hemos puesto ninguna IP estática, no podremos conectarnos por ssh,
+tendremos que conectarnos mediante la consola de horizon.
+
+A continuación, editamos el fichero _/etc/network/interfaces_ de Freston y
+le configuramos la IP estática:
+
+```
+auto eth0
+iface eth0 inet static
+ address 10.0.1.10
+ netmask 255.255.255.0
+ broadcast 10.0.1.255
+ gateway 10.0.1.4
+```
+
+Reiniciamos el servicio networking y comprobamos la conectividad desde Dulcinea:
+
+```
+debian@manuel-lora:~/.ssh$ ping freston
+PING freston (10.0.1.10) 56(84) bytes of data.
+64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=64 time=3.62 ms
+64 bytes from freston (10.0.1.10): icmp_seq=2 ttl=64 time=1.07 ms
+64 bytes from freston (10.0.1.10): icmp_seq=3 ttl=64 time=1.15 ms
+^C
+--- freston ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 6ms
+rtt min/avg/max/mdev = 1.070/1.946/3.617/1.182 ms
+```
+
+Y desde Sancho:
+
+```
+ubuntu@sancho:~$ ping freston
+PING freston (10.0.1.10) 56(84) bytes of data.
+64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=64 time=2.49 ms
+64 bytes from freston (10.0.1.10): icmp_seq=2 ttl=64 time=0.741 ms
+64 bytes from freston (10.0.1.10): icmp_seq=3 ttl=64 time=0.617 ms
+64 bytes from freston (10.0.1.10): icmp_seq=4 ttl=64 time=0.549 ms
+^C
+--- freston ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3004ms
+rtt min/avg/max/mdev = 0.549/1.099/2.489/0.805 ms
+```
+
+Y ya estaría configurado la máquina Freston. (Adicionalmente hemos
+configurado los /etc/hosts de todas las máquinas con los cambios
+realizados).
+
+
+También comprobamos que tenemos conexión a Internet desde Freston:
+
+```
+debian@freston:~$ ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=111 time=42.6 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=111 time=43.1 ms
+^C
+--- 8.8.8.8 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 3ms
+rtt min/avg/max/mdev = 42.612/42.840/43.069/0.308 ms
+```
+
+Ahora, pasándonos al otro punto, debemos mover nuestra máquina 
+Quijote hacia la red DMZ. Para ello, en primer lugar, le 
+conectaremos una nueva interfaz de la red DMZ y después le 
+quitaremos la interfaz que tenía.
+
+Debido a que no está configurado su IP estática en la nueva red
+debemos, mediante la consola de Horizon, realizar los cambios 
+pertinentes.
+
+Una vez dentro de Quijote, debemos modificar el fichero
+_/etc/sysconfig/network-scripts/ifcfg-eth0_:
+
+```
+# Created by cloud-init on instance boot automatically, do not edit.
+#
+DEVICE="eth0"
+BOOTPROTO="static"
+IPADDR="10.0.2.10"
+NETMASK="255.255.255.0"
+NETWORK="10.0.2.0"
+GATEWAY="10.0.2.11"
+ONBOOT="yes"
+TYPE="Ethernet"
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+~                                                                               
+"/etc/sysconfig/network-scripts/ifcfg-eth0" 10L, 214C
+``` 
+
+Y reiniciamos el servicio network para que se apliquen los cambios.
+Una vez hecho esto, aplicamos los cambios en los ficheros 
+_/etc/hosts_ de las demás máquinas y comprobamos la conectividad:
+
+```
+debian@manuel-lora:~$ ssh -i .ssh/clave_openstack.pem centos@quijote
+Warning: Permanently added the ECDSA host key for IP address '10.0.2.10' to the list of known hosts.
+Last login: Fri Dec 11 19:16:05 2020
+[centos@quijote ~]$ ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=111 time=43.6 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=111 time=43.0 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=111 time=42.2 ms
+^C
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 3ms
+rtt min/avg/max/mdev = 42.178/42.933/43.607/0.610 ms
+[centos@quijote ~]$ ping www.google.es
+PING www.google.es (172.217.17.3) 56(84) bytes of data.
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=1 ttl=112 time=108 ms
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=2 ttl=112 time=45.0 ms
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=3 ttl=112 time=44.9 ms
+^C
+--- www.google.es ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 578ms
+rtt min/avg/max/mdev = 44.947/65.961/107.920/29.670 ms
+[centos@quijote ~]$ ping freston
+PING freston (10.0.1.10) 56(84) bytes of data.
+64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=63 time=1.52 ms
+64 bytes from freston (10.0.1.10): icmp_seq=2 ttl=63 time=1.59 ms
+^C
+--- freston ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 3ms
+rtt min/avg/max/mdev = 1.519/1.552/1.586/0.051 ms
+[centos@quijote ~]$ ping sancho
+PING sancho (10.0.1.11) 56(84) bytes of data.
+64 bytes from sancho (10.0.1.11): icmp_seq=1 ttl=63 time=2.59 ms
+64 bytes from sancho (10.0.1.11): icmp_seq=2 ttl=63 time=1.47 ms
+64 bytes from sancho (10.0.1.11): icmp_seq=3 ttl=63 time=1.53 ms
+^C
+--- sancho ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 6ms
+rtt min/avg/max/mdev = 1.471/1.863/2.593/0.518 ms
+[centos@quijote ~]$ ping dulcinea
+PING dulcinea (10.0.2.11) 56(84) bytes of data.
+64 bytes from dulcinea (10.0.2.11): icmp_seq=1 ttl=64 time=0.595 ms
+64 bytes from dulcinea (10.0.2.11): icmp_seq=2 ttl=64 time=0.485 ms
+64 bytes from dulcinea (10.0.2.11): icmp_seq=3 ttl=64 time=0.907 ms
+^C
+--- dulcinea ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 52ms
+rtt min/avg/max/mdev = 0.485/0.662/0.907/0.179 ms
+```
+
