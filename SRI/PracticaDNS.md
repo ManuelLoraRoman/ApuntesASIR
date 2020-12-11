@@ -268,7 +268,7 @@ El fichero _db.iesgn.org_ tendrá la siguiente configuración:
 
 ```
 $TTL 86400      ; 1 day
-@                       IN SOA pandora.iesgn.org. pandora.gmail.com. {
+@                       IN SOA pandora.iesgn.org. manuellora.iesgn.org. {
                                 19423 ; serial
                                 21600 ; refresh (6 hours)
                                 3600 ; retry (1 hour)
@@ -292,7 +292,7 @@ Y el fichero db.192.168.100 tendrá esta otra:
 
 ```
 $TTL 86400              ; 1 day
-@                               IN SOA pandora.iesgn.org. pandora.gmail.com. (
+@                               IN SOA pandora.iesgn.org. manuellora.iesgn.org. (
                                         12998 ; serial
                                         21600 ; refresh (6 hours)
                                         3600 ; retry (1 hour)
@@ -679,13 +679,140 @@ Dec 9 22:20:43 pandora named[1775]: client @0x7fda40102280 192.168.100.4#41493 (
 **Tarea 5:** Documenta los siguientes apartados:
         
 * Configura un cliente para que utilice los dos servidores como servidores DNS.
+
+Para ello, vamos a editar el fichero _/etc/resolv.conf_ de dicho cliente y pondremos:
+
+```
+nameserver 192.168.100.2
+nameserver 192.168.100.4
+```
        
 * Realiza una consulta con dig tanto al maestro como al esclavo para comprobar 
 que las respuestas son autorizadas. ¿En qué te tienes que fijar?
-       
+   
+* Servidor maestro
+
+```
+cliente@debian:~$ dig @192.168.100.2 ftp.iesgn.org
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> @192.168.100.2 ftp.iesgn.org
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 49907
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 4
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: aa0ceb5ae636090191bbe8e75dd6f20f593467f75896453b (good)
+;; QUESTION SECTION:
+;ftp.iesgn.org.			IN	A
+
+;; ANSWER SECTION:
+ftp.iesgn.org.		86400	IN	A	192.168.100.201
+
+;; AUTHORITY SECTION:
+iesgn.org.		86400	IN	NS	pandora.iesgn.org.
+iesgn.org.		86400	IN	NS	pandora-slave.iesgn.org.
+
+;; ADDITIONAL SECTION:
+pandora.iesgn.org.	86400	IN	A	192.168.100.2
+pandora-slave.iesgn.org.  86400 IN	A	1192.168.100.4
+
+;; Query time: 1 msec
+;; SERVER: 192.168.100.2#53(192.168.100.2)
+;; WHEN: Wed Dec 9 23:22:39 GMT 2020
+;; MSG SIZE  rcvd: 200
+```
+
+* Servidor esclavo
+
+```
+cliente@debian:~$ dig @192.168.100.4 ftp.iesgn.org
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> @192.168.100.4 ftp.iesgn.org
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44257
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 4
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: 69c0d47ca4121ec973850aa45dd6f227d9bb555f4c66dc5c (good)
+;; QUESTION SECTION:
+;ftp.iesgn.org.			IN	A
+
+;; ANSWER SECTION:
+ftp.iesgn.org.		86400	IN	A	192.168.100.201
+
+;; AUTHORITY SECTION:
+iesgn.org.		86400	IN	NS	pandora-slave.iesgn.org.
+iesgn.org.		86400	IN	NS	pandora.iesgn.org.
+
+;; ADDITIONAL SECTION:
+pandora.iesgn.org.	86400	IN	A	192.168.100.2
+pandora-slave.iesgn.org.  86400 IN	A	192.168.100.4
+
+;; Query time: 1 msec
+;; SERVER: 192.168.100.4#53(192.168.100.4)
+;; WHEN: Wed Dec 9 23:23:03 GMT 2020
+;; MSG SIZE  rcvd: 200
+```
+    
+Nos tenemos que fijar en que dependiendo de la consulta que realizes, te sale primero el maestro o el
+esclavo.
+
+
 * Solicita una copia completa de la zona desde el cliente ¿qué tiene que 
 ocurrir?. Solicita una copia completa desde el esclavo ¿qué tiene que ocurrir?
    
+Para realizar la copia completa desde el cliente, hacemos lo siguiente:
+
+```
+cliente@debian:~$ dig @192.168.100.4 iesgn.org axfr
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> @192.168.100.2 iesgn.org axfr
+; (1 server found)
+;; global options: +cmd
+; Transfer failed.
+
+cliente@debian:~$ dig @192.168.100.2 iesgn.org axfr
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> @192.168.100.2 iesgn.org axfr
+; (1 server found)
+;; global options: +cmd
+; Transfer failed.
+```
+
+Desde el cliente no nos devuelve nada ya que el cliente no debería tener una zona completa.
+
+Para realizar la copia completa desde el esclavo, realizamos lo siguiente:
+
+```
+cliente@debian:~$ dig @192.168.100.2 iesgn.org axfr
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> @192.168.100.2 iesgn.org axfr
+; (1 server found)
+;; global options: +cmd
+iesgn.org.		86400	IN	SOA	pandora.iesgn.org. manuellora.iesgn.org. 5 604800 86400 2419200 86400
+iesgn.org.		86400	IN	NS	pandora.iesgn.org.
+iesgn.org.		86400	IN	NS	pandora-slave.iesgn.org.
+iesgn.org.		86400	IN	MX	10 correo.iesgn.org.
+pandora.iesgn.org.	86400	IN	A	192.168.100.2
+pandora-slave.iesgn.org. 86400  IN	A	192.168.100.4
+cliente.iesgn.org.	86400	IN	A	192.168.100.3
+correo.iesgn.org.	86400	IN	A	192.168.100.200
+departamentos.iesgn.org. 86400	IN	CNAME	pandora.iesgn.org.
+ftp.iesgn.org.		86400	IN	A	192.168.100.201
+www.iesgn.org.		86400	IN	CNAME	pandora.iesgn.org.
+iesgn.org.		86400	IN	SOA	pandora.iesgn.org. manuellora.iesgn.org. 5 604800 86400 2419200 86400
+;; Query time: 2 msec
+;; SERVER: 192.168.100.2#53(192.168.100.2)
+;; WHEN: Wed Dec 9 23:28:46 GMT 2020
+;; XFR size: 22 records (messages 1, bytes 634)
+```
+
 **Tarea 6: Muestra al profesor el funcionamiento del DNS esclavo:
        
 * Realiza una consulta desde el cliente y comprueba que servidor está 
@@ -694,6 +821,74 @@ respondiendo.
 * Posteriormente apaga el servidor maestro y vuelve a realizar una consulta 
 desde el cliente ¿quién responde?
 
+Como se puede comprobar, aparece después de parar el servicio DNS del servidor maestro, el primero en
+_AUTHORITY SECTION_.
+
+```
+vagrant@pandora:/etc/bind$ dig ftp.iesgn.org
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> ftp.iesgn.org
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 600
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 4
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: f3faf6100bf2e9ec89a1c70c5dd5aaf84fdc6510fab76970 (good)
+;; QUESTION SECTION:
+;ftp.iesgn.org.			IN	A
+
+;; ANSWER SECTION:
+ftp.iesgn.org.		604800	IN	A	192.168.100.201
+
+;; AUTHORITY SECTION:
+iesgn.org.		604800	IN	NS	pandora.iesgn.org.
+iesgn.org.		604800	IN	NS	pandora-slave.iesgn.org.
+
+;; ADDITIONAL SECTION:
+pandora.iesgn.org.	604800	IN	A	192.168.100.2
+pandora-slave.iesgn.org. 604800 IN	A	192.168.100.4
+
+;; Query time: 1 msec
+;; SERVER: 192.168.100.2#53(192.168.100.2)
+;; WHEN: Wed Dec 9 23:40:04 GMT 2020
+;; MSG SIZE  rcvd: 200
+```
+
+Paramos el servicio de bind9. Y volvemos a hacer el dig:
+
+```
+vagrant@pandora:/etc/bind$ dig ftp.iesgn.org
+
+; <<>> DiG 9.11.5-P4-5.1-Debian <<>> ftp.iesgn.org
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 52501
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 4
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: beb100cc6cea2f01ad745ad95dd5ab5d56c96398d6fb7c9d (good)
+;; QUESTION SECTION:
+;ftp.iesgn.org.			IN	A
+
+;; ANSWER SECTION:
+ftp.iesgn.org.		604800	IN	A	192.168.100.201
+
+;; AUTHORITY SECTION:
+iesgn.org.		604800	IN	NS	pandora-slave.iesgn.org.
+iesgn.org.		604800	IN	NS	pandora.iesgn.org.
+
+;; ADDITIONAL SECTION:
+pandora.iesgn.org.	604800	IN	A	192.168.100.2
+pandora-slave.iesgn.org. 604800 IN	A	192.168.100.4
+
+;; Query time: 1 msec
+;; SERVER: 192.168.100.4#53(192.168.100.4)
+;; WHEN: Wed Dec 9 23:43:45 GMT 2020
+;; MSG SIZE  rcvd: 200
+```
 
 ## Delegación de dominios
 
@@ -721,6 +916,53 @@ llame correo.informatica.iesgn.org.
 **Tarea 7:** Realiza la instalación y configuración del nuevo servidor dns 
 con las características anteriormente señaladas. Muestra el resultado al 
 profesor.
+
+* Configuración del servidor Maestro:
+
+Añadimos al fichero _/var/cache/bind/db.iesgn.org_ las siguientes lineas:
+
+```
+$ORIGIN informatica.iesgn.org.
+
+@               IN    NS    pandora-sub
+pandora-sub	IN    A     192.168.100.5
+```
+
+* Configuración del subdominio:
+
+```
+Realizamos los mismos pasos que en el inicio del ejercicio de bind9 para que al final nos quede el
+siguiente resultado:
+
+- Fichero _/etc/bind/named.conf.local_:
+
+```
+zone "informatica.iesgn.org"
+{
+  type master;
+  file "db.informatica.iesgn.org";
+};
+```
+
+- Fichero _/var/cache/bind/db.informatica.iesgn.org_:
+
+```
+$TTL 86400              ; 1 day
+@                               IN SOA pandora-sub.informatica.iesgn.org. manuellora.iesgn.org. (
+                                        12998 ; serial
+                                        21600 ; refresh (6 hours)
+                                        3600 ; retry (1 hour)
+                                        604800 ; expire (1 week)
+                                        21600 ; minimum (6 hours)
+                                        )
+
+@       IN      NS      pandora-sub.informatica.iesgn.org.
+@       IN      MX  10  correo.informatica.iesgn.org.
+
+$ORIGIN informatica.iesgn.org.
+
+pandora-sub	IN      A        192.168.100.5
+```
 
 **Tarea 8:** Realiza las consultas dig/neslookup desde los clientes 
 preguntando por los siguientes:
