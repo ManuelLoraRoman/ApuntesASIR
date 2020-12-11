@@ -930,7 +930,6 @@ pandora-sub	IN    A     192.168.100.5
 
 * Configuración del subdominio:
 
-```
 Realizamos los mismos pasos que en el inicio del ejercicio de bind9 para que al final nos quede el
 siguiente resultado:
 
