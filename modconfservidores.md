@@ -1,4 +1,4 @@
-# Modificación del escenario de Openstack
+ç# Modificación del escenario de Openstack
 
 Vamos a modificar el escenario que tenemos actualmente en OpenStack para que 
 se adecúe a la realización de todas las prácticas en todos los módulos de 2º, 
@@ -83,23 +83,51 @@ iface eth0 inet static
  gateway 10.0.1.4
 ```
 
-Reiniciamos el servicio networking y comprobamos la conectividad desde Dulcinea:
+Reiniciamos el servicio networking y comprobamos la conectividad a las máquinas:
 
 ```
-debian@manuel-lora:~/.ssh$ ping freston
+debian@freston:~$ ping quijote
+PING quijote (10.0.2.10) 56(84) bytes of data.
+64 bytes from quijote (10.0.2.10): icmp_seq=1 ttl=63 time=1.58 ms
+64 bytes from quijote (10.0.2.10): icmp_seq=2 ttl=63 time=1.95 ms
+64 bytes from quijote (10.0.2.10): icmp_seq=3 ttl=63 time=2.07 ms
+^C
+--- quijote ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 6ms
+rtt min/avg/max/mdev = 1.579/1.869/2.074/0.210 ms
+debian@freston:~$ ping dulcinea
+PING dulcinea (10.0.1.4) 56(84) bytes of data.
+64 bytes from dulcinea (10.0.1.4): icmp_seq=1 ttl=64 time=0.735 ms
+64 bytes from dulcinea (10.0.1.4): icmp_seq=2 ttl=64 time=1.14 ms
+64 bytes from dulcinea (10.0.1.4): icmp_seq=3 ttl=64 time=1.09 ms
+^C
+--- dulcinea ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 27ms
+rtt min/avg/max/mdev = 0.735/0.987/1.136/0.179 ms
+debian@freston:~$ ping sancho
+PING sancho (10.0.1.11) 56(84) bytes of data.
+64 bytes from sancho (10.0.1.11): icmp_seq=1 ttl=64 time=1.25 ms
+64 bytes from sancho (10.0.1.11): icmp_seq=2 ttl=64 time=0.768 ms
+64 bytes from sancho (10.0.1.11): icmp_seq=3 ttl=64 time=0.950 ms
+^C
+--- sancho ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 5ms
+rtt min/avg/max/mdev = 0.768/0.989/1.249/0.198 ms
+```
+
+Y desde Dulcinea, Sancho:
+
+```
+debian@manuel-lora:~$ ping freston
 PING freston (10.0.1.10) 56(84) bytes of data.
-64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=64 time=3.62 ms
-64 bytes from freston (10.0.1.10): icmp_seq=2 ttl=64 time=1.07 ms
-64 bytes from freston (10.0.1.10): icmp_seq=3 ttl=64 time=1.15 ms
+64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=64 time=0.917 ms
+64 bytes from freston (10.0.1.10): icmp_seq=2 ttl=64 time=1.15 ms
+64 bytes from freston (10.0.1.10): icmp_seq=3 ttl=64 time=1.31 ms
 ^C
 --- freston ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 6ms
-rtt min/avg/max/mdev = 1.070/1.946/3.617/1.182 ms
-```
+3 packets transmitted, 3 received, 0% packet loss, time 5ms
+rtt min/avg/max/mdev = 0.917/1.125/1.314/0.164 ms
 
-Y desde Sancho:
-
-```
 ubuntu@sancho:~$ ping freston
 PING freston (10.0.1.10) 56(84) bytes of data.
 64 bytes from freston (10.0.1.10): icmp_seq=1 ttl=64 time=2.49 ms
@@ -128,6 +156,22 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 --- 8.8.8.8 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 3ms
 rtt min/avg/max/mdev = 42.612/42.840/43.069/0.308 ms
+debian@freston:~$ ping www.google.es
+PING www.google.es (172.217.17.3) 56(84) bytes of data.
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=1 ttl=112 time=44.9 ms
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=2 ttl=112 time=45.6 ms
+64 bytes from mad07s09-in-f3.1e100.net (172.217.17.3): icmp_seq=3 ttl=112 time=45.7 ms
+^C
+--- www.google.es ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 5ms
+rtt min/avg/max/mdev = 44.851/45.364/45.669/0.440 ms
+```
+
+Comprobación del hostname:
+
+```
+debian@freston:~$ hostname
+freston
 ```
 
 Ahora, pasándonos al otro punto, debemos mover nuestra máquina 
