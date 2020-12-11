@@ -33,4 +33,6 @@ de ASIR en el Gonzalo Nazareno.
 
 [12. Instalación y configuración inicial de los servidores](./confservidores.md)
 
+[13. Modificación de los servidores](./modconfservidores.md)
+
 </div>
