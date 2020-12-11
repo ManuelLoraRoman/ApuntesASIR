@@ -10,7 +10,7 @@ máquina más: Frestón.
 
 1. Creación de la red DMZ:
 
-* Nombre: DMZ de <nombre de usuario>
+* Nombre: DMZ de nombre de usuario
 * 10.0.2.0/24
 
 2. Creación de las instancias:
