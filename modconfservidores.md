@@ -8,18 +8,21 @@ DMZ. Para ello vamos a reutilizar todo lo hecho hasta ahora y añadiremos una
 máquina más: Frestón.
 
 
-1.Creación de la red DMZ:
-      * Nombre: DMZ de <nombre de usuario>
-      * 10.0.2.0/24
-2.Creación de las instancias:
-      * freston:
-           * Debian Buster sobre volumen de 10GB con sabor m1.mini
-           * Conectada a la red interna
-           * Accesible indirectamente a través de dulcinea
-           * IP estática
-3.Modificación de la ubicación de quijote
-      * Pasa de la red interna a la DMZ y su direccionamiento tiene 
-	que modificarse apropiadamente
+1. Creación de la red DMZ:
+
+* Nombre: DMZ de <nombre de usuario>
+* 10.0.2.0/24
+
+2. Creación de las instancias:
+
+* Debian Buster sobre volumen de 10GB con sabor m1.mini
+* Conectada a la red interna
+* Accesible indirectamente a través de dulcinea
+* IP estática
+
+3. Modificación de la ubicación de quijote
+
+* Pasa de la red interna a la DMZ y su direccionamiento tiene que modificarse apropiadamente
 
 En primer lugar, creamos la red DMZ de manuel-lora. Dicha red tendrá 
 deshabilitada la opción de DHCP. Una vez hecho esto, le conectaremos a la
