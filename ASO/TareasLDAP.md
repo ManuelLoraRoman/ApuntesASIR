@@ -332,7 +332,7 @@ Y para el fichero de grupos:
 * grupos.ldif
 
 ```
-dn: cn=Usuarios,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixGroup
 gidNumber: 2000
@@ -349,7 +349,16 @@ objectClass: organizationalUnit
 ou: People
 ```
 
-Teniendo estos tres ficheros, seguimos los siguientes pasos:
+Y creamos otro para los grupos llamado unidades_organizativas_grupos:
+
+```
+dn: ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: Group
+```
+
+Teniendo estos cuatro ficheros, seguimos los siguientes pasos:
 
 1. En primer lugar, añadimos las unidades organizativas con el fichero
 unidades_organizativas.ldif:
@@ -360,15 +369,23 @@ Enter LDAP Password:
 adding new entry "ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
 ```
 
-2. Agregamos a continuación los grupos con el fichero grupos.ldif:
+2. Lo mismo con unidades_organizativas_grupos.ldif:
+
+```
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f unidades_organizativas_grupos.ldif 
+Enter LDAP Password: 
+adding new entry "ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+```
+
+3. Agregamos a continuación los grupos con el fichero grupos.ldif:
 
 ```
 root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f grupos.ldif 
 Enter LDAP Password: 
-adding new entry "cn=Usuarios,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
 ```
 
-3. Añadimos a las personas con el fichero personas.ldif:
+4. Añadimos a las personas con el fichero personas.ldif:
 
 ```
 root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f personas.ldif 
@@ -420,19 +437,6 @@ entryCSN: 20201212173959.487625Z#000000#000#000000
 modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212173959Z
 
-dn: cn=Usuarios,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
-objectClass: top
-objectClass: posixGroup
-gidNumber: 2000
-cn: Usuarios
-structuralObjectClass: posixGroup
-entryUUID: fd55cf9e-d0ec-103a-8639-038e96acb944
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-createTimestamp: 20201212174120Z
-entryCSN: 20201212174120.533653Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-modifyTimestamp: 20201212174120Z
-
 dn: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
@@ -455,4 +459,29 @@ createTimestamp: 20201212174255Z
 entryCSN: 20201212174255.636657Z#000000#000#000000
 modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212174255Z
+
+dn: ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+objectClass: top
+objectClass: organizationalUnit
+ou: Group
+structuralObjectClass: organizationalUnit
+entryUUID: 7efdb9ae-d0f1-103a-863c-038e96acb944
+creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+createTimestamp: 20201212181336Z
+entryCSN: 20201212181336.047102Z#000000#000#000000
+modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifyTimestamp: 20201212181336Z
+
+dn: cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+objectClass: top
+objectClass: posixGroup
+gidNumber: 2000
+cn: Usuarios
+structuralObjectClass: posixGroup
+entryUUID: b3bd164e-d0f1-103a-863d-038e96acb944
+creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+createTimestamp: 20201212181504Z
+entryCSN: 20201212181504.542731Z#000000#000#000000
+modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifyTimestamp: 20201212181504Z
 ```
