@@ -208,3 +208,5 @@ cn:: [loquesea] en base64
 Y le pasamos esta modificación con el comando ldapmodify con los parámetros 
 que hemos usado anteriormente.
 
+Para realizar el purge de slapd, debemos hacerlo mediante apt y además, eliminar
+el directorio /var/lib/slapd.
