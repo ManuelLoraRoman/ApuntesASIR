@@ -362,7 +362,35 @@ Para ello, debemos crear unos ficheros de configuración, que posteriormente
 añadiremos para que aparezca el atributo "memberOf".
 
 En primer lugar, crearemos el fichero que nos permita cargar el módulo memberof.la
-y configurarlo. A este fichero lo llamaremos memberof_config.ldif
+y configurarlo. A este fichero lo llamaremos memberof_config.ldif:
+
+```
+dn: cn=module,cn=config
+cn: module
+objectClass: olcModuleList
+objectclass: top
+olcModuleLoad: memberof.la
+olcModulePath: /usr/lib/ldap
+
+dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+objectClass: olcConfig
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: top
+olcOverlay: memberof
+olcMemberOfDangling: ignore
+olcMemberOfRefInt: TRUE
+olcMemberOfGroupOC: groupOfNames
+olcMemberOfMemberAD: member
+olcMemberOfMemberOfAD: memberOf
+```
+
+Ahora crearemos los otros dos ficheros para agregar y configurar la integridad
+referencial, en otras palabras, hay que hacer relaciones entre usuarios y grupos
+sin perder coherencia.
+
+
+
 
 * Crea las ACLs necesarias para que los usuarios del grupo almacen puedan ver 
 todos los atributos de todos los usuarios pero solo puedan modificar las suyas.
