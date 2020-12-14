@@ -20,7 +20,7 @@ Crearemos un fichero llamado usuarios.ldif, que contendrá la información de
 los diferentes usuarios:
 
 ```
-dn: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -36,7 +36,7 @@ sn:: TG9yYSBSb23DoW4K
 mail: manuelloraroman@gmail.com
 givenName: manuel
 
-dn: uid=maria,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=maria,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -52,7 +52,7 @@ sn:: TG9yYSBSb23DoW4K
 mail: marialoraroman@gmail.com
 givenName: maria
 
-dn: uid=rosaura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=rosaura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -67,7 +67,7 @@ sn: SGFiYSBQZXJlYQo=
 mail: rosaurahabaperea@gmail.com
 givenName: rosaura
 
-dn: uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -82,7 +82,7 @@ sn: TW9yYWxlcyBDYWJlbGxvCg==
 mail: lauramoralescabello@gmail.com
 givenName: laura
 
-dn: uid=pablo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=pablo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -97,7 +97,7 @@ sn: U3VzbyBHb256YWxlego=
 mail: pablosusogonzalex@gmail.com
 givenName: pablo
 
-dn: uid=arturo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=arturo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -112,7 +112,7 @@ sn: Qm9ycmVybyBHb256YWxlego=
 mail: arturo@debian.org
 givenName: arturo
 
-dn: uid=diego,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=diego,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -127,7 +127,7 @@ sn: TG9zYWRhIEZ1ZW50ZXMK
 mail: dlosadafuentes@gmail.com
 givenName: diego
 
-dn: uid=isabel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=isabel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -142,7 +142,7 @@ sn: TW9yYWxlcyBDYWJlbGxvCg==
 mail: isabelmoralescabello@gmail.com
 givenName: isabel
 
-dn: uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -157,7 +157,7 @@ sn: Q29yZG9uIEFyZXZhbG8K
 mail: albertocordonarevalo@gmail.com
 givenName: alberto
 
-dn: uid=rosalia,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=rosalia,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -176,27 +176,27 @@ givenName: rosalia
 Hecho dicho fichero, añadimos los objetos usuarios:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f usuarios.ldif
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f usuarios.ldif
 Enter LDAP Password: 
-adding new entry "uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=maria,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=maria,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=rosaura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=rosaura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=pablo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=pablo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=arturo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=arturo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=diego,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=diego,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=isabel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=isabel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "uid=rosalia,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=rosalia,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 * Crea 3 grupos en LDAP dentro de una unidad organizativa diferente que sean 
@@ -206,19 +206,19 @@ Ahora pasamos a la creación de los grupos. Usaremos la estructura de la
 práctica anterior, y creamos el fichero grupos.ldif:
 
 ```
-dn: cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: comercial
 member:
 
-dn: cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: almacen  
 member:
 
-dn: cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: admin    
@@ -228,13 +228,13 @@ member:
 Y hacemos como antes con los usuarios:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f grupos.ldif
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f grupos.ldif
 Enter LDAP Password: 
-adding new entry "cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-adding new entry "cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 * Añade usuarios que pertenezcan a:
@@ -248,118 +248,111 @@ Para añadir los usuarios a los grupos pertinentes, debemos crear otro fichero
 llamado grupousuario.ldif que contendrá la siguiente información:
 
 ```
-dn: cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 replace: member
-member: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 replace: member
-member: uid=pablo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=pablo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 add: member
-member: uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 add: member
-member: uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 replace: member
-member: uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 add: member
-member: uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-dn: cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 changetype:modify
 add: member
-member: uid=arturo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=arturo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 ```
 
 Ahora, añadimos los cambios:
 
 ```
-root@freston:/home/debian# ldapmodify -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f grupousuario.ldif
+root@freston:/home/debian# ldapmodify -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f grupousuario.ldif
 Enter LDAP Password: 
-modifying entry "cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 
-modifying entry "cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+modifying entry "cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 Y ahora comprobaremos que se han guardado los cambios:
 
 ```
-root@freston:/home/debian# ldapsearch -h freston -x -b ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+root@freston:/home/debian# ldapsearch -h freston -x -b ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 # extended LDIF
 #
 # LDAPv3
-# base <ou=Group,dc=manuel,dc=gonzalonazareno,dc=org> with scope subtree
+# base <ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org> with scope subtree
 # filter: (objectclass=*)
 # requesting: ALL
 #
 
-# Group, manuel.gonzalonazareno.org
-dn: ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+# Group, manuel-lora.gonzalonazareno.org
+dn: ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: Group
 
-# admin, Group, manuel.gonzalonazareno.org
-dn: cn=admin,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+# admin, Group, manuel-lora.gonzalonazareno.org
+dn: cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: admin
-member: uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
-member: uid=arturo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
+member: uid=arturo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-# almacen, Group, manuel.gonzalonazareno.org
-dn: cn=almacen,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+# almacen, Group, manuel-lora.gonzalonazareno.org
+dn: cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: almacen
-member: uid=pablo,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
-member: uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=pablo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
+member: uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
-# Usuarios, Group, manuel.gonzalonazareno.org
-dn: cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
-objectClass: top
-objectClass: posixGroup
-gidNumber: 2000
-cn: Usuarios
-
-# comercial, Group, manuel.gonzalonazareno.org
-dn: cn=comercial,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+# comercial, Group, manuel-lora.gonzalonazareno.org
+dn: cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: groupOfNames
 cn: comercial
-member: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
-member: uid=alberto,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
-member: uid=laura,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+member: uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
+member: uid=alberto,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
+member: uid=laura,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 
 # search result
 search: 2
 result: 0 Success
 
-# numResponses: 6
-# numEntries: 5
+# numResponses: 5
+# numEntries: 4
 ```
 
 * Modifica OpenLDAP apropiadamente para que se pueda obtener los grupos a los 

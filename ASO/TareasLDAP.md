@@ -120,38 +120,39 @@ Processing triggers for libc-bin (2.28-10) ...
 Comprobamos y vemos las primeras entradas:
 
 ```
-root@freston:/home/debian# sudo slapcat
-dn: dc=novalocal
+root@freston:/var/lib# slapcat
+dn: dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: dcObject
 objectClass: organization
-o: novalocal
-dc: novalocal
+o: manuel-lora.gonzalonazareno.org
+dc: manuel-lora
 structuralObjectClass: organization
-entryUUID: 0634d07a-d0e7-103a-95c8-6da9ba216f26
-creatorsName: cn=admin,dc=novalocal
-createTimestamp: 20201212165838Z
-entryCSN: 20201212165838.436412Z#000000#000#000000
-modifiersName: cn=admin,dc=novalocal
-modifyTimestamp: 20201212165838Z
+entryUUID: fd9515f0-d24f-103a-9c22-3dc7cbef20f5
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
+createTimestamp: 20201214120232Z
+entryCSN: 20201214120232.287262Z#000000#000#000000
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
+modifyTimestamp: 20201214120232Z
 
-dn: cn=admin,dc=novalocal
+dn: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: simpleSecurityObject
 objectClass: organizationalRole
 cn: admin
 description: LDAP administrator
-userPassword:: e1NTSEF9NmgwQ2x4andNaXArYUZqay9RUjBXYmQwU1MwcTY5VFg=
+userPassword:: e1NTSEF9aGpJWW5DZ3p6TUIwTnl4dXBjNnBsNHQ1WENORkF5eVM=
 structuralObjectClass: organizationalRole
-entryUUID: 0635f3a6-d0e7-103a-95c9-6da9ba216f26
-creatorsName: cn=admin,dc=novalocal
-createTimestamp: 20201212165838Z
-entryCSN: 20201212165838.443981Z#000000#000#000000
-modifiersName: cn=admin,dc=novalocal
-modifyTimestamp: 20201212165838Z
+entryUUID: fd99269a-d24f-103a-9c23-3dc7cbef20f5
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
+createTimestamp: 20201214120232Z
+entryCSN: 20201214120232.313977Z#000000#000#000000
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
+modifyTimestamp: 20201214120232Z
+
 ```
 
 
-Ahora haremos la configuración inicial. Ejecutamos el siguiente comando;
+En el caso de que queramos modificar la configuración inicial, ejecutaremos el siguiente comando;
 
 ```
 root@freston:/home/debian# dpkg-reconfigure -plow slapd
@@ -187,7 +188,7 @@ Seleccionamos la opción no y continuamos:
  │                                                                           │ 
  │ DNS domain name:                                                          │ 
  │                                                                           │ 
- │ manuel.gonzalonazareno.org_______________________________________________ │ 
+ │ manuel-lora.gonzalonazareno.org__________________________________________ │ 
  │                                                                           │ 
  │                                  <Ok>                                     │ 
  │                                                                           │ 
@@ -271,46 +272,13 @@ dejamos la opción sí.
 
 ```
 
-Ahora comprobamos que los cambios se han realizado:
-
-```
-root@freston:/home/debian# sudo slapcat
-dn: dc=manuel,dc=gonzalonazareno,dc=org
-objectClass: top
-objectClass: dcObject
-objectClass: organization
-o: IES Gonzalo Nazareno
-dc: manuel
-structuralObjectClass: organization
-entryUUID: 588a6cf2-d0e9-103a-95ce-4f937b895d18
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-createTimestamp: 20201212171515Z
-entryCSN: 20201212171515.564118Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-modifyTimestamp: 20201212171515Z
-
-dn: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-objectClass: simpleSecurityObject
-objectClass: organizationalRole
-cn: admin
-description: LDAP administrator
-userPassword:: e1NTSEF9QVhGSVZ0QnpnSUluWGl3cC8ydTFINmFTQTAvUm1tdkc=
-structuralObjectClass: organizationalRole
-entryUUID: 588bc67e-d0e9-103a-95cf-4f937b895d18
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-createTimestamp: 20201212171515Z
-entryCSN: 20201212171515.573064Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
-modifyTimestamp: 20201212171515Z
-```
-
 Ahora para crear las unidades organizativas personas y grupos, tenemos que 
 hacer dos ficheros .ldif. Para personas usaremos el siguiente:
 
 * personas.ldif
 
 ```
-dn: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -332,7 +300,7 @@ Y para el fichero de grupos:
 * grupos.ldif
 
 ```
-dn: cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=Usuarios,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixGroup
 gidNumber: 2000
@@ -343,7 +311,7 @@ Y ahora, por último, creamos el fichero unidades_organizativas.ldif que
 contiene las siguientes líneas:
 
 ```
-dn: ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: People
@@ -352,7 +320,7 @@ ou: People
 Y creamos otro para los grupos llamado unidades_organizativas_grupos:
 
 ```
-dn: ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: Group
@@ -364,40 +332,40 @@ Teniendo estos cuatro ficheros, seguimos los siguientes pasos:
 unidades_organizativas.ldif:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f unidades_organizativas.ldif 
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f unidades_organizativas.ldif 
 Enter LDAP Password: 
-adding new entry "ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 2. Lo mismo con unidades_organizativas_grupos.ldif:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f unidades_organizativas_grupos.ldif 
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f unidades_organizativas_grupos.ldif 
 Enter LDAP Password: 
-adding new entry "ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 3. Agregamos a continuación los grupos con el fichero grupos.ldif:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f grupos.ldif 
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f grupos.ldif 
 Enter LDAP Password: 
-adding new entry "cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "cn=Usuarios,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 4. Añadimos a las personas con el fichero personas.ldif:
 
 ```
-root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel,dc=gonzalonazareno,dc=org -W -f personas.ldif 
+root@freston:/home/debian# ldapadd -x -D cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org -W -f personas.ldif 
 Enter LDAP Password: 
-adding new entry "uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org"
+adding new entry "uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org"
 ```
 
 Ahora comprobamos los cambios realizados:
 
 ```
 root@freston:/home/debian# sudo slapcat
-dn: dc=manuel,dc=gonzalonazareno,dc=org
+dn: dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: dcObject
 objectClass: organization
@@ -405,13 +373,13 @@ o: IES Gonzalo Nazareno
 dc: manuel
 structuralObjectClass: organization
 entryUUID: 588a6cf2-d0e9-103a-95ce-4f937b895d18
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212171515Z
 entryCSN: 20201212171515.564118Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212171515Z
 
-dn: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: simpleSecurityObject
 objectClass: organizationalRole
 cn: admin
@@ -419,13 +387,13 @@ description: LDAP administrator
 userPassword:: e1NTSEF9QVhGSVZ0QnpnSUluWGl3cC8ydTFINmFTQTAvUm1tdkc=
 structuralObjectClass: organizationalRole
 entryUUID: 588bc67e-d0e9-103a-95cf-4f937b895d18
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212171515Z
 entryCSN: 20201212171515.573064Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212171515Z
 
-dn: ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: organizationalUnit
 ou: People
@@ -434,10 +402,10 @@ entryUUID: cd072c48-d0ec-103a-8638-038e96acb944
 creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212173959Z
 entryCSN: 20201212173959.487625Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212173959Z
 
-dn: uid=manuel,ou=People,dc=manuel,dc=gonzalonazareno,dc=org
+dn: uid=manuel,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixAccount
 objectClass: inetOrgPerson
@@ -454,10 +422,10 @@ mail: manuelloraroman@gmail.com
 givenName: manuel
 structuralObjectClass: inetOrgPerson
 entryUUID: 360560a2-d0ed-103a-863a-038e96acb944
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212174255Z
 entryCSN: 20201212174255.636657Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212174255Z
 
 dn: ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
@@ -466,22 +434,22 @@ objectClass: organizationalUnit
 ou: Group
 structuralObjectClass: organizationalUnit
 entryUUID: 7efdb9ae-d0f1-103a-863c-038e96acb944
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212181336Z
 entryCSN: 20201212181336.047102Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212181336Z
 
-dn: cn=Usuarios,ou=Group,dc=manuel,dc=gonzalonazareno,dc=org
+dn: cn=Usuarios,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
 objectClass: top
 objectClass: posixGroup
 gidNumber: 2000
 cn: Usuarios
 structuralObjectClass: posixGroup
 entryUUID: b3bd164e-d0f1-103a-863d-038e96acb944
-creatorsName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+creatorsName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 createTimestamp: 20201212181504Z
 entryCSN: 20201212181504.542731Z#000000#000#000000
-modifiersName: cn=admin,dc=manuel,dc=gonzalonazareno,dc=org
+modifiersName: cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org
 modifyTimestamp: 20201212181504Z
 ```
