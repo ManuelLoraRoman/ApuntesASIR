@@ -120,33 +120,4 @@ root@maquina:~# nft list ruleset >> backup.nft
 Y ejecutar nft -f backup.nft
 ```
 
-Ejercicios Iptables en Nftables:
-
-1. Permite poder hacer conexiones ssh al exterior.
-
-```
-root@maquina:~# nft add rule inet filter output oif "eth0" tcp dport 22 ct state new,established counter accept
-root@maquina:~# nft add rule inet filter input iif "eth0" tcp sport 22 ct state new,established counter accept
-```
-  
-Comprobación:
-
-```
-
-```
-
-
-2. Deniega el acceso a tu servidor web desde una ip concreta.
-  
-3. Permite hacer consultas DNS sólo al servidor 192.168.202.2. Comprueba que 
-no puedes hacer un dig @1.1.1.1.
-  
-4. No permitir el acceso al servidor web de www.josedomingo.org (Tienes que 
-utilizar la ip). ¿Puedes acceder a fp.josedomingo.org?
-  
-5. Permite mandar un correo usando nuestro servidor de correo: babuino-smtp. 
-Para probarlo ejecuta un telnet bubuino-smtp.gonzalonazareno.org 25.
-  
-6. Instala un servidor mariadb, y permite los accesos desde la ip de tu 
-cliente. Comprueba que desde otro cliente no se puede acceder.
 
