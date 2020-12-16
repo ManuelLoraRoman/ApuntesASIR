@@ -152,7 +152,7 @@ $TTL    86400
 ;
 @                       IN      NS  freston.manuel-lora.gonzalonazareno.org.
 
-$ORIGIN 1.0.10.in-addr.arpa
+$ORIGIN 1.0.10.in-addr.arpa.
 4       IN      PTR     dulcinea.manuel-lora.gonzalonazareno.org.
 11      IN      PTR     sancho.manuel-lora.gonzalonazareno.org.
 10      IN      PTR     freston.manuel-lora.gonzalonazareno.org.
@@ -171,7 +171,7 @@ $TTL    86400
 ;
 @                       IN      NS  freston.manuel-lora.gonzalonazareno.org.
 
-$ORIGIN 2.0.10.in-addr.arpa
+$ORIGIN 2.0.10.in-addr.arpa.
 10      IN      PTR     quijote.manuel-lora.gonzalonazareno.org.
 11      IN      PTR     dulcinea.manuel-lora.gonzalonazareno.org.
 ```
@@ -334,6 +334,72 @@ freston.manuel-lora.gonzalonazareno.org. 86400 IN A 10.0.1.10
 ;; SERVER: 10.0.1.10#53(10.0.1.10)
 ;; WHEN: Tue Dec 15 22:54:12 UTC 2020
 ;; MSG SIZE  rcvd: 151
+```
+
+* Resolución inversa:
+
+```
+[centos@quijote httpd]$ dig -x 10.0.1.11
+
+; <<>> DiG 9.11.20-RedHat-9.11.20-5.el8 <<>> -x 10.0.1.11
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 54472
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: 0df922daeea4e5861516e74e5fd9f893d5e593d86d3da7b5 (good)
+;; QUESTION SECTION:
+;11.1.0.10.in-addr.arpa.		IN	PTR
+
+;; ANSWER SECTION:
+11.1.0.10.in-addr.arpa.	86400	IN	PTR	sancho.manuel-lora.gonzalonazareno.org.
+
+;; AUTHORITY SECTION:
+1.0.10.in-addr.arpa.	86400	IN	NS	freston.manuel-lora.gonzalonazareno.org.
+
+;; ADDITIONAL SECTION:
+freston.manuel-lora.gonzalonazareno.org. 86400 IN A 10.0.1.10
+
+;; Query time: 3 msec
+;; SERVER: 10.0.1.10#53(10.0.1.10)
+;; WHEN: Wed Dec 16 12:07:47 UTC 2020
+;; MSG SIZE  rcvd: 169
+```
+
+```
+debian@dulcinea:~$ dig -x 10.0.1.10
+
+; <<>> DiG 9.11.5-P4-5.1+deb10u2-Debian <<>> -x 10.0.1.10
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 6640
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 1, ADDITIONAL: 2
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: f247cc74949209a8a83062215fd9fe259350d7c12bb27910 (good)
+;; QUESTION SECTION:
+;10.1.0.10.in-addr.arpa.		IN	PTR
+
+;; ANSWER SECTION:
+10.1.0.10.in-addr.arpa.	86400	IN	PTR	freston.manuel-lora.gonzalonazareno.org.
+
+;; AUTHORITY SECTION:
+1.0.10.in-addr.arpa.	86400	IN	NS	freston.manuel-lora.gonzalonazareno.org.
+
+;; ADDITIONAL SECTION:
+freston.manuel-lora.gonzalonazareno.org. 86400 IN A 10.0.1.10
+
+;; Query time: 2 msec
+;; SERVER: 10.0.1.10#53(10.0.1.10)
+;; WHEN: Wed Dec 16 12:31:33 UTC 2020
+;; MSG SIZE  rcvd: 162
+```
+
+```
+
 ```
 
 Ahora vamos a configurar las máquinas para que usen el DNS (configuramos el fichero _/etc/resolv.conf_.
@@ -514,6 +580,56 @@ Y ya tendríamos acceso al servidor web de Apache desde fuera de la máquina Cen
 
 Ahora vamos a configurar Apache, y para ello, tenemos que dirigirnos al
 directorio _/etc/httpd/conf_ y editar el fichero httpd.conf.
+
+Miraremos el parámetro DocumentRoot y vamos a cambiarla a:
+
+```
+DocumentRoot "/var/www/manuel-lora"
+```
+
+Modificaremos también el parámetro de ServerName para que se ajuste al
+ejercicio:
+
+```
+ServerName www.manuel-lora.gonzalonazareno.org:80
+```
+
+Y para crear el VirtualHost debemos hacer lo siguiente:
+
+1. Creamos un directorio _/etc/httpd/sites-available/_ y _/etc/httpd/sites-enabled_:
+
+```
+[centos@quijote ~]$ sudo mkdir /etc/httpd/sites-available
+[centos@quijote ~]$ sudo mkdir /etc/httpd/sites-enabled
+[centos@quijote httpd]$ ls
+conf    conf.modules.d  modules  sites-available  state
+conf.d  logs            run      sites-enabled
+```
+
+Y volveremos a editar el fichero _httpd.conf_ y añadimos la siguiente
+línea al final del mismo:
+
+```
+IncludeOptional	sites-enabled/*.conf
+```
+
+2. Creamos el bloque en el directorio _/etc/httpd/conf.d/www.manuel-lora.gonzalonazareno.conf_:
+
+```
+<VirtualHost *:80>
+        ServerName www.manuel-lora.gonzalonazareno.org
+        DocumentRoot /var/www/manuel-lora
+        <Directory /var/www/manuel-lora>
+                Options -Indexes
+                AllowOverride all
+                Require all granted
+        </Directory>
+        ErrorLog /var/log/httpd/error_www.manuel-lora.gonzalonazareno.log
+        CustomLog /var/log/httpd/access_www.manuel-lora.gonzalonazareno.log combined
+</VirtualHost>
+```
+
+Y reiniciamos el servicio de apache2.
 
 ## Servidor de Base de Datos
 
