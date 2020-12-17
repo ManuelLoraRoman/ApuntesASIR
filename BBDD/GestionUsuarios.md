@@ -68,4 +68,53 @@ Los roles más importantes son CONNECT, RESOURCE y DBA.
 
 Podemos crear nuevos roles, y posteriormente añadir privilegios.
 
+Con los perfiles se puede limitar: 
 
+* SESSIONS_PER_USER: nº maximo de sesiones concurrentes,
+
+* CONNECT_TIME: duración máxima.
+
+* IDLE_TIME: tiempo máximo de inactividad.
+
+* CPU_PER_SESSION: tiempo máximo de uso de la CPU por sesión.
+
+* CPU_PER_CALL: tiempo máximo de uso de CPU por llamada.
+
+* LOGICAL_READS_PER_SESSION: máximo de nº de bloques de datos leídos por sesión.
+
+* LOGICAL_READS_PER_CALL: máximo de nº de bloques de datos leídos por llamada.
+
+* PRIVATE_SGA: cantidad de memoria para la sesión.
+
+
+Y para las contraseñas:
+
+* FAILED_LOGIN_ATTEMPTS: máximo de intentos fallidos.
+
+* PASSWORD_LIFE_TIME: dias de vida de la contraseña.
+
+* PASSWORD_REUSE_TIME: dias que deben pasar para reutilizar una contraseña.
+
+* PASSWORD_REUSE_MAX: número de veces que se debe cambiar una contraseña
+antes de reutilizarla.
+
+* PASSWORD_LOCK_TIME: número de dias que la cuenta queda bloqueada.
+
+* PASSWORD_GRACE_TIME: periodo de gracia de contraseñas caducadas.
+
+* PASSWORD_VERIFY_FUNCTION: dar visto bueno a las contraseñas.
+
+Ejemplo:
+
+```
+ALTER USER ___ PROFILE perfil;
+
+ALTER PROFILE perfil {parametrorecurso | parametrocontraseña} [valor [K|M] | UNLIMITED;
+
+DROP PROFILE perfil;
+
+Diccionarios de datos:
+
+* DBA_PROFILES --> muestra los perfiles existentes con sus limites.
+
+* DBA_USERS --> muestra los perfiles de los usuarios.
