@@ -27,6 +27,23 @@ manuel@debian:~/Descargas/claves$ openssl rsa -in mikey.key -pubout -out mikey.p
 writing RSA key
 ```
 
+Ahora pasaremos las claves a nuestra máquina CentOS que es la que va a usar
+el servidor web:
+
+```
+manuel@debian:~/.ssh$ scp ../Descargas/claves/mikey.* debian@dulcinea:/home/debian
+mikey.key                                     100% 3243    12.0KB/s   00:00    
+mikey.pubkey                                  100%  800     6.6KB/s   00:00    
+
+debian@dulcinea:~$ scp mikey.* centos@quijote:/home/centos
+mikey.key                                     100% 3243     1.3MB/s   00:00    
+mikey.pubkey                                  100%  800   436.6KB/s   00:00    
+debian@dulcinea:~$ ssh centos@quijote
+Last login: Thu Dec 17 09:48:51 2020 from 10.0.2.11
+[centos@quijote ~]$ ls
+ifcfg-eth0  mikey.key  mikey.pubkey
+```
+
 Por último, vamos a utilizar la clave privada para la generación del .csr:
 
 ```
@@ -56,11 +73,41 @@ En el parámetro llamado Common Name, debemos incorporar el simbolo * para un wi
 
 Y esperamos a que nos firmen dicha solicitud de certificado wildcard.
    
+Una vez firmado, nos lo descargamos y lo pasamos a la máquina CentOS mediante
+scp:
+
+```
+manuel@debian:~/.ssh$ scp ../Descargas/claves/centos.crt debian@dulcinea:/home/debian
+centos.crt                                    100%   10KB  30.0KB/s   00:00    
+manuel@debian:~/.ssh$ ssh -A debian@dulcinea
+Linux dulcinea 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Dec 17 11:27:29 2020 from 172.23.0.6
+debian@dulcinea:~$ scp centos.crt centos@quijote:/home/centos
+centos.crt                                    100%   10KB   3.4MB/s   00:00    
+debian@dulcinea:~$ ssh centos@quijote
+Last login: Thu Dec 17 11:18:16 2020 from 10.0.2.11
+[centos@quijote ~]$ ls -l
+total 24
+-rwxr-xr-x. 1 centos centos 10131 Dec 17 11:27 centos.crt
+-rw-r--r--. 1 root   root     215 Dec 16 11:22 ifcfg-eth0
+-rw-------. 1 centos centos  3243 Dec 17 11:18 mikey.key
+-rw-r--r--. 1 centos centos   800 Dec 17 11:18 mikey.pubkey
+```
+
 * Debes hacer una redirección para forzar el protocolo https.
    
 
 
 * Investiga la regla DNAT en el cortafuego para abrir el puerto 443.
+
+
    
 * Instala el certificado del AC Gonzalo Nazareno en tu navegador para que se 
 pueda verificar tu certificado.
