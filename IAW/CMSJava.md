@@ -135,8 +135,8 @@ otras tantas que son opcionales. En caso de querer descargarlas, serían:
 
 Ahora vamos a proceder con la instalación de Guacamole Server, y para ello,
 vamos a descargar tanto el server como el cliente de la siguiente [página](https://guacamole.apache.org/releases/1.2.0/).
-Nos descargamos el .war y lo pasaremos mediante scp hacia nuestra máquina en
-el cloud.
+Nos descargamos el cliente (.war) y lo pasaremos mediante scp hacia nuestra 
+máquina en el cloud.
 
 ```
 root@ldapej:/home/debian# ls
@@ -149,8 +149,8 @@ Ahora, añadiremos dicho archivo .war en el directorio _/var/lib/tomcat9/webapps
 root@ldapej:/home/debian# cp guacamole-1.2.0.war /var/lib/tomcat9/webapps/
 ```
 
-Ahora nos descargaremos el server (guacamole-server-1.2.0.tar.gz) de la misma
-página e igualmente nos lo pasamos por scp a la máquina del cloud.
+Ahora nos descargaremos el server (.tar.gz) de la misma página e igualmente 
+nos lo pasamos por scp a la máquina del cloud.
 
 ```
 root@ldapej:/home/debian# ls
@@ -644,15 +644,130 @@ En primer lugar, crearemos dos directorios:
 root@ldapej:/etc# mkdir /etc/guacamole /usr/share/tomcat9/.guacamole
 ```
 
+A continuación creamos los ficheros _/etc/guacamole/guacamole.properties_ y 
+el fichero para el mapeado de usuarios llamado _/etc/guacamole/user-mapping.xml_:
 
+* guacamole.properties
 
+```
+guacd-hostname: localhost
+guacd-port: 4822
+user-mapping: /etc/guacamole/user-mapping.xml
+auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
+basic-user-mapping: /etc/guacamole/user-mapping.xml
+```
 
+* user-mapping.xml
 
+```
+<user-mapping>
+        <authorize 
+         username="ldapej" 
+         password="63623900c8bbf21c706c45dcb7a2c083" 
+         encoding="md5">
+                <connection name="SSH">
+                        <protocol>ssh</protocol>
+                        <param name="hostname">172.22.6.15</param>
+                        <param name="port">22</param>
+                        <param name="username">manuel</param>
+                </connection>
+                <connection name="Remote Desktop">
+                        <protocol>rdp</protocol>
+                        <param name="hostname">172.22.6.15</param>
+                        <param name="port">3389</param>
+                </connection>
+        </authorize>
+</user-mapping>
+```
 
+Hacemos un enlace simbólico del fichero .properties:
 
+```
+debian@ldapej:~$ sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat9/.guacamole/
+```
 
+Le damos permiso a continuación sobre el fichero _user-mapping.xml_:
 
+```
+debian@ldapej:~$ sudo chmod 600 /etc/guacamole/user-mapping.xml 
+debian@ldapej:~$ sudo chown tomcat:tomcat /etc/guacamole/user-mapping.xml 
+```
 
+A continuación, nos instalaremos apache2 y ya que guacamole no soporta 
+apache2 con AJP, haremos que guacamole pase por http. Para ello debemos
+dirigirnos hacia el fichero _/var/lib/tomcat9/conf/server.xml_ y editarlo
+para que quede de la siguiente manera:
+
+```
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               URIEncoding="UTF-8"
+               redirectPort="8443" />
+```
+
+Hecho esto, configuramos ahora la ip remota, ya que lo necesitaremos para
+funcione tanto Tomcat9 y Guacamole. Para ello, vamos a volver a editar el
+fichero _server.xml_:
+
+```
+<Valve className="org.apache.catalina.valves.RemoteIpValve"
+       internalProxies="127.0.0.1"
+       remoteIpHeader="x-forwarded-for"
+       remoteIpProxiesHeader="x-forwarded-by"
+       protocolHeader="x-forwarded-proto" />
+```
+
+Ahora pasaremos a la configuración del proxy inverso de Apache2. Primero, 
+habilitaremos el módulo mod_proxy de apache2 y demás, para acto seguido
+reiniciar el servicio:
+
+```
+debian@ldapej:~$ sudo a2enmod proxy
+Enabling module proxy.
+To activate the new configuration, you need to run:
+  systemctl restart apache2
+debian@ldapej:~$ sudo a2enmod proxy_http
+Considering dependency proxy for proxy_http:
+Module proxy already enabled
+Enabling module proxy_http.
+To activate the new configuration, you need to run:
+  systemctl restart apache2
+debian@ldapej:~$ sudo a2enmod proxy_balancer
+Considering dependency proxy for proxy_balancer:
+Module proxy already enabled
+Considering dependency alias for proxy_balancer:
+Module alias already enabled
+Considering dependency slotmem_shm for proxy_balancer:
+Enabling module slotmem_shm.
+Enabling module proxy_balancer.
+To activate the new configuration, you need to run:
+  systemctl restart apache2
+debian@ldapej:~$ sudo a2enmod proxy_wstunnel 
+Considering dependency proxy for proxy_wstunnel:
+Module proxy already enabled
+Enabling module proxy_wstunnel.
+To activate the new configuration, you need to run:
+  systemctl restart apache2
+debian@ldapej:~$ sudo systemctl restart apache2
+```
+
+Ahora configuramos el VirtualHost para configurar el proxy inverso:
+
+```
+<VirtualHost *:80>
+        ProxyPreserveHost On
+        ProxyRequests Off
+        ServerName guacamole.manuel-lora.gonzalonazareno.org
+        ProxyPass / http://localhost:8080/guacamole
+        ProxyPassReverse / http://localhost:8080/guacamole
+</VirtualHost>
+```
+
+Y añadimos dicho VirtualHost al fichero _/etc/hosts_:
+
+```
+172.22.201.0	guacamole.manuel-lora.gonzalonazareno.org
+```
 
 
 
