@@ -387,16 +387,119 @@ olcMemberOfMemberOfAD: memberOf
 
 Ahora crearemos los otros dos ficheros para agregar y configurar la integridad
 referencial, en otras palabras, hay que hacer relaciones entre usuarios y grupos
-sin perder coherencia.
+sin perder coherencia. El primero lo llamaremos refint1.ldif:
 
+```
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectclass: top
+olcmoduleload: refint.la
+olcmodulepath: /usr/lib/ldap
 
+dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
+objectClass: olcConfig
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+objectClass: top
+olcOverlay: {1}refint
+olcRefintAttribute: memberof member manager owne
+```
 
+Y al segundo lo llamaremos refint2.ldif:
+
+```
+dn: olcOverlay=memberof,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcMemberOf
+olcOverlay: memberof
+olcMemberOfRefint: TRUE
+```
+
+Y los cargamos:
+
+```
+debian@freston:~$ sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f memberof_config.ldif 
+adding new entry "cn=module,cn=config"
+
+adding new entry "olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config"
+
+debian@freston:~$ sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f refint1.ldif 
+adding new entry "cn=module,cn=config"
+
+adding new entry "olcOverlay={1}refint,olcDatabase={1}mdb,cn=config"
+ldap_add: Other (e.g., implementation specific) error (80)
+	additional info: olcRefintAttribute <owne>: attribute type undefined
+
+debian@freston:~$ sudo ldapadd -Q -Y EXTERNAL -H ldapi:/// -f refint2.ldif 
+adding new entry "olcOverlay=memberof,olcDatabase={1}mdb,cn=config"
+```
+
+Para que se apliquen los cambios hay que eliminar los objetos anteriormente
+creados de grupos y los volveremos :
+
+```
+debian@freston:~$ sudo ldapdelete -x -D "cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org" 'cn=comercial,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org' -W
+Enter LDAP Password: 
+debian@freston:~$ sudo ldapdelete -x -D "cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org" 'cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org' -W
+Enter LDAP Password: 
+debian@freston:~$ sudo ldapdelete -x -D "cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org" 'cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org' -W
+Enter LDAP Password: 
+```
+
+Y comprobamos:
+
+```
+debian@freston:~$ sudo ldapsearch -LL -Y EXTERNAL -H ldapi:/// "(uid=arturo)" -b dc=manuel-lora,dc=gonzalonazareno,dc=org memberOf
+SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+version: 1
+
+dn: uid=arturo,ou=People,dc=manuel-lora,dc=gonzalonazareno,dc=org
+memberOf: cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org
+```
 
 * Crea las ACLs necesarias para que los usuarios del grupo almacen puedan ver 
 todos los atributos de todos los usuarios pero solo puedan modificar las suyas.
 
+Se configurará la ACL en un fichero que se va a llamar ACL_ldif:
+
+```
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {3}to filter=(&(objectclass=inetOrgPerson)(memberof=cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org)) by group.exact="cn=almacen,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org" write 
+```
+
+Y lo añadimos:
+
+```
+debian@freston:~$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f ACL_ldif 
+SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry "olcDatabase={1}mdb,cn=config"
+```
 
 * Crea las ACLs necesarias para que los usuarios del grupo admin puedan ver y 
 modificar cualquier atributo de cualquier objeto.
 
+Crearemos otro fichero, llamado ACL2.ldif que contendrá las siguientes lineas:
 
+```
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {4}to * by group.exact="cn=admin,ou=Group,dc=manuel-lora,dc=gonzalonazareno,dc=org" write
+```
+
+Y lo añadiremos a LDAP:
+
+```
+debian@freston:~$ sudo ldapmodify -Y EXTERNAL -H ldapi:/// -f ACL2.ldif 
+SASL/EXTERNAL authentication started
+SASL username: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+SASL SSF: 0
+modifying entry "olcDatabase={1}mdb,cn=config"
+```
