@@ -20,7 +20,7 @@ acceder a nuestros equipos.
 En primer lugar, necesitamos instalar TOMCAT:
 
 ```
-debian@ldapej:~$ sudo apt-get install tomcat9
+root@debian:~$ sudo apt-get install tomcat9
 Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
@@ -64,7 +64,7 @@ Una vez descargado el paquete _tomcat9_, debemos, si no se ha hecho
 automáticamente, descargar las dependencias necesarias:
 
 ```
-debian@ldapej:~$ sudo apt install libcairo2-dev libjpeg62-turbo-dev libpng-dev libossp-uuid-dev libtool
+root@debian:~$ sudo apt install libcairo2-dev libjpeg62-turbo-dev libpng-dev libossp-uuid-dev libtool
 Reading package lists... Done
 Building dependency tree       
 Reading state information... Done
@@ -139,649 +139,212 @@ Nos descargamos el cliente (.war) y lo pasaremos mediante scp hacia nuestra
 máquina en el cloud.
 
 ```
-root@ldapej:/home/debian# ls
-gonzalonazareno.crt  guacamole-1.2.0.war
+root@debian:/home/debian/Descargas# ls
+guacamole-server-1.2.0.tar.gz  guacamole-1.2.0.war
 ```
 
-Ahora, añadiremos dicho archivo .war en el directorio _/var/lib/tomcat9/webapps_:
+Extraemos el archivo del servidor:
 
 ```
-root@ldapej:/home/debian# cp guacamole-1.2.0.war /var/lib/tomcat9/webapps/
+root@debian:/home/debian/Descargas# tar -xvf guacamole-server-1.2.0.tar.gz
 ```
 
-Ahora nos descargaremos el server (.tar.gz) de la misma página e igualmente 
-nos lo pasamos por scp a la máquina del cloud.
+Una vez extraido el contenido del archivo, nos dirigimos hacia el directorio
+que nos ha extraído y configuramos el entorno de construcción:
 
 ```
-root@ldapej:/home/debian# ls
-gonzalonazareno.crt  guacamole-1.2.0.war  guacamole-server-1.2.0.tar.gz
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# ./configure --with-init-dir=/etc/init.d
 ```
 
-Lo descomprimimos y compilamos:
+![alt text](../Imágenes/guacd1.png)
+
+Hecho esto, compilamos guacamole-server:
 
 ```
-root@ldapej:/home/debian/guacamole-server-1.2.0# ./configure --with-init-dir=/etc/init.d
-checking for a BSD-compatible install... /usr/bin/install -c
-checking whether build environment is sane... yes
-checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
-checking for gawk... gawk
-checking whether make sets $(MAKE)... no
-checking whether make supports nested variables... no
-checking whether make supports nested variables... (cached) no
-checking build system type... x86_64-pc-linux-gnu
-checking host system type... x86_64-pc-linux-gnu
-checking how to print strings... printf
-checking for style of include used by make... none
-checking for gcc... gcc
-checking whether the C compiler works... yes
-checking for C compiler default output file name... a.out
-checking for suffix of executables... 
-checking whether we are cross compiling... no
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ISO C89... none needed
-checking whether gcc understands -c and -o together... yes
-checking dependency style of gcc... none
-checking for a sed that does not truncate output... /usr/bin/sed
-checking for grep that handles long lines and -e... /usr/bin/grep
-checking for egrep... /usr/bin/grep -E
-checking for fgrep... /usr/bin/grep -F
-checking for ld used by gcc... /usr/bin/ld
-checking if the linker (/usr/bin/ld) is GNU ld... yes
-checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
-checking the name lister (/usr/bin/nm -B) interface... BSD nm
-checking whether ln -s works... yes
-checking the maximum length of command line arguments... 1572864
-checking how to convert x86_64-pc-linux-gnu file names to x86_64-pc-linux-gnu format... func_convert_file_noop
-checking how to convert x86_64-pc-linux-gnu file names to toolchain format... func_convert_file_noop
-checking for /usr/bin/ld option to reload object files... -r
-checking for objdump... objdump
-checking how to recognize dependent libraries... pass_all
-checking for dlltool... no
-checking how to associate runtime and link libraries... printf %s\n
-checking for ar... ar
-checking for archiver @FILE support... @
-checking for strip... strip
-checking for ranlib... ranlib
-checking command to parse /usr/bin/nm -B output from gcc object... ok
-checking for sysroot... no
-checking for a working dd... /usr/bin/dd
-checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
-checking for mt... mt
-checking if mt is a manifest tool... no
-checking how to run the C preprocessor... gcc -E
-checking for ANSI C header files... yes
-checking for sys/types.h... yes
-checking for sys/stat.h... yes
-checking for stdlib.h... yes
-checking for string.h... yes
-checking for memory.h... yes
-checking for strings.h... yes
-checking for inttypes.h... yes
-checking for stdint.h... yes
-checking for unistd.h... yes
-checking for dlfcn.h... yes
-checking for objdir... .libs
-checking if gcc supports -fno-rtti -fno-exceptions... no
-checking for gcc option to produce PIC... -fPIC -DPIC
-checking if gcc PIC flag -fPIC -DPIC works... yes
-checking if gcc static flag -static works... yes
-checking if gcc supports -c -o file.o... yes
-checking if gcc supports -c -o file.o... (cached) yes
-checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
-checking whether -lc should be explicitly linked in... no
-checking dynamic linker characteristics... GNU/Linux ld.so
-checking how to hardcode library paths into programs... immediate
-checking for shl_load... no
-checking for shl_load in -ldld... no
-checking for dlopen... no
-checking for dlopen in -ldl... yes
-checking whether a program can dlopen itself... yes
-checking whether a statically linked program can dlopen itself... no
-checking whether stripping libraries is possible... yes
-checking if libtool supports shared libraries... yes
-checking whether to build shared libraries... yes
-checking whether to build static libraries... yes
-checking for gcc... (cached) gcc
-checking whether we are using the GNU C compiler... (cached) yes
-checking whether gcc accepts -g... (cached) yes
-checking for gcc option to accept ISO C89... (cached) none needed
-checking whether gcc understands -c and -o together... (cached) yes
-checking dependency style of gcc... (cached) none
-checking for gcc option to accept ISO C99... none needed
-checking fcntl.h usability... yes
-checking fcntl.h presence... yes
-checking for fcntl.h... yes
-checking for stdlib.h... (cached) yes
-checking for string.h... (cached) yes
-checking sys/socket.h usability... yes
-checking sys/socket.h presence... yes
-checking for sys/socket.h... yes
-checking time.h usability... yes
-checking time.h presence... yes
-checking for time.h... yes
-checking sys/time.h usability... yes
-checking sys/time.h presence... yes
-checking for sys/time.h... yes
-checking syslog.h usability... yes
-checking syslog.h presence... yes
-checking for syslog.h... yes
-checking for unistd.h... (cached) yes
-checking cairo/cairo.h usability... yes
-checking cairo/cairo.h presence... yes
-checking for cairo/cairo.h... yes
-checking pngstruct.h usability... no
-checking pngstruct.h presence... no
-checking for pngstruct.h... no
-checking for cos in -lm... yes
-checking for png_write_png in -lpng... yes
-checking for jpeg_start_compress in -ljpeg... yes
-checking for cairo_create in -lcairo... yes
-checking for pthread_create in -lpthread... yes
-checking for dlopen in -ldl... (cached) yes
-checking for uuid_make in -lossp-uuid... yes
-checking ossp/uuid.h usability... yes
-checking ossp/uuid.h presence... yes
-checking for ossp/uuid.h... yes
-checking whether uuid_make is declared... yes
-checking for CU_run_test in -lcunit... no
-checking for clock_gettime... yes
-checking for gettimeofday... yes
-checking for memmove... yes
-checking for memset... yes
-checking for select... yes
-checking for strdup... yes
-checking for nanosleep... yes
-checking whether png_get_io_ptr is declared... yes
-checking whether cairo_format_stride_for_width is declared... yes
-checking whether poll is declared... yes
-checking whether strlcpy is declared... no
-checking whether strlcat is declared... no
-checking for size_t... yes
-checking for ssize_t... yes
-checking for pkg-config... /usr/bin/pkg-config
-checking pkg-config is at least version 0.9.0... yes
-checking for AVCODEC... no
-checking for AVFORMAT... no
-checking for AVUTIL... no
-checking for SWSCALE... no
-checking openssl/ssl.h usability... no
-checking openssl/ssl.h presence... no
-checking for openssl/ssl.h... no
-checking for SSL_CTX_new in -lssl... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find libssl.
-   guacd will not support SSL connections.
-  --------------------------------------------
-checking for main in -lwsock32... no
-checking vorbis/vorbisenc.h usability... no
-checking vorbis/vorbisenc.h presence... no
-checking for vorbis/vorbisenc.h... no
-checking for ogg_stream_init in -logg... no
-checking for vorbis_block_init in -lvorbis... no
-checking for vorbis_encode_init in -lvorbisenc... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find libogg / libvorbis / libvorbisenc.
-   Sound will not be encoded with Ogg Vorbis.
-  --------------------------------------------
-checking for pa_context_new in -lpulse... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find libpulse
-   Sound support for VNC will be disabled
-  --------------------------------------------
-checking for PANGO... no
-checking for PANGOCAIRO... no
-checking for rfbInitClient in -lvncclient... no
-checking for RDP... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find FreeRDP (libfreerdp2 / libfreerdp-client2 / libwinpr2)
-   RDP will be disabled.
-  --------------------------------------------
-checking for libssh2_session_init_ex in -lssh2... no
-checking for telnet_init in -ltelnet... no
-checking webp/encode.h usability... no
-checking webp/encode.h presence... no
-checking for webp/encode.h... no
-checking for WebPEncode in -lwebp... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find libwebp.
-   Images will not be encoded using WebP.
-  --------------------------------------------
-checking for lws_create_context in -lwebsockets... no
-configure: WARNING:
-  --------------------------------------------
-   Unable to find libwebsockets.
-   Support for Kubernetes will be disabled.
-  --------------------------------------------
-checking whether LWS_CALLBACK_CLIENT_CLOSED is declared... no
-checking whether LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT is declared... no
-checking whether LCCSCF_USE_SSL is declared... no
-checking whether lws_callback_http_dummy is declared... no
-checking that generated files are newer than configure... done
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: creating doc/Doxyfile
-config.status: creating src/common/Makefile
-config.status: creating src/common/tests/Makefile
-config.status: creating src/common-ssh/Makefile
-config.status: creating src/common-ssh/tests/Makefile
-config.status: creating src/terminal/Makefile
-config.status: creating src/libguac/Makefile
-config.status: creating src/libguac/tests/Makefile
-config.status: creating src/guacd/Makefile
-config.status: creating src/guacd/man/guacd.8
-config.status: creating src/guacd/man/guacd.conf.5
-config.status: creating src/guacenc/Makefile
-config.status: creating src/guacenc/man/guacenc.1
-config.status: creating src/guaclog/Makefile
-config.status: creating src/guaclog/man/guaclog.1
-config.status: creating src/pulse/Makefile
-config.status: creating src/protocols/kubernetes/Makefile
-config.status: creating src/protocols/rdp/Makefile
-config.status: creating src/protocols/rdp/tests/Makefile
-config.status: creating src/protocols/ssh/Makefile
-config.status: creating src/protocols/telnet/Makefile
-config.status: creating src/protocols/vnc/Makefile
-config.status: creating config.h
-config.status: executing depfiles commands
-config.status: executing libtool commands
-
-------------------------------------------------
-guacamole-server version 1.2.0
-------------------------------------------------
-
-   Library status:
-
-     freerdp2 ............ no
-     pango ............... no
-     libavcodec .......... no
-     libavformat.......... no
-     libavutil ........... no
-     libssh2 ............. no
-     libssl .............. no
-     libswscale .......... no
-     libtelnet ........... no
-     libVNCServer ........ no
-     libvorbis ........... no
-     libpulse ............ no
-     libwebsockets ....... no
-     libwebp ............. no
-     wsock32 ............. no
-
-   Protocol support:
-
-      Kubernetes .... no
-      RDP ........... no
-      SSH ........... no
-      Telnet ........ no
-      VNC ........... no
-
-   Services / tools:
-
-      guacd ...... yes
-      guacenc .... no
-      guaclog .... yes
-
-   FreeRDP plugins: no
-   Init scripts: /etc/init.d
-   Systemd units: no
-
-Type "make" to compile guacamole-server.
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# make
 ```
 
-Y ahora lo instalamos:
+![alt text](../Imágenes/guacd2.png)
+
+Y lo instalamos:
 
 ```
-root@ldapej:/home/debian/guacamole-server-1.2.0# make
-make  all-recursive
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0'
-Making all in src/libguac
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making all in .
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-  CC       libguac_la-audio.lo
-  CC       libguac_la-client.lo
-  CC       libguac_la-encode-jpeg.lo
-  CC       libguac_la-encode-png.lo
-  CC       libguac_la-error.lo
-  CC       libguac_la-hash.lo
-  CC       libguac_la-id.lo
-  CC       libguac_la-palette.lo
-  CC       libguac_la-parser.lo
-  CC       libguac_la-pool.lo
-  CC       libguac_la-protocol.lo
-  CC       libguac_la-raw_encoder.lo
-  CC       libguac_la-socket.lo
-  CC       libguac_la-socket-broadcast.lo
-  CC       libguac_la-socket-fd.lo
-  CC       libguac_la-socket-nest.lo
-  CC       libguac_la-socket-tee.lo
-  CC       libguac_la-string.lo
-  CC       libguac_la-timestamp.lo
-  CC       libguac_la-unicode.lo
-  CC       libguac_la-user.lo
-  CC       libguac_la-user-handlers.lo
-  CC       libguac_la-user-handshake.lo
-  CC       libguac_la-wait-fd.lo
-  CC       libguac_la-wol.lo
-  CCLD     libguac.la
-ar: `u' modifier ignored since `D' is the default (see `U')
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making all in tests
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[3]: Nothing to be done for 'all'.
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making all in src/common
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making all in .
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common'
-  CC       libguac_common_la-io.lo
-  CC       libguac_common_la-blank_cursor.lo
-  CC       libguac_common_la-clipboard.lo
-  CC       libguac_common_la-cursor.lo
-  CC       libguac_common_la-display.lo
-  CC       libguac_common_la-dot_cursor.lo
-  CC       libguac_common_la-ibar_cursor.lo
-  CC       libguac_common_la-iconv.lo
-  CC       libguac_common_la-json.lo
-  CC       libguac_common_la-list.lo
-  CC       libguac_common_la-pointer_cursor.lo
-  CC       libguac_common_la-recording.lo
-  CC       libguac_common_la-rect.lo
-  CC       libguac_common_la-string.lo
-  CC       libguac_common_la-surface.lo
-  CCLD     libguac_common.la
-ar: `u' modifier ignored since `D' is the default (see `U')
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making all in tests
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[3]: Nothing to be done for 'all'.
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making all in src/guacd
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guacd'
-  CC       guacd-conf-args.o
-  CC       guacd-conf-file.o
-  CC       guacd-conf-parse.o
-  CC       guacd-connection.o
-  CC       guacd-daemon.o
-  CC       guacd-log.o
-  CC       guacd-move-fd.o
-  CC       guacd-proc.o
-  CC       guacd-proc-map.o
-  CCLD     guacd
-sed -e 's,[@]sbindir[@],/usr/local/sbin,g' < init.d/guacd.in > init.d/guacd
-chmod +x init.d/guacd
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guacd'
-Making all in src/guaclog
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
-  CC       guaclog-guaclog.o
-  CC       guaclog-instructions.o
-  CC       guaclog-instruction-key.o
-  CC       guaclog-interpret.o
-  CC       guaclog-keydef.o
-  CC       guaclog-log.o
-  CC       guaclog-state.o
-  CCLD     guaclog
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0'
-
-
-root@ldapej:/home/debian/guacamole-server-1.2.0# make install
-Making install in src/libguac
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making install in .
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac'
- /usr/bin/mkdir -p '/usr/local/lib'
- /bin/bash ../../libtool   --mode=install /usr/bin/install -c   libguac.la '/usr/local/lib'
-libtool: install: /usr/bin/install -c .libs/libguac.so.17.1.0 /usr/local/lib/libguac.so.17.1.0
-libtool: install: (cd /usr/local/lib && { ln -s -f libguac.so.17.1.0 libguac.so.17 || { rm -f libguac.so.17 && ln -s libguac.so.17.1.0 libguac.so.17; }; })
-libtool: install: (cd /usr/local/lib && { ln -s -f libguac.so.17.1.0 libguac.so || { rm -f libguac.so && ln -s libguac.so.17.1.0 libguac.so; }; })
-libtool: install: /usr/bin/install -c .libs/libguac.lai /usr/local/lib/libguac.la
-libtool: install: /usr/bin/install -c .libs/libguac.a /usr/local/lib/libguac.a
-libtool: install: chmod 644 /usr/local/lib/libguac.a
-libtool: install: ranlib /usr/local/lib/libguac.a
-libtool: finish: PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/sbin" ldconfig -n /usr/local/lib
-----------------------------------------------------------------------
-Libraries have been installed in:
-   /usr/local/lib
-
-If you ever happen to want to link against installed libraries
-in a given directory, LIBDIR, you must either use libtool, and
-specify the full pathname of the library, or use the '-LLIBDIR'
-flag during linking and do at least one of the following:
-   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
-     during execution
-   - add LIBDIR to the 'LD_RUN_PATH' environment variable
-     during linking
-   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
-   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
-
-See any operating system documentation about shared libraries for
-more information, such as the ld(1) and ld.so(8) manual pages.
-----------------------------------------------------------------------
- /usr/bin/mkdir -p '/usr/local/include/guacamole'
- /usr/bin/install -c -m 644 guacamole/audio.h guacamole/audio-fntypes.h guacamole/audio-types.h guacamole/client-constants.h guacamole/client.h guacamole/client-fntypes.h guacamole/client-types.h guacamole/error.h guacamole/error-types.h guacamole/hash.h guacamole/layer.h guacamole/layer-types.h guacamole/object.h guacamole/object-types.h guacamole/parser-constants.h guacamole/parser.h guacamole/parser-types.h guacamole/plugin-constants.h guacamole/plugin.h guacamole/pool.h guacamole/pool-types.h guacamole/protocol.h guacamole/protocol-constants.h guacamole/protocol-types.h guacamole/socket-constants.h guacamole/socket.h guacamole/socket-fntypes.h guacamole/socket-types.h guacamole/stream.h guacamole/stream-types.h guacamole/string.h guacamole/timestamp.h guacamole/timestamp-types.h guacamole/unicode.h guacamole/user.h guacamole/user-constants.h guacamole/user-fntypes.h guacamole/user-types.h guacamole/wol.h guacamole/wol-constants.h '/usr/local/include/guacamole'
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making install in tests
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[3]: Nothing to be done for 'install-exec-am'.
-make[3]: Nothing to be done for 'install-data-am'.
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac/tests'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/libguac'
-Making install in src/common
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making install in .
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common'
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common'
-make[3]: Nothing to be done for 'install-exec-am'.
-make[3]: Nothing to be done for 'install-data-am'.
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making install in tests
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[3]: Entering directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[3]: Nothing to be done for 'install-exec-am'.
-make[3]: Nothing to be done for 'install-data-am'.
-make[3]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common/tests'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/common'
-Making install in src/guacd
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guacd'
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guacd'
- /usr/bin/mkdir -p '/usr/local/sbin'
-  /bin/bash ../../libtool   --mode=install /usr/bin/install -c guacd '/usr/local/sbin'
-libtool: install: /usr/bin/install -c .libs/guacd /usr/local/sbin/guacd
- /usr/bin/mkdir -p '/etc/init.d'
- /usr/bin/install -c init.d/guacd '/etc/init.d'
- /usr/bin/mkdir -p '/usr/local/share/man/man5'
- /usr/bin/install -c -m 644 man/guacd.conf.5 '/usr/local/share/man/man5'
- /usr/bin/mkdir -p '/usr/local/share/man/man8'
- /usr/bin/install -c -m 644 man/guacd.8 '/usr/local/share/man/man8'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guacd'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guacd'
-Making install in src/guaclog
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
- /usr/bin/mkdir -p '/usr/local/bin'
-  /bin/bash ../../libtool   --mode=install /usr/bin/install -c guaclog '/usr/local/bin'
-libtool: install: /usr/bin/install -c .libs/guaclog /usr/local/bin/guaclog
- /usr/bin/mkdir -p '/usr/local/share/man/man1'
- /usr/bin/install -c -m 644 man/guaclog.1 '/usr/local/share/man/man1'
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0/src/guaclog'
-make[1]: Entering directory '/home/debian/guacamole-server-1.2.0'
-make[2]: Entering directory '/home/debian/guacamole-server-1.2.0'
-make[2]: Nothing to be done for 'install-exec-am'.
-make[2]: Nothing to be done for 'install-data-am'.
-make[2]: Leaving directory '/home/debian/guacamole-server-1.2.0'
-make[1]: Leaving directory '/home/debian/guacamole-server-1.2.0'
-
-
-root@ldapej:/home/debian/guacamole-server-1.2.0# ldconfig
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# make install
 ```
 
-En principio, ya tendríamos instalado Apache Guacamole.
+![alt text](../Imágenes/guacd3.png)
 
-Ahora pasaremos a la configuración de Guacamole Server.
-
-En primer lugar, crearemos dos directorios:
+Y actualizamos la caché del sistema con las librerías instaladas:
 
 ```
-root@ldapej:/etc# mkdir /etc/guacamole /usr/share/tomcat9/.guacamole
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# ldconfig
 ```
 
-A continuación creamos los ficheros _/etc/guacamole/guacamole.properties_ y 
-el fichero para el mapeado de usuarios llamado _/etc/guacamole/user-mapping.xml_:
-
-* guacamole.properties
+También, actualizaremos el servicio de systemd para poder encontrarnos el 
+servicio de guacamole instalado en el directorio _/etc/init.d_:
 
 ```
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# systemctl daemon-reload
+```
+
+E iniciamos el servicio de guacd (lo pondremos para que se inicie el equipo):
+
+```
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# systemctl start guacd
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# systemctl enable guacd
+```
+
+Y comprobamos el estado:
+
+```
+root@debian:/home/debian/Descargas/guacamole-server-1.2.0# systemctl status guacd
+```
+
+![alt text](../Imágenes/guacd4.png)
+
+El servicio de guacd escucha por el puerto 4822.
+
+Ahora, pasando a la instalación de la aplicación web de Guacamole, como es un
+servicio escrito en Java, necesitaremos tomcat9 (instalado anteriormente).
+
+Tomcat9 escucha en el puerto 8080.
+
+En primer lugar, moveremos el archivo .war descargado antes al siguiente
+directorio:
+
+```
+root@debian:/home/debian/Descargas# mv guacamole-1.2.0.war /var/lib/tomcat9/webapps/guacamole.war
+```
+
+Después, reiniciamos el servicio de Tomcat9 y de guacamole:
+
+```
+root@debian:/home/debian/Descargas# systemctl restart tomcat9 guacd
+```
+
+Ahora pasaremos a la configuración de guacamole. En primer lugar, vamos a 
+crear un directorio para guacamole y creamos dentro un fichero llamado
+guacamole.properties:
+
+```
+root@debian:/home/debian# mkdir /etc/guacamole
+root@debian:/home/debian# nano  /etc/guacamole/guacamole.properties
+```
+
+Dentro de dicho fichero, tendremos las siguientes lineas:
+
+```
+# Hostname and port of guacamole proxy
 guacd-hostname: localhost
-guacd-port: 4822
-user-mapping: /etc/guacamole/user-mapping.xml
+guacd-port:     4822
+
+# Auth provider class (authenticates user/pass combination, needed if using the provided login screen)
 auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
 basic-user-mapping: /etc/guacamole/user-mapping.xml
 ```
 
-* user-mapping.xml
+Esta es la configuración predeterminada, pero bien puede servirnos si queremos
+modificar algún parámetro en un futuro. El módulo de autenticación en
+Guacamole, lee los nombres de usuario y las contraseñas de un fichero XML que
+es el _user-mapping.xml_ Antes de crear dicho fichero, vamos a generar un hash
+MD5 de nuestra contraseña. Lo apuntaremos y seguimos adelante.
+
+Ahora pasaremos a la creación del fichero user-mapping.xml:
 
 ```
 <user-mapping>
-        <authorize 
-         username="ldapej" 
-         password="63623900c8bbf21c706c45dcb7a2c083" 
+
+    <!-- Per-user authentication and config information -->
+    <authorize
+         username="debian"
+         password="97db1846570837fce6ff62a408f1c26a"
          encoding="md5">
-                <connection name="SSH">
-                        <protocol>ssh</protocol>
-                        <param name="hostname">172.22.6.15</param>
-                        <param name="port">22</param>
-                        <param name="username">manuel</param>
-                </connection>
-                <connection name="Remote Desktop">
-                        <protocol>rdp</protocol>
-                        <param name="hostname">172.22.6.15</param>
-                        <param name="port">3389</param>
-                </connection>
-        </authorize>
+      
+       <connection name="SSH">
+         <protocol>vnc</protocol>
+         <param name="hostname">192.168.100.17</param>
+         <param name="port">22</param>
+         <param name="username">manuel</param>
+       </connection>
+    </authorize>
+
 </user-mapping>
 ```
 
-Hacemos un enlace simbólico del fichero .properties:
+Y reiniciamos el servicio de tomcat9 y guacamole:
 
 ```
-debian@ldapej:~$ sudo ln -s /etc/guacamole/guacamole.properties /usr/share/tomcat9/.guacamole/
+root@debian:/home/debian# systemctl restart tomcat9 guacd
 ```
 
-Le damos permiso a continuación sobre el fichero _user-mapping.xml_:
+Ahora crearemos el proxy inverso en apache. Para ello, debemos instalarnos
+principalmente apache2 y activamos los módulos necesarios para el proxy:
 
 ```
-debian@ldapej:~$ sudo chmod 600 /etc/guacamole/user-mapping.xml 
-debian@ldapej:~$ sudo chown tomcat:tomcat /etc/guacamole/user-mapping.xml 
-```
-
-A continuación, nos instalaremos apache2 y ya que guacamole no soporta 
-apache2 con AJP, haremos que guacamole pase por http. Para ello debemos
-dirigirnos hacia el fichero _/var/lib/tomcat9/conf/server.xml_ y editarlo
-para que quede de la siguiente manera:
-
-```
-    <Connector port="8080" protocol="HTTP/1.1"
-               connectionTimeout="20000"
-               URIEncoding="UTF-8"
-               redirectPort="8443" />
-```
-
-Hecho esto, configuramos ahora la ip remota, ya que lo necesitaremos para
-funcione tanto Tomcat9 y Guacamole. Para ello, vamos a volver a editar el
-fichero _server.xml_:
-
-```
-<Valve className="org.apache.catalina.valves.RemoteIpValve"
-       internalProxies="127.0.0.1"
-       remoteIpHeader="x-forwarded-for"
-       remoteIpProxiesHeader="x-forwarded-by"
-       protocolHeader="x-forwarded-proto" />
-```
-
-Ahora pasaremos a la configuración del proxy inverso de Apache2. Primero, 
-habilitaremos el módulo mod_proxy de apache2 y demás, para acto seguido
-reiniciar el servicio:
-
-```
-debian@ldapej:~$ sudo a2enmod proxy
+root@debian:/home/debian# a2enmod proxy proxy_http headers proxy_wstunnel
 Enabling module proxy.
-To activate the new configuration, you need to run:
-  systemctl restart apache2
-debian@ldapej:~$ sudo a2enmod proxy_http
 Considering dependency proxy for proxy_http:
 Module proxy already enabled
 Enabling module proxy_http.
-To activate the new configuration, you need to run:
-  systemctl restart apache2
-debian@ldapej:~$ sudo a2enmod proxy_balancer
-Considering dependency proxy for proxy_balancer:
-Module proxy already enabled
-Considering dependency alias for proxy_balancer:
-Module alias already enabled
-Considering dependency slotmem_shm for proxy_balancer:
-Enabling module slotmem_shm.
-Enabling module proxy_balancer.
-To activate the new configuration, you need to run:
-  systemctl restart apache2
-debian@ldapej:~$ sudo a2enmod proxy_wstunnel 
+Enabling module headers.
 Considering dependency proxy for proxy_wstunnel:
 Module proxy already enabled
 Enabling module proxy_wstunnel.
 To activate the new configuration, you need to run:
   systemctl restart apache2
-debian@ldapej:~$ sudo systemctl restart apache2
 ```
 
-Ahora configuramos el VirtualHost para configurar el proxy inverso:
+Acto seguido creamos un virtualHost para Guacamole:
+
+```
+root@debian:/home/debian#/ nano /etc/apache2/sites-available/guacamole.conf
+```
+
+Que contendrá las siguientes líneas:
 
 ```
 <VirtualHost *:80>
-        ProxyPreserveHost On
-        ProxyRequests Off
-        ServerName guacamole.manuel-lora.gonzalonazareno.org
-        ProxyPass / http://localhost:8080/guacamole
-        ProxyPassReverse / http://localhost:8080/guacamole
+      ServerName guacamole.example.com
+
+      ErrorLog ${APACHE_LOG_DIR}/guacamole_error.log
+      CustomLog ${APACHE_LOG_DIR}/guacamole_access.log combined
+
+      <Location />
+          Require all granted
+          ProxyPass http://localhost:8080/guacamole/ flushpackets=on
+          ProxyPassReverse http://localhost:8080/guacamole/
+      </Location>
+
+     <Location /websocket-tunnel>
+         Require all granted
+         ProxyPass ws://localhost:8080/guacamole/websocket-tunnel
+         ProxyPassReverse ws://localhost:8080/guacamole/websocket-tunnel
+     </Location>
+
+     Header always unset X-Frame-Options
 </VirtualHost>
 ```
+Activamos el VirtualHost y reiniciamos el servicio de apache2.
 
-Y añadimos dicho VirtualHost al fichero _/etc/hosts_:
+Y comprobamos la conexión con la máquina virtual:
+
+![alt text](../Imágenes/guacd5.png)	
+
+Cuando nos conectemos con el usuario, veremos que no podemos conectarnos ya
+que no está activo el servicio de escritorio remoto, por lo tanto ahora
+pasaremos a configurarlo.
+
+En primer lugar, instalaremos el siguiente paquete:
 
 ```
-172.22.201.0	guacamole.manuel-lora.gonzalonazareno.org
+root@debian:~# apt-get install xfce4 xfce4-goodies
 ```
 
+Una vez este instalando el paquete, nos preguntará sobre la opción que queremos
+escoger. En nuestro caso elegiremos gdm.
+
+Una vez se haya instalado, volveremos a intentar la conexión:
 
 
-
-
-* ¿Has necesitado instalar alguna librería?¿Has necesitado instalar un 
-conector de una base de datos?
-   
-* Entrega una captura de pantalla donde se vea la aplicación funcionando.
-   
-* Realiza la configuración necesaria en apache2 y tomcat (utilizando el 
-protocolo AJP) para que la aplicación sea servida por el servidor web.
-   
-* Entrega una captura de pantalla donde se vea la aplicación funcionando 
-servida por apache2.
 
 
