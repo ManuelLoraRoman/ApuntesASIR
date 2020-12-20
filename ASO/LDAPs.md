@@ -126,3 +126,10 @@ result: 0 Success
 # numResponses: 2
 # numEntries: 1
 ```
+Pero si por el contrario, queremos realizar la misma consulta pero con ldap,
+obtenemos lo siguiente:
+
+```
+debian@freston:~/openldap$ sudo ldapsearch -x -H ldap://freston.manuel-lora.gonzalonazareno.org:636 -b "cn=admin,dc=manuel-lora,dc=gonzalonazareno,dc=org"
+ldap_result: Can't contact LDAP server (-1)
+```
