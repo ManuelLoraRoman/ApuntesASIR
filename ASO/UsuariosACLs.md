@@ -482,6 +482,8 @@ SASL SSF: 0
 modifying entry "olcDatabase={1}mdb,cn=config"
 ```
 
+
+
 * Crea las ACLs necesarias para que los usuarios del grupo admin puedan ver y 
 modificar cualquier atributo de cualquier objeto.
 
