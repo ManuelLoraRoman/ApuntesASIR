@@ -330,21 +330,9 @@ Y comprobamos la conexión con la máquina virtual:
 
 ![alt text](../Imágenes/guacd5.png)	
 
-Cuando nos conectemos con el usuario, veremos que no podemos conectarnos ya
-que no está activo el servicio de escritorio remoto, por lo tanto ahora
-pasaremos a configurarlo.
+![alt text](../Imágenes/guacd7.png)
 
-En primer lugar, instalaremos el siguiente paquete:
-
-```
-root@debian:~# apt-get install xfce4 xfce4-goodies
-```
-
-Una vez este instalando el paquete, nos preguntará sobre la opción que queremos
-escoger. En nuestro caso elegiremos gdm.
-
-Una vez se haya instalado, volveremos a intentar la conexión:
-
+![alt text](../Imágenes/guacd6.png)
 
 
 
