@@ -22,4 +22,6 @@ Apuntes y prácticas de esta asignatura.
 
 [5. Instalación/migración de aplicaciones web PHP](./migracionPHP.md)
 
+[6. Despliegue de CMS en Java](./CMSJava.md)
+
 </div>

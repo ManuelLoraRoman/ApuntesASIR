@@ -12,4 +12,6 @@ Aquí estarán los diferentes apuntes, ejercicios y prácticas de HLC.
 
 [4. Migración de una aplicación entre máquinas virtuales](./migracionvirt.md)
 
+[5. Configuración de cloud-init](./cloud-init.md)
+
 </div>

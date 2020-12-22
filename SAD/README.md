@@ -27,4 +27,6 @@ haciendo.
 
 [3. Cortafuegos](./cortafuegos.md)
 
+[4. Configuración de HTTPS en CentOS8](./ConfHTTPS.md)
+
 </div>

@@ -22,4 +22,10 @@
 
 [4.1. Tareas LDAP](./TareasLDAP.md)
 
+[4.2. Usuarios, grupos y ACLs en LDAP](./UsuariosACLs.md)
+
+[4.3. LDAPs](./LDAPs.md)
+
+[4.4. LDAP en Alta Disponibilidad](./LDAPAD.md)
+
 </div>
