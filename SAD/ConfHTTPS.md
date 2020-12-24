@@ -103,7 +103,62 @@ total 24
 
 * Debes hacer una redirección para forzar el protocolo https.
    
+En primer lugar, para hacer la redirección, es necesario instalarse el módulo
+mod_ssl:
 
+```
+[centos@quijote ~]$ sudo dnf -y install mod_ssl
+```
+
+Una vez instalado, activamos dicho módulo. Para ello, reiniciamos el servicio de
+httpd. Si queremos comprobar que efectivamente, lo tenemos activado haremos:
+
+```
+[centos@quijote ~]$ sudo apachectl -M | grep ssl
+ ssl_module (shared)
+```
+
+Si el comando no tiene ningún tipo de salida, significa que no está activado.
+
+Además de abrir el puerto 443 en openstack, debemos abrir el puerto 443 de la
+máquina CentOS debido a que esta posee un cortafuegos propio (en nuestro caso
+ya lo tenemos activado):
+
+```
+[centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-service=https
+Warning: ALREADY_ENABLED: https
+success
+[centos@quijote ~]$ sudo firewall-cmd --reload
+success
+```
+
+Moveremos el certificado hacia el directorio _/etc/pki/tls/certs_ y la clave
+hacia el directorio _/etc/pki/tls/private_.
+
+Una vez movido dichos ficheros, modificaremos el fichero _/etc/httpd/conf.d/ssl.conf_
+y editaremos las siguientes líneas:
+
+```
+SSLCertificateFile /etc/pki/tls/certs/centos.crt   
+
+SSLCertificateKeyFile /etc/pki/tls/private/mikey.key
+```
+
+Y reiniciamos el servicio httpd.
+
+```
+[centos@quijote ~]$ sudo systemctl reload httpd
+```
+
+Para hacer la redirección, debemos crear un fichero llamado 
+_/etc/httpd/conf.d/redirect_http.conf_ con el siguiente contenido:
+
+```
+<VirtualHost _default_:80>
+        Servername rhel8
+        Redirect permanent / https://rhel8/
+</VirtualHost>
+```
 
 * Investiga la regla DNAT en el cortafuego para abrir el puerto 443.
 
