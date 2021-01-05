@@ -6,26 +6,101 @@
 la base de datos, crear tablas y vistas e insertar datos en la tabla EMP de 
 SCOTT.
 
+```
+SQL> CREATE ROLE ROLPRACTICA1;
+
+Rol creado.
+
+SQL> GRANT CREATE SESSION TO ROLPRACTICA1;
+
+Concesión terminada correctamente.
+
+SQL> GRANT CREATE TABLE, CREATE VIEW TO ROLPRACTICA1;
+
+Concesion terminada correctamente.
+
+SQL> GRANT INSERT ON EMP TO ROLPRACTICA1;
+
+Concesion terminada correctamente.
+```
+
 2. Crea un usuario USRPRACTICA1 con el tablespace USERS por defecto y 
 averigua que cuota se le ha asignado por defecto en el mismo. Sustitúyela por 
 una cuota de 1M.
 
+```
+SQL> CREATE USER USRPRACTICA1
+  2  IDENTIFIED BY "V3ryStr@ng"
+  3  DEFAULT TABLESPACE USERS;
+
+Usuario creado.
+```
+
+Al no especificarle una cuota al usuario, este no tiene cuota asignada y por
+lo tanto no podrá crear objetos en el tablespace.
+
+Para modificarla, usaremos el siguiente comando:
+
+```
+SQL> ALTER USER USRPRACTICA1
+  2  QUOTA 1M ON USERS;
+
+Usuario modificado.
+```
+
 3. Modifica el usuario USRPRACTICA1 para que tenga cuota 0 en el tablespace 
 SYSTEM.
 
+```
+SQL> ALTER USER USRPRACTICA1 
+  2  QUOTA 0 ON SYSTEM;
+
+Usuario modificado.
+```
+
 4. Concede a USRPRACTICA1 el ROLPRACTICA1.
 
-5. Concede a USRPRACTICA1 el privilegio de crear tablas e insertar datos en el esquema de cualquier usuario. Prueba el privilegio. Comprueba si puede 
+```
+SQL> GRANT ROLPRACTICA1 TO USRPRACTICA1;
+
+Concesion terminada correctamente.
+```
+
+5. Concede a USRPRACTICA1 el privilegio de crear tablas e insertar datos en el 
+esquema de cualquier usuario. Prueba el privilegio. Comprueba si puede 
 modificar la estructura o eliminar las tablas creadas.
+
+```
+SQL> GRANT CREATE, INSERT ON schema.all TO USRPRACTICA1;
+
+```
+
+No se pueden borrar las tablas creadas puesto que carecemos de privilegios.
 
 6. Concede a USRPRACTICA1 el privilegio de leer la tabla DEPT de SCOTT con la 
 posibilidad de que lo pase a su vez a terceros usuarios.
 
+```
+SQL> GRANT SELECT ON DEPT TO USRPRACTICA WITH GRANT OPTIONS;
+
+Concesion terminada correctamente.
+```
+
 7. Comprueba que USRPRACTICA1 puede realizar todas las operaciones previstas 
 en el rol.
 
+```
+
+
+```
+
 8. Quita a USRPRACTICA1 el privilegio de crear vistas. Comprueba que ya no 
 puede hacerlo.
+
+```
+SQL> REVOKE CREATE VIEW TO ROLPRACTICA1;
+
+
 
 9. Crea un perfil NOPARESDECURRAR que limita a dos el número de minutos de 
 inactividad permitidos en una sesión.
