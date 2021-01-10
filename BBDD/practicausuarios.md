@@ -104,10 +104,11 @@ Concesion terminada correctamente.
 7. Comprueba que USRPRACTICA1 puede realizar todas las operaciones previstas 
 en el rol.
 
-```
+![alt text](../Imágenes/dropora.png)
+![alt text](../Imágenes/deptora.png)
+![alt text](../Imágenes/creacionora.png)
+![alt text](../Imágenes/iniciosesionora.png)
 
-
-```
 
 8. Quita a USRPRACTICA1 el privilegio de crear vistas. Comprueba que ya no 
 puede hacerlo.
@@ -378,7 +379,37 @@ privilegio en alguno de los roles que tiene concedidos y un 'NO' si el usuario
 no tiene dicho privilegio.
 
 ```
+SQL> CREATE OR REPLACE FUNCTION rolusuario
+  2  (p_nombreusuario GRANTEE.DBA_ROLE_PRIVS%TYPE)
+  4  RETURN NUMBER
+  5  IS
+  6  v_rolsi NUMBER:=0;
+  7  BEGIN
+  8  SELECT COUNT(GRANTEE) INTO v_rolsi
+  9  FROM DBA_ROLE_PRIVS
+ 10  WHERE p_nombreusuario=GRANTEE;
+ 11  RETURN v_rolsi;
+ 12  END rolusuario;
+ 13  /
 
+SQL> CREATE OR REPLACE PROCEDURE privilegusuario 
+  2  (p_nombreusuario GRANTEE.DBA_SYS_PRIVS%TYPE, 
+  3  p_privilegio PRIVILEGE.DBA_SYS_PRIVS%TYPE) IS
+  4  v_cuenta NUMBER:=0;
+  5  v_rol NUMBER:=0;
+  6  BEGIN
+  7  v_rol = rolusuario(p_nombreusuario);
+  7  SELECT COUNT(GRANTEE) INTO v_cuenta
+  8  FROM DBA_SYS_PRIVS
+  9  WHERE p_nombreusuario=GRANTEE AND p_privilegio=PRIVILEGE;
+ 10  IF v_cuenta !=0 THEN
+ 11  dbms_output.put_line("SI,DIRECTO");
+ 12  ELSIF v_cuenta=0 AND v_rol!=0 THEN
+ 13  dbms_output.put__line("SI,ROL");
+ 14  ELSE
+ 15  dbms_output.put_line("NO");
+ 16  END privilegusuario;
+ 17  /
 ```
 
 25. Realiza un procedimiento llamado MostrarNumSesiones que reciba un nombre 
@@ -386,6 +417,25 @@ de usuario y muestre el número de sesiones concurrentes que puede tener abierta
 como máximo y las que tiene abiertas realmente.
 
 ```
+SQL> CREATE OR REPLACE PROCEDURE MostrarNumSesiones
+  2  (p_nombreusuario GRANTEE.DBA_SYS_PRIVS%TYPE)
+  3  IS
+  4  v_maxsesiones VARCHAR2(10);
+  5  BEGIN
+  6  SELECT PROFILE INTO v_maxsesiones
+  7  FROM DBA_USERS
+  8  WHERE p_nombreusuario=USERNAME;
+  9  IF v_maxsesiones='DEFAULT' THEN
+ 10  dbms_output.put_line("El número máximo de sesiones es ilimitado de manera predeterminada");
+ 11  ELSE
+ 12  dbms_output_line("El número máximo de sesiones es" || v_maxsesiones);
+
+
+ SELECT USERNAME
+  2  FROM DBA_USERS
+  3  WHERE PROFILE IN (SELECT PROFILE
+  4  FROM DBA_PROFILES
+  5  WHERE RESOURCE_NAME='SESSIONS_PER_USER' AND LIMIT!='DEFAULT');
 
 ```
 
@@ -446,12 +496,41 @@ rol en Postgresql es una entidad en sí que puede tener objetos y base de datos
 el uso de recursos o sobre la contraseña en Postgres y señala las diferencias 
 con los perfiles de ORACLE.
 
-Si existen los perfiles en Postgres y tienen la misma sintaxis que en Oracle. 
+Postgres no tiene nada similar a los perfiles como Oracle, lo único similar
+son algunas de las características que se pueden implementar en los roles de
+los mismos como _CONNECTION LIMIT_ o _VALID UNTIL_.
 
 31. Realiza consultas al diccionario de datos de Postgres para averiguar 
 todos los privilegios que tiene un usuario concreto.
 
+```
+bbddprueba=# SELECT PRIVILEGE_TYPE
+bbddprueba-# FROM information_schema.role_table_grants
+bbddprueba-# WHERE GRANTEE='manuel';
+ privilege_type 
+----------------
+ SELECT
+(1 row)
+
+```
 
 32. Realiza consultas al diccionario de datos en Postgres para averiguar qué 
 usuarios pueden consultar una tabla concreta.
 
+```
+bbddprueba=# SELECT GRANTEE
+bbddprueba-# FROM information_schema.role_table_grants
+bbddprueba-# WHERE TABLE_NAME='temporadas';
+ grantee  
+----------
+ postgres
+ postgres
+ postgres
+ postgres
+ postgres
+ postgres
+ postgres
+ manuel
+(8 rows)
+
+```
