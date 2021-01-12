@@ -9,6 +9,8 @@ gestión de base de datos.
 
 • ¿Qué funciones, tareas y responsabilidades tendrá cada puesto?
 
+Respondida en la tabla que se muestra.*
+
 • ¿Qué perfil personal y profesional deben reunir las personas que ocupen cada
 puesto de trabajo? ¿Qué formación y experiencia requieren?
 
@@ -20,7 +22,10 @@ de sistemas de información y/o Ingenieria del Software.
 Teniendo en cuenta que el tamaño de la plantilla depende de las necesidades de
 la empresa, del volumen de actividad y de las previsiones de negocio.
 
-Para ello, vamos a crear la siguiente tabla:
+Esta pregunta la vamos a responder de la siguiente manera:
+
+Vamos a crear la siguiente tabla y la rellenamos con la información referente a
+cada campo:
 
 | Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
 |-------------------|-------------------------------------|---------------------------------|-------------------------------------|
