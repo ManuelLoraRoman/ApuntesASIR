@@ -21,9 +21,7 @@ Para ello, vamos a crear la siguiente tabla:
 
 | Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
 |-------------------|-------------------------------------|---------------------------------|-------------------------------------|
-|Gestor de BBDD nº1 | - Mantenimiento de BBDD
-		      - Búsqueda de fallas en el sistema  | Administrador de sistemas 
-							    Persona comprometida, imaginativa | Manuel Lora Román |
+|Gestor de BBDD nº1 | - Mantenimiento de BBDD - Búsqueda de fallas en el sistema  | Administrador de sistemas Persona comprometida, imaginativa | Manuel Lora Román |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------|
 
 
