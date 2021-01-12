@@ -12,10 +12,13 @@ gestión de base de datos.
 • ¿Qué perfil personal y profesional deben reunir las personas que ocupen cada
 puesto de trabajo? ¿Qué formación y experiencia requieren?
 
+Se requiere conocimientos de base de datos general, de al menos tres gestores de
+base de datos, y de 2-3 años trabajando en el sector. Formación imprescindible
+de sistemas de información y/o Ingenieria del Software.
+
 • ¿Cuántas personas hacen falta para poner en funcionamiento nuestra empresa?
 Teniendo en cuenta que el tamaño de la plantilla depende de las necesidades de
 la empresa, del volumen de actividad y de las previsiones de negocio.
-
 
 Para ello, vamos a crear la siguiente tabla:
 
@@ -29,3 +32,6 @@ Para ello, vamos a crear la siguiente tabla:
 |Gestor de BBDD nº4 | - Gestión y creación de usuarios y mapa entidad-relación | - Ingeniero informática del software - Persona inteligente, con conocimientos variados | José Ruiz Alba |
 
 • ¿Dispongo de dicho personal entre los socios o tengo que contratar personal?
+
+Necesitamos contratar a dicho personal ya que hemos estipulado que voy a ser
+empresario individual (autónomo) y no tendríamos socios como en una sociedad.
