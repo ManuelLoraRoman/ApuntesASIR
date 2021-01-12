@@ -21,9 +21,18 @@ Para ello, vamos a crear la siguiente tabla:
 
 | Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
 |-------------------|-------------------------------------|---------------------------------|-------------------------------------|
-|Gestor de BBDD nº1 | - Mantenimiento de BBDD - Búsqueda de fallas en el sistema  | Administrador de sistemas Persona comprometida, imaginativa | Manuel Lora Román |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-
+|Gestor de BBDD nº1 | - Mantenimiento de BBDD - Búsqueda de fallas en el sistema  | - Administrador de sistemas - Persona comprometida, imaginativa | Manuel Lora Román |
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+|Gestor de BBDD nº2 | - Gestión de errores - Creación de esquemas | - Administrador de sistemas - Persona capaz, perfeccionista | Francisco Javier Madueño |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+|Programador | - Programación de la BBDD | - Ingeniero informático del software - Persona cooperadora y resoluta | Alberto Cordón Arévalo |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+|Gestor de BBDD nº3 | - Gestión de permisos y privilegios | - Administrador de sistemas - Persona versátil y eficiente | Laura Morales Cabello |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+|Programador | - Programación de la BBDD y creación de scripts | - Ingeniero informático del software - Persona analítica y resiliente | Vicente López Guadajoz |
+------------------------------------------------------------------------------------------------------------------------------------------------------
+|Gestor de BBDD nº4 | - Gestión y creación de usuarios y mapa entidad-relación | - Ingeniero informática del software - Persona inteligente, con conocimientos variados | José Ruiz Alba |
+------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
