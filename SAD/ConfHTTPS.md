@@ -139,6 +139,8 @@ Una vez movido dichos ficheros, modificaremos el fichero _/etc/httpd/conf.d/ssl.
 y editaremos las siguientes líneas:
 
 ```
+SSLEngine on
+
 SSLCertificateFile /etc/pki/tls/certs/centos.crt   
 
 SSLCertificateKeyFile /etc/pki/tls/private/mikey.key
@@ -150,19 +152,73 @@ Y reiniciamos el servicio httpd.
 [centos@quijote ~]$ sudo systemctl reload httpd
 ```
 
-Para hacer la redirección, debemos crear un fichero llamado 
-_/etc/httpd/conf.d/redirect_http.conf_ con el siguiente contenido:
+A continuación, para que funcione el contenido añadido en los directorios de
+_/etc/pki_ debemos ejecutar el siguiente comando:
 
 ```
-<VirtualHost _default_:80>
-        Servername rhel8
-        Redirect permanent / https://rhel8/
+[root@quijote centos]# restorecon -RvF /etc/pki
+```
+
+Esto permitirá la restauración de los contextos de SELinux predeterminados para
+dichos ficheros.
+
+A continuación, vamos a crear dos ficheros de configuración en el directorio
+_/etc/httpd/sites-available/_:
+
+* www.conf
+
+```
+<VirtualHost *:80>
+        ServerName www.manuel-lora.gonzalonazareno.org
+        DocumentRoot /var/www/manuel-lora
+
+	Redirect permanent / https://www.manuel-lora.gonzalonazareno.org
+
+        ErrorLog /var/www/manuel-lora/log/error.log
+        CustomLog /var/www/manuel-lora/log/requests.log combined
 </VirtualHost>
 ```
 
+* wwws.conf
+
+```
+<VirtualHost *:443>
+    ServerName www.manuel-lora.gonzalonazareno.org
+    DocumentRoot /var/www/manuel-lora
+    ErrorLog /var/www/manuel-lora/log/error.log
+    CustomLog /var/www/manuel-lora/log/requests.log combined
+
+    SSLEngine on
+    SSLCertificateFile /etc/pki/tls/certs/centos.crt
+    SSLCertificateKeyFile /etc/pki/tls/private/mikey.key
+
+</VirtualHost>
+```
+
+De esta manera, conseguimos hacer la redirección de http a https.
+
+Por último, antes de comprobar que funciona, vamos a crear ambos enlaces
+simbólicos:
+
+```
+[root@quijote sites-available]# ln -s /etc/httpd/sites-available/www.conf /etc/httpd/sites-enabled/
+[root@quijote sites-available]# ln -s /etc/httpd/sites-available/wwws.conf /etc/httpd/sites-enabled/
+```
+
+Y volvemos a reiniciar el servicio. Una vez reiniciado vamos a comprobar la
+conexión desde el exterior:
+
+![alt text](../Imágenes/ConfHTTPS.png)
+
 * Investiga la regla DNAT en el cortafuego para abrir el puerto 443.
 
+Para que funcione desde el exterior, debemos abrir tanto el puerto 80
+como el puerto 443. Para ello, vamos a añadir las siguientes reglas:
 
+```
+root@dulcinea:~# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 10.0.2.10
+root@dulcinea:~# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 443 -j DNAT --to 10.0.2.10
+```
    
 * Instala el certificado del AC Gonzalo Nazareno en tu navegador para que se 
 pueda verificar tu certificado.
