@@ -205,10 +205,7 @@ simbólicos:
 [root@quijote sites-available]# ln -s /etc/httpd/sites-available/wwws.conf /etc/httpd/sites-enabled/
 ```
 
-Y volvemos a reiniciar el servicio. Una vez reiniciado vamos a comprobar la
-conexión desde el exterior:
-
-![alt text](../Imágenes/ConfHTTPS.png)
+Y volvemos a reiniciar el servicio.
 
 * Investiga la regla DNAT en el cortafuego para abrir el puerto 443.
 
@@ -222,4 +219,20 @@ root@dulcinea:~# iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 443 -j DNA
    
 * Instala el certificado del AC Gonzalo Nazareno en tu navegador para que se 
 pueda verificar tu certificado.
+
+Para instalar el certificado, debemos irnos a la página del instituto y 
+descargarnos el fichero:
+
+> https://dit.gonzalonazareno.org/gestiona/info/documentacion/ca
+
+Automáticamente nos lo instalará en el navegador web que estemos utilizando
+(en nuestro caso Mozilla FireFox).
+
+Comprobamos que lo tenemos instalado:
+
+![alt text](../Imágenes/gonzalocert.png)
+
+Y ahora vamos a comprobar la conexión desde el exterior:
+
+![alt text](../Imágenes/ConfHTTPS.png)
 
