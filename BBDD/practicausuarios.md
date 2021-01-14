@@ -455,7 +455,9 @@ y modificación sobre todas las tablas del segundo, así como el de ejecución
 de cualquier procedimiento que tenga el segundo usuario.
 
 ```
-
+SQL> CREATE OR REPLACE PROCEDURE Script(p_usuario1 GRANTEE.DBA_SYS_PRIVS%TYPE, p_usuario2 GRANTEE.DBA_SYS_PRIVS%TYPE)
+  2  IS
+  3  
 ```
 
 ## Postgres
