@@ -421,21 +421,31 @@ SQL> CREATE OR REPLACE PROCEDURE MostrarNumSesiones
   2  (p_nombreusuario GRANTEE.DBA_SYS_PRIVS%TYPE)
   3  IS
   4  v_maxsesiones VARCHAR2(10);
+  5  v_sesionesabiertas NUMBER:=0;
   5  BEGIN
+  6  v_sesionesabiertas=SesionAbierta(p_nombreusuario);
   6  SELECT PROFILE INTO v_maxsesiones
   7  FROM DBA_USERS
   8  WHERE p_nombreusuario=USERNAME;
   9  IF v_maxsesiones='DEFAULT' THEN
- 10  dbms_output.put_line("El número máximo de sesiones es ilimitado de manera predeterminada");
+ 10  dbms_output.put_line("El número máximo de sesiones es ilimitado de manera predeterminada y tiene " | v_sesionesabiertas | "sesiones abiertas realmente.");
  11  ELSE
- 12  dbms_output_line("El número máximo de sesiones es" || v_maxsesiones);
+ 12  dbms_output_line("El número máximo de sesiones es" || v_maxsesiones || "y tiene " || v_sesionesabiertas || " sesiones abiertas.");
+ 13  END MostrarNumSesiones;
+ 14  /
 
-
- SELECT USERNAME
-  2  FROM DBA_USERS
-  3  WHERE PROFILE IN (SELECT PROFILE
-  4  FROM DBA_PROFILES
-  5  WHERE RESOURCE_NAME='SESSIONS_PER_USER' AND LIMIT!='DEFAULT');
+SQL> CREATE OR REPLACE FUNCTION SesionAbierta
+  2  (p_nombreusuario GRANTEE.DBA_SYS_PRIVS%TYPE)
+  3  RETURN NUMBER
+  4  IS
+  5  v_sesionesabiertas NUMBER:=0;
+  6  BEGIN
+  7  SELECT count(1) INTO v_sesionesabiertas
+  8  FROM V$SESSION
+  9  WHERE username=p_nombreusuario;
+ 10  RETURN v_sesionesabiertas;
+ 11  END SesionAbierta;
+ 12  \
 
 ```
 
