@@ -60,8 +60,18 @@ iptables -A OUTPUT -o eth0 -p icmp --icmp-type echo-request -j ACCEPT
    
 2. Todas las máquinas pueden hacer ping a una máquina del exterior.
    
+### PING desde la red-interna al exterior
+
 ```
-iptables -A FORWARD -i eth0 -o eth1 -s 
+iptables -A FORWARD -i eth0 -o eth1 -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p icmp -m state --state ESTABLISHED -j ACCEPT
+```
+
+### PING desde la DMZ al exterior
+
+```
+iptables -A FORWARD -i eth2 -o eth1 -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p icmp -m state --state ESTABLISHED -j ACCEPT
 ```
 
 3. Desde el exterior se puede hacer ping a dulcinea.
@@ -74,17 +84,19 @@ iptables -A FORWARD -i eth0 -o eth1 -s
 rechazar la conexión (REJECT).
 
 ```
-
+iptables -A INPUT -i eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
 ```
 
 ## ssh
 
 1. Podemos acceder por ssh a todas las máquinas.
 
-### Permitir desde la DMZ
+### Permitir desde la DMZ a la red-interna
    
 ```
-iptables -A INPUT -s 
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state ESTABLISHED -j ACCEPT
+
 ```
 
 2. Todas las máquinas pueden hacer ssh a máquinas del exterior.
