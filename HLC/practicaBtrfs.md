@@ -339,7 +339,91 @@ Ventajas de mdadm
 * Realiza ejercicios con pruebas de funcionamiento de las principales 
 funcionalidades: compresión, cow, deduplicación, cifrado, etc.
 
+Empezaremos por la función de compresión:
 
+```
+root@debian:~$ zfs get compression RAIDZ
+NAME   PROPERTY     VALUE     SOURCE
+RAIDZ  compression  off       default
+```
+
+El estado de la compresión está desactivado de manera predeterminada, por lo
+tanto lo activamos y comprobamos de nuevo el estado:
+
+```
+root@debian:~$ zfs set compression=lz4 RAIDZ
+root@debian:~$ zfs get compression RAIDZ
+NAME   PROPERTY     VALUE     SOURCE
+RAIDZ  compression  lz4       local
+```
+
+Y ahora vamos a comprobar su funcionamiento:
+
+```
+root@debian:~$ cd /RAIDZ/
+root@debian:/RAIDZ# tar -cf /RAIDZ/prueba/prueba.tar /home/ /etc/
+tar: Eliminando la `/' inicial de los nombres
+tar: Eliminando la `/' inicial de los objetivos de los enlaces
+root@debian:/RAIDZ# ls -lh /RAIDZ/prueba/prueba.tar
+-rw-r--r-- 1 root root 120M Jan 17 20:13 /RAID1/prueba/prueba.tar
+root@debian:/RAIDZ# zfs list /RAIDZ/prueba
+NAME    USED  AVAIL     REFER  MOUNTPOINT
+RAIDZ  55,6M  1,69G     55,5M  /RAIDZ
+root@debian:/RAIDZ# zfs get compressratio /RAIDZ/prueba
+NAME   PROPERTY       VALUE  SOURCE
+RAIDZ  compressratio  1.99x  -
+```
+
+Ahora pasaremos a la deduplicación. Esto permite optimizar los datos
+almacenados ya que se encarga de eliminar datos redundantes. Aunque hay
+tres maneras de realizar la deduplicación, realizaremos la que es por fichero.
+
+Primero, como las otras funciones, hay que activar dicha función:
+
+```
+root@debian:~$ zfs set dedup=on RAIDZ
+root@debian:~$ zfs get dedup RAIDZ
+NAME   PROPERTY       VALUE  SOURCE
+RAIDZ  dedup	      on     local
+```
+
+Copiamos varias veces el fichero .tar creado con anterioridad y comprobamos:
+
+```
+root@debian:/RAIDZ/prueba# ls -lh
+total 222M
+-rw-r--r-- 1 root root 120M Jan 17 20:39 prueba1.tar
+-rw-r--r-- 1 root root 120M Jan 17 20:39 prueba2.tar
+-rw-r--r-- 1 root root 120M Jan 17 20:39 prueba3.tar
+-rw-r--r-- 1 root root 120M Jan 17 20:13 prueba.tar
+root@debian:/RAIDZ/prueba# zfs list
+NAME    USED  AVAIL     REFER  MOUNTPOINT
+RAIDZ   222M  1,53G      222M  /RAIDZ
+```
+
+Ahora pasaremos al cifrado. Como con las anteriores funciones, hay que activar
+la función, pero en este caso, para que funcione, uno tiene que activarlo desde
+el principio de la creación del pool:
+
+```
+root@debian:/# zpool create -o ashift=12 -O encryption=aes-256-gcm -O keyformat=passphrase -O keylocation=prompt prueba /dev/sdb
+Enter passphrase: 
+Re-enter passphrase: 
+```
+
+Y vemos que se ha activado de manera correcta:
+
+```
+root@debian:/# zfs get encryption prueba
+NAME           PROPERTY    VALUE        SOURCE
+prueba	       encryption  aes-256-gcm  -
+```
+
+Por último tenemos la función CoW (Copy On Write). Es una técnica de
+almacenamiento de datos en la cual se realiza una copia de bloque de datos que
+se va a modificar en vez de modificar el bloque directamente. Después de 
+realizar la copia, se actualiza el puntero para apuntar a la nueva ruta asignada. Es decir, realiza instantáneas de las modificaciones para realizar
+rescate en caso de fallo.
 
 Esta tarea se puede realizar en una instancia de OpenStack y documentarla 
 como habitualmente o bien grabar un vídeo con una demo de las características 
