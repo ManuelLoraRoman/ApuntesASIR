@@ -27,6 +27,15 @@ Esta pregunta la vamos a responder de la siguiente manera:
 Vamos a crear la siguiente tabla y la rellenamos con la información referente a
 cada campo:
 
+1. Plan inicial
+
+| Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
+|-------------------|-------------------------------------|--------------------------------|-------------------------------------|
+|Gestor de BBDD nº1 | - Creación y Mantenimiento de BBDD - Gestión general  | - Administrador de sistemas - Persona comprometida, imaginativa | Manuel Lora Román |
+
+
+2. Plan de futuro
+
 | Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
 |-------------------|-------------------------------------|---------------------------------|-------------------------------------|
 |Gestor de BBDD nº1 | - Mantenimiento de BBDD - Búsqueda de fallas en el sistema  | - Administrador de sistemas - Persona comprometida, imaginativa | Manuel Lora Román |
