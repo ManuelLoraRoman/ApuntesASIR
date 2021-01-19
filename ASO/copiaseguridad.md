@@ -195,7 +195,7 @@ Director {                            # define myself
   WorkingDirectory = "/var/lib/bacula"
   PidDirectory = "/run/bacula"
   Maximum Concurrent Jobs = 20
-  Password = "iRv9TT0EVQar3RYLwGM4QgKM0aPJUYIh0"         # Console password
+  Password = "1q2w3e4r5t"         # Console password
   Messages = Daemon
   DirAddress = 127.0.0.1
 }
@@ -230,36 +230,332 @@ que no están asociados con un trabajo especifíco.
 el Director por conexiones Bacula mediante consola.
 
 
+El único parámetro que tenemos que podemos cambiar ahora si queremos sería
+la dirección del Director, ya que podríamos poner tanto localhost como su
+IP estática. En nuestro caso, vamos a cambiarla:
 
+```
+Director {                            # define myself
+  Name = sancho-dir
+  DIRport = 9101                # where we listen for UA connections
+  QueryFile = "/etc/bacula/scripts/query.sql"
+  WorkingDirectory = "/var/lib/bacula"
+  PidDirectory = "/run/bacula"
+  Maximum Concurrent Jobs = 20
+  Password = "1q2w3e4r5t"         # Console password
+  Messages = Daemon
+  DirAddress = 10.0.1.11
+}
+```
+
+Configurado el Director, ahora vamos a pasar a configurar la tarea que realizará
+las copias de seguridad.
 
 * El proceso debe realizarse de forma completamente automática
    
+
+
 * Selecciona qué información es necesaria guardar (listado de paquetes, 
 ficheros de configuración, documentos, datos, etc.)
 
    
 * Realiza semanalmente una copia completa
-   
+
+Para configurar la copia completa semanal, debemos crear un trabajo definido en
+el fichero anteriormente comentado:
+
+```
+JobDefs {
+  Name = "Backups"
+  Type = Backup
+  Level = Incremental
+  Client = sancho-fd
+  FileSet = "Full Set"
+  Schedule = "Semanal"
+  Storage = File1
+  Messages = Standard
+  Pool = File
+  SpoolAttributes = yes
+  Priority = 10
+  Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+```
+ 
+Esto define una plantilla para los trabajos (jobs), es decir, no se ejecutan
+pero si a algún trabajo le falta algún parámetro lo toma del JobDefs.
+
+Ahora vamos a configurar las tareas de cada cliente:
+
+```
+Job {
+  Name = "BackupSancho"
+  JobDefs = "Backups"
+  Client = "sancho-fd"
+}
+
+Job {
+  Name = "BackupQuijote"
+  JobDefs = "Backups"
+  Client = "quijote-fd"
+}
+
+Job {
+  Name = "BackupFreston"
+  JobDefs = "Backups"
+  Client = "freston-fd"
+}
+
+Job {
+  Name = "BackupDulcinea"
+  JobDefs = "Backups"
+  Client = "dulcinea-fd"
+}
+```
+
+Y hecho esto, pasamos a los Backups de cada una de ellas:
+
+```
+Job {
+ Name = "RestoreSancho"
+ Type = Restore
+ Client = sancho-fd
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreQuijote"
+ Type = Restore
+ Client = quijote-fd
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreQuijote"
+ Type = Restore
+ Client = quijote-fd
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreFreston"
+ Type = Restore
+ Client = freston-fd
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+```
+
+Vamos a definir a continuación que ficheros queremos incluir o excluir en el 
+trabajo de restauración:
+
+```
+FileSet {
+  Name = "Full Set"
+  Include {
+    Options {
+      signature = MD5
+      compression = GZIP
+    }
+    File = /home       
+    File = /etc
+    File = /var
+  }
+  Exclude {
+    File = /var/lib/bacula
+    File = /nonexistant/path/to/file/archive/dir
+    File = /proc
+    File = /var/tmp
+    File = /var/cache
+    File = /tmp
+    File = /sys
+    File = /.journal
+    File = /.fsck
+  }
+}
+```
+
+Pasamos ahora a la configuración del ciclo semanal y de los clientes en 
+Bacula. Para el ciclo tendremos que editar el parámetro _Schedule_:
+
+```
+Schedule {
+  Name = "Semanal"
+  Run = Level = Full sun at 23:05
+  Run = Level = Incremental mon-sat at 23:05
+}
+```
+
+Y para los clientes haremos lo siguiente:
+
+```
+Client {
+  Name = sancho-fd
+  Address = 10.0.1.11
+  FDPort = 9102
+  Catalog = MyCatalog
+  Password = "1q2w3e4r5t"          # password for FileDaemon
+  File Retention = 60 days            # 60 days
+  Job Retention = 6 months            # six months
+  AutoPrune = yes                     # Prune expired Jobs/Files
+}
+
+Client {
+  Name = quijote-fd
+  Address = 10.0.2.10
+  FDPort = 9102
+  Catalog = MyCatalog
+  Password = "1q2w3e4r5t"          # password for FileDa>
+  File Retention = 60 days            # 60 days
+  Job Retention = 6 months            # six months
+  AutoPrune = yes                     # Prune expired Jobs/Files
+}
+
+Client {
+  Name = freston-fd
+  Address = 10.0.1.10
+  FDPort = 9102
+  Catalog = MyCatalog
+  Password = "1q2w3e4r5t"          # password for FileDa>
+  File Retention = 60 days            # 60 days
+  Job Retention = 6 months            # six months
+  AutoPrune = yes                     # Prune expired Jobs/Files
+}
+
+Client {
+  Name = dulcinea-fd
+  Address = 10.0.1.4
+  FDPort = 9102
+  Catalog = MyCatalog
+  Password = "1q2w3e4r5t"          # password for FileDa>
+  File Retention = 60 days            # 60 days
+  Job Retention = 6 months            # six months
+  AutoPrune = yes                     # Prune expired Jobs/Files
+}
+```
+
+Lo siguiente en configurar va a ser el almacenamiento. Se encarga de manejar
+los dispositivos físicos donde se guardarán los datos.
+
+```
+Storage {
+ Name = File
+ Address = 10.0.1.11 # No usar localhost
+ SDPort = 9103
+ Password = "1q2w3e4r5t"
+ Device = FileChgr1
+ Media Type = File
+ Maximum Concurrent Jobs = 10 # run up to 10 jobs a the same time
+}
+```
+
+Y el acceso a la base de datos:
+
+```
+Catalog {
+  Name = MyCatalog
+  dbname = "bacula"; DB Address = "localhost";  dbuser = "bacula"; dbpassword = "1q2w3e4r5t"
+}
+```
+
+Definimos de paso el Pool:
+
+```
+Pool {
+  Name = File
+  Pool Type = Backup
+  Recycle = yes                       # Bacula can automatically recycle Volumes
+  AutoPrune = yes                     # Prune expired volumes
+  Volume Retention = 365 days         # one year
+  Maximum Volume Bytes = 50G          # Limit Volume size to something reasonable
+  Maximum Volumes = 100               # Limit number of Volumes in Pool
+  Label Format = "Vol1"               # Auto label
+}
+```
+
+Y hasta aquí, configuración para proceder a la creación de Backups semanalmente.
+
+Comprobamos que la sintaxis puesta en el fichero anterior es correcta:
+
+```
+root@sancho:~# bacula-dir -tc /etc/bacula/bacula-dir.conf 
+root@sancho:~# 
+```
+
 * Realiza diariamente una copia incremental, diferencial o delta diferencial 
-(decidir cual es más adecuada)
+(decidir cual es más adecuada).
    
 * Implementa una planificación del almacenamiento de copias de seguridad para 
 una ejecución prevista de varios años, detallando qué copias completas se 
 almacenarán de forma permanente y cuales se irán borrando.
    
+
 * Crea un registro de las copias, indicando fecha, tipo de copia, si se 
 realizó correctamente o no y motivo.
+
    
 * Selecciona un directorio de datos "críticos" que deberá almacenarse cifrado 
 en la copia de seguridad, bien encargándote de hacer la copia manualmente o 
 incluyendo la contraseña de cifrado en el sistema
+
    
 * Incluye en la copia los datos de las nuevas aplicaciones que se vayan 
 instalando durante el resto del curso
+
    
 * Utiliza saturno u otra opción que se te facilite como equipo secundario 
 para almacenar las copias de seguridad. Solicita acceso o la instalación de 
 las aplicaciones que sean precisas.
+
+Para este punto, vamos a implementar un volumen que servirá como equipo de
+almacenamiento para las copias de seguridad:
+
+```
+root@sancho:/home/ubuntu# mkfs.ext4 /dev/vdb
+mke2fs 1.45.5 (07-Jan-2020)
+Creating filesystem with 2621440 4k blocks and 655360 inodes
+Filesystem UUID: d652223b-56e9-4ba5-884a-d142c4553cd5
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done 
+
+root@sancho:/home/ubuntu# mkdir /bacula
+root@sancho:/home/ubuntu# mount /dev/vdb /bacula
+root@sancho:/home/ubuntu# lsblk -f
+.
+.
+.
+vda                                                                    
+├─vda1
+│    ext4   cloudimg-rootfs
+│                  e9243f3d-cfed-4d68-8705-7f40911ce19a      3G    47% /
+├─vda14
+│                                                                      
+└─vda15
+     vfat   UEFI   F8B5-A9F0                             100.5M     4% /boot/efi
+vdb  ext4          d652223b-56e9-4ba5-884a-d142c4553cd5    9.2G     0% /bacula
+root@sancho:/home/ubuntu# cd /bacula/
+root@sancho:/bacula# mkdir backups
+root@sancho:/bacula# chown bacula:bacula /bacula/backups/ -R
+root@sancho:/bacula# chmod 755 /bacula/backups/ -R
+```
+
+
 
 El sistema de copias debe estar operativo para la fecha de entrega, aunque se 
 podrán hacer correcciones menores que se detecten a medida que vayan 
