@@ -45,19 +45,58 @@ y normalmente se hace a través de contenedores.
 
 ### Gestión de la configuración
 
-* Puppet
+* Puppet --> escrito en C++ y Clojure. Instala unos agentes en los clientes y la
+configuración en el servidor, y cada cierto tiempo, el cliente va preguntando 
+si tiene que aplicar cambios (Arquitectura cliente-servidor). La configuración
+mediante manifiestos.
 
-* Chef
+* Chef --> escrito en Ruby. Sigue una arquitectura pull (Chef server, chef 
+client y workstation), y se basa en que la configuración se realiza mediante 
+recetas y libros de recetas. 
 
 * Ansible
 
-* Salt (Saltstack)
-
-
+* Salt (Saltstack) --> escrito en python. Se usa el esquema de Master y minions.
+Descripción de recursos en YAML e incluye monitorización para respuesta a 
+eventos.
 
 
 ## Ansible
 
+Cambio de paradigma entre despliegue tradicional y continuo. Por ello, se
+usa la infraestructura como código:
+
+* Utiliza software de control de versiones.
+
+* Editor de texto.
+
+* Legible y con comentarios.
+
+* Software de orquestación y gestión de configuración.
+
+* Devops
+
+
+### Software de gestión de la configuración (CMS)
+
+Su propiedad más característica es que utiliza el ámbito de la idempotencia, es
+decir, se puede ejecutar varias veces la receta de un CMS, pero solo el primer 
+resultado es diferente a los demás, que siempre tienen que tener el mismo
+resultado.
+
+Ejemplo: Quiero que mi máquina tenga un Apache. Cuando se ejecuta, se instala
+Apache, pero las demás veces, como el estado es el deseado, no hace nada. 
+
+Ansible está escrito en Python y utiliza la arquitectura push. No utiliza
+ningún agente, utiliza ssh. La configuración está en jugadas (plays)
+y libros de jugadas (playbooks) en YAML.
+
+Es sencillo de aprender y la sintaxis es conocida ya que utiliza YAML.
+Fácil de instalar (pypi), con una comunidad muy activa y a la hora de trabajar,
+es más cercano a los administradores de sistemas.
+
 ## Demo de Ansible
+
+
 
 ## Ejercicio
