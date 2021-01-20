@@ -252,12 +252,11 @@ Configurado el Director, ahora vamos a pasar a configurar la tarea que realizar�
 las copias de seguridad.
 
 * El proceso debe realizarse de forma completamente automática
-   
-
 
 * Selecciona qué información es necesaria guardar (listado de paquetes, 
 ficheros de configuración, documentos, datos, etc.)
 
+El listado de ficheros que queremos incluir o excluir está en el siguiente punto.
    
 * Realiza semanalmente una copia completa
 
@@ -336,9 +335,9 @@ Job {
 }
 
 Job {
- Name = "RestoreQuijote"
+ Name = "RestoreFreston"
  Type = Restore
- Client = quijote-fd
+ Client = freston-fd
  FileSet = "Full Set"
  Storage = File
  Pool = File
@@ -346,9 +345,9 @@ Job {
 }
 
 Job {
- Name = "RestoreFreston"
+ Name = "RestoreDulcinea"
  Type = Restore
- Client = freston-fd
+ Client = dulcinea-fd
  FileSet = "Full Set"
  Storage = File
  Pool = File
@@ -484,7 +483,8 @@ Pool {
 }
 ```
 
-Y hasta aquí, configuración para proceder a la creación de Backups semanalmente.
+Y hasta aquí, la configuración para proceder a la creación de Backups 
+semanalmente.
 
 Comprobamos que la sintaxis puesta en el fichero anterior es correcta:
 
@@ -493,17 +493,502 @@ root@sancho:~# bacula-dir -tc /etc/bacula/bacula-dir.conf
 root@sancho:~# 
 ```
 
+También tenemos que configurar el demonio de bacula, que se encuentra en el
+fichero de configuración _/etc/bacula/bacula-sd.conf (Bacula's Storage Daemon).
+
+```
+Storage {                             # definition of myself
+  Name = sancho-sd
+  SDPort = 9103                  # Director's port
+  WorkingDirectory = "/var/lib/bacula"
+  Pid Directory = "/run/bacula"
+  Plugin Directory = "/usr/lib/bacula"
+  Maximum Concurrent Jobs = 20
+  SDAddress = 10.0.1.11
+}
+
+Director {
+  Name = sancho-dir
+  Password = "1q2w3e4r5t"
+}
+
+Director {
+  Name = sancho-mon
+  Password = "1q2w3e4r5t"
+  Monitor = yes
+}
+
+Autochanger {
+  Name = FileChgr1
+  Device = FileChgr1-Dev1             
+  Changer Command = ""
+  Changer Device = /dev/null
+}
+
+Device {
+  Name = FileChgr1-Dev1
+  Media Type = File 
+  Archive Device = /bacula/backups
+  LabelMedia = yes;                   # lets Bacula label unlabeled media
+  Random Access = Yes;
+  AutomaticMount = yes;               # when device opened, read it
+  RemovableMedia = no;
+  AlwaysOpen = no;
+  Maximum Concurrent Jobs = 5
+}
+```
+
+Terminada la configuración, vamos a comprobar su funcionamiento y reiniciamos
+ambos servicios:
+
+```
+root@sancho:/etc/bacula# bacula-sd -tc bacula-sd.conf 
+root@sancho:/etc/bacula# systemctl restart bacula-sd.service
+root@sancho:/etc/bacula# systemctl restart bacula-director.service
+root@sancho:/etc/bacula# 
+```
+
+Ahora pasamos a la configuración de la consola de Bacula, cuyo fichero de 
+configuración podemos encontrarlo en la ubicación _/etc/bacula/bconsole.conf_:
+
+```
+Director {
+  Name = sancho-dir
+  DIRport = 9101
+  address = 10.0.1.11
+  Password = "1q2w3e4r5t"
+}
+```
+
 * Realiza diariamente una copia incremental, diferencial o delta diferencial 
 (decidir cual es más adecuada).
    
+DIARIA
+
 * Implementa una planificación del almacenamiento de copias de seguridad para 
 una ejecución prevista de varios años, detallando qué copias completas se 
 almacenarán de forma permanente y cuales se irán borrando.
-   
+
+Para realizar una configuración de copias anual, debemos seguir editando
+el fichero _/etc/bacula/bacula-dir.conf_:
+
+```
+# Configuración anual
+
+JobDefs {
+ Name = "Backups-Anual"
+ Type = Backup
+ Level = Full
+ Client = sancho-fd
+ FileSet = "Full Set"
+ Schedule = "Anual"
+ Storage = File
+ Messages = Standard
+ Pool = File
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Sancho_Anual"
+ JobDefs = "Backups-Anual"
+ Client = "sancho-fd-anual"
+}
+
+Job {
+ Name = "Quijote-Anual"
+ JobDefs = "Backups-Anual"
+ Client = "quijote-fd-anual"
+}
+
+Job {
+ Name = "Freston-Anual"
+ JobDefs = "Backups-Anual"
+ Client = "freston-fd-anual"
+}
+
+Job {
+ Name = "Dulcinea-Anual"
+ JobDefs = "Backups-Anual"
+ Client = "dulcinea-fd-anual"
+}
+
+Job {
+ Name = "RestoreSancho-Anual"
+ Type = Restore
+ Client = sancho-fd-anual
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreQuijote-Anual"
+ Type = Restore
+ Client = quijote-fd-anual
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreFreston-Anual"
+ Type = Restore
+ Client = Freston-fd-anual
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Job {
+ Name = "RestoreDulcinea-Anual"
+ Type = Restore
+ Client = dulcinea-fd-anual
+ FileSet = "Full Set"
+ Storage = File
+ Pool = File
+ Messages = Standard
+}
+
+Schedule {
+ Name = "Anual"
+ Run = Full on 31 Dec at 23:50
+}
+
+Client {
+ Name = sancho-fd-anual
+ Address = 10.0.1.11
+ FDPort = 9102
+ Catalog = MyCatalog
+ Password = "1q2w3e4r5t" # password for FileDaemon
+ File Retention = 15 years # 60 days
+ Job Retention = 15 years # six months
+ AutoPrune = yes # Prune expired Jobs/Files
+}
+
+Client {
+ Name = quijote-fd-anual
+ Address = 10.0.2.10
+ FDPort = 9102
+ Catalog = MyCatalog
+ Password = "1q2w3e4r5t" # password for FileDaemon 2
+ File Retention = 15 years # 60 days
+ Job Retention = 15 years # six months
+ AutoPrune = yes # Prune expired Jobs/Files
+}
+
+Client {
+ Name = freston-fd-anual
+ Address = 10.0.1.10
+ FDPort = 9102
+ Catalog = MyCatalog
+ Password = "1q2w3e4r5t" # password for FileDaemon 2
+ File Retention = 15 years # 60 days
+ Job Retention = 15 years # six months
+ AutoPrune = yes # Prune expired Jobs/Files
+}
+
+Client {
+ Name = dulcinea-fd-anual
+ Address = 10.0.1.4
+ FDPort = 9102
+ Catalog = MyCatalog
+ Password = "1q2w3e4r5t" # password for FileDaemon 2
+ File Retention = 15 years # 60 days
+ Job Retention = 15 years # six months
+ AutoPrune = yes # Prune expired Jobs/Files
+}
+```
+
+Y comprobamos que funciona:
+
+```
+root@sancho:/etc/bacula# bacula-dir -tc bacula-dir.conf 
+root@sancho:/etc/bacula# 
+```
+
+Casi para ir acabando, debemos irnos a cada cliente, incluyendo a Sancho e
+instalar el cliente de Bacula y realizar los cambios pertinentes en los
+ficheros de configuración de _/etc/bacula/bacula-fd.conf_:
+
+* Sancho
+
+```
+Director {
+  Name = sancho-dir
+  Password = "1q2w3e4r5t"
+}
+
+Director {
+  Name = sancho-mon
+  Password = "1q2w3e4r5t"
+  Monitor = yes
+}
+
+FileDaemon {                          # this is me
+  Name = sancho-fd
+  FDport = 9102                  # where we listen for the director
+  WorkingDirectory = /var/lib/bacula
+  Pid Directory = /run/bacula
+  Maximum Concurrent Jobs = 20
+  Plugin Directory = /usr/lib/bacula
+  FDAddress = 10.0.1.11
+}
+
+Messages {
+  Name = Standard
+  director = sancho-dir = all, !skipped, !restored
+}
+```
+
+Y reiniciamos el servicio tanto de _bacula-fd.service_ y aprovechando que hemos
+hecho el cambio en la configuración anual, pues lo haremos también de
+_bacula-dir.conf_:
+
+```
+root@sancho:/etc/bacula# systemctl restart bacula-fd.service
+root@sancho:/etc/bacula# systemctl restart bacula-director.service
+root@sancho:/etc/bacula# 
+```
+
+* Quijote
+
+```
+[centos@quijote ~]$ sudo dnf -y install bacula-client
+Last metadata expiration check: 2:31:11 ago on Wed 20 Jan 2021 03:44:34 PM UTC.
+Dependencies resolved.
+================================================================================
+ Package              Architecture  Version              Repository        Size
+================================================================================
+Installing:
+ bacula-client        x86_64        9.0.6-6.el8          AppStream        153 k
+Installing dependencies:
+ bacula-common        x86_64        9.0.6-6.el8          AppStream         36 k
+ bacula-libs          x86_64        9.0.6-6.el8          AppStream        502 k
+
+Transaction Summary
+================================================================================
+Install  3 Packages
+
+Total download size: 692 k
+Installed size: 1.7 M
+Downloading Packages:
+(1/3): bacula-common-9.0.6-6.el8.x86_64.rpm     211 kB/s |  36 kB     00:00    
+(2/3): bacula-client-9.0.6-6.el8.x86_64.rpm     627 kB/s | 153 kB     00:00    
+(3/3): bacula-libs-9.0.6-6.el8.x86_64.rpm       1.6 MB/s | 502 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           409 kB/s | 692 kB     00:01     
+.
+.
+.
+Installed:
+  bacula-client-9.0.6-6.el8.x86_64       bacula-common-9.0.6-6.el8.x86_64      
+  bacula-libs-9.0.6-6.el8.x86_64        
+
+Complete!
+```
+
+Y configuramos el fichero:
+
+```
+Director {
+  Name = sancho-dir
+  Password = "1q2w3e4r5t"
+}
+
+Director {
+  Name = sancho-mon
+  Password = "1q2w3e4r5t"
+  Monitor = yes
+}
+
+FileDaemon {                          # this is me
+  Name = quijote-fd
+  FDport = 9102                  # where we listen for the director
+  WorkingDirectory = /var/spool/bacula
+  Pid Directory = /var/run
+  Maximum Concurrent Jobs = 20
+}
+
+Messages {
+  Name = Standard
+  director = sancho-dir = all, !skipped, !restored
+}
+
+```
+
+Y reiniciamos el servicio:
+
+```
+[centos@quijote ~]$ sudo systemctl restart bacula-fd.service
+[centos@quijote ~]$ 
+```
+
+Y configuramos el firewall propio de CentOS para permitir la conexión:
+
+```
+[centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-port 9102/tcp
+success
+[centos@quijote ~]$ sudo firewall-cmd --reload
+success
+```
+
+* Freston
+
+```
+debian@freston:~$ sudo apt-get install bacula-client 
+```
+
+Y configuramos el fichero _bacula-fd.conf_:
+
+```
+Director {
+  Name = sancho-dir
+  Password = "1q2w3e4r5t"
+}
+
+Director {
+  Name = sancho-mon
+  Password = "1q2w3e4r5t"
+  Monitor = yes
+}
+
+FileDaemon {                          # this is me
+  Name = freston-fd
+  FDport = 9102                  # where we listen for the director
+  WorkingDirectory = /var/lib/bacula
+  Pid Directory = /run/bacula
+  Maximum Concurrent Jobs = 20
+  Plugin Directory = /usr/lib/bacula
+  FDAddress = 10.0.1.11
+}
+
+Messages {
+  Name = Standard
+  director = sancho-dir = all, !skipped, !restored
+}
+```
+
+Y reiniciamos el servicio:
+
+```
+debian@freston:~$ sudo systemctl restart bacula-fd.service 
+debian@freston:~$ 
+```
+
+
+* Dulcinea
+
+```
+debian@dulcinea:~$ sudo apt-get install bacula-client
+```
+
+Y configuramos el fichero anteriormente comentado:
+
+```
+Director {
+  Name = sancho-dir
+  Password = "1q2w3e4r5t"
+}
+
+Director {
+  Name = sancho-mon
+  Password = "1q2w3e4r5t"
+  Monitor = yes
+}
+
+FileDaemon {                          # this is me
+  Name = dulcinea-fd
+  FDport = 9102                  # where we listen for the director
+  WorkingDirectory = /var/lib/bacula
+  Pid Directory = /run/bacula
+  Maximum Concurrent Jobs = 20
+  Plugin Directory = /usr/lib/bacula
+  FDAddress = 10.0.1.11
+}
+
+Messages {
+  Name = Standard
+  director = sancho-dir = all, !skipped, !restored
+}
+```
+
+Y reiniciamos:
+
+```
+debian@dulcinea:~$ sudo systemctl restart bacula-fd.service 
+debian@dulcinea:~$ 
+```
+
+Hecho ya en las cuatro máquinas, reiniciamos de nuevo los servicios en 
+Sancho:
+
+```
+ubuntu@sancho:~$ sudo systemctl restart bacula-fd.service 
+ubuntu@sancho:~$ sudo systemctl restart bacula-sd.service 
+ubuntu@sancho:~$ sudo systemctl restart bacula-director.service 
+```
+
+Ahora, accedemos a la consola de Bacula y comprobamos que tenemos los 
+clientes:
+
+```
+root@sancho:/home/ubuntu# cd /bacula/
+root@sancho:/bacula# bconsole 
+Connecting to Director 10.0.1.11:9101
+1000 OK: 103 sancho-dir Version: 9.4.2 (04 February 2019)
+Enter a period to cancel a command.
+*status client
+The defined Client resources are:
+     1: sancho-fd
+     2: quijote-fd
+     3: freston-fd
+     4: dulcinea-fd
+     5: sancho-fd-anual
+     6: quijote-fd-anual
+     7: freston-fd-anual
+     8: dulcinea-fd-anual
+Select Client (File daemon) resource (1-8): 
+```
+
+A continuación, usaremos la consola para etiquetar el volumen físico:
+
+```
+root@sancho:/bacula# bconsole
+Connecting to Director 10.0.1.11:9101
+1000 OK: 103 sancho-dir Version: 9.4.2 (04 February 2019)
+Enter a period to cancel a command.
+*label
+Automatically selected Catalog: MyCatalog
+Using Catalog "MyCatalog"
+The defined Storage resources are:
+     1: File
+     2: File1
+     3: File2
+Select Storage resource (1-3): 1
+Enter new Volume name: bacula
+Defined Pools:
+     1: Default
+     2: File
+     3: Scratch
+Select the Pool (1-3): 2
+Connecting to Storage daemon File at 10.0.1.11:9103 ...
+Sending label command for Volume "bacula" Slot 0 ...
+3000 OK label. VolBytes=213 VolABytes=0 VolType=1 Volume="bacula" Device="FileChgr1-Dev1" (/bacula/backups)
+Catalog record for Volume "bacula", Slot 0  successfully created.
+Requesting to mount FileChgr1 ...
+3906 File device ""FileChgr1-Dev1" (/bacula/backups)" is always mounted.
+You have messages.
+```
 
 * Crea un registro de las copias, indicando fecha, tipo de copia, si se 
 realizó correctamente o no y motivo.
 
+LOGS
    
 * Selecciona un directorio de datos "críticos" que deberá almacenarse cifrado 
 en la copia de seguridad, bien encargándote de hacer la copia manualmente o 
@@ -512,6 +997,7 @@ incluyendo la contraseña de cifrado en el sistema
    
 * Incluye en la copia los datos de las nuevas aplicaciones que se vayan 
 instalando durante el resto del curso
+
 
    
 * Utiliza saturno u otra opción que se te facilite como equipo secundario 
