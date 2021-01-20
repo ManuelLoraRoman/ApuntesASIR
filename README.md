@@ -37,4 +37,6 @@ de ASIR en el Gonzalo Nazareno.
 
 [14. Servidores Web, Base de Datos y DNS](./BBDDNServopenstack.md)
 
+[15. Talleres adicionales](./Talleres)
+
 </div>
