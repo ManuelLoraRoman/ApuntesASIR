@@ -31,7 +31,7 @@ cada campo:
 
 | Puesto de trabajo | Funciones, tareas y responsabilidad | Formación y perfil profesional | Persona encargada |
 |-------------------|-------------------------------------|--------------------------------|-------------------------------------|
-|Gestor de BBDD nº1 | - Creación y Mantenimiento de BBDD - Gestión general  | - Administrador de sistemas - Persona comprometida, imaginativa | Manuel Lora Román |
+|Gestor de BBDD     | - Creación y Mantenimiento de BBDD  - Gestión general  | - Administrador de sistemas - Persona comprometida, imaginativa | Manuel Lora Román |
 
 
 2. Plan de futuro
