@@ -15,7 +15,7 @@ entrega/despliegue continuo.
 
 Es necesario que el servidor tenga recursos elásticos y un escalado horizontal,
 para que no nos encontremos con problemas como una denegación de servicio 
-debido a un _OUT___OF___MEMORY_. Por esto, se puede realizar automatización en 
+debido a un _OUT_OF_MEMORY_. Por esto, se puede realizar automatización en 
 la creación y destrucción de nodos.
 
 Las aplicaciones que se adaptan mejor a esta situación, se llaman microservicios
