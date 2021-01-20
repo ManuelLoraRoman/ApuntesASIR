@@ -97,6 +97,41 @@ es más cercano a los administradores de sistemas.
 
 ## Demo de Ansible
 
+### Instalación
+
+Creamos un entorno virtual y con pip instalamos ansible.
+
+```
+
+
+```
+
+### Configuración
+
+Puede definirse en diferentes ubicaciones:
+
+* ansible.cfg (directorio actual) --> RECOMENDABLE
+
+Ejemplo:
+
+```
+[defaults]
+inventory = ansible_inventory.ini
+remote_user = debian
+private_key_file = /home/user/.ssh/private_key
+host_key_checking = False
+```
+
+Ansible se puede ejecutar directamente:
+
+```
+ansible controller -m user -a "name=alberto group=adm" -b
+```
+
+Pero lo recomendable es configurarlo en libros de jugadas (playbooks).
+Cada jugada contiene una o varias tareas que a su vez utilizan módulos. Estos
+se ejecutan secuencialmente y están escritos en YAML.
+
 
 
 ## Ejercicio
