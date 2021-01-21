@@ -17,272 +17,12 @@ ficheros de configuración, documentos, datos, etc.)
 
 * Realiza semanalmente una copia completa
 
-Para configurar la copia completa semanal, debemos crear un trabajo definido en
-el fichero anteriormente comentado:
-
-  Client = sancho-fd
-  FileSet = "Full Set"
-  Schedule = "Semanal"
-  Storage = File1
-  Messages = Standard
-  Pool = File
-  SpoolAttributes = yes
-  Priority = 10
-  Write Bootstrap = "/var/lib/bacula/%c.bsr"
-}
-```
- 
-Esto define una plantilla para los trabajos (jobs), es decir, no se ejecutan
-pero si a algún trabajo le falta algún parámetro lo toma del JobDefs.
-
-Ahora vamos a configurar las tareas de cada cliente:
-
-```
-Job {
-  Name = "BackupSancho"
-  JobDefs = "Backups"
-  Client = "sancho-fd"
-}
-
-Job {
-  Name = "BackupQuijote"
-  JobDefs = "Backups"
-  Client = "quijote-fd"
-}
-
-Job {
-  Name = "BackupFreston"
-  JobDefs = "Backups"
-  Client = "freston-fd"
-}
-
-Job {
-  Name = "BackupDulcinea"
-  JobDefs = "Backups"
-  Client = "dulcinea-fd"
-}
-```
-
-Y hecho esto, pasamos a los Backups de cada una de ellas:
-
-Pasamos ahora a la configuración del ciclo semanal y de los clientes en 
-Bacula. Para el ciclo tendremos que editar el parámetro _Schedule_:
-
-```
-Schedule {
-  Name = "Semanal"
-  Run = Level = Full sun at 23:05
-  Run = Level = Incremental mon-sat at 23:05
-}
-```
-
-Y para los clientes haremos lo siguiente:
-
-También tenemos que configurar el demonio de bacula, que se encuentra en el
-fichero de configuración _/etc/bacula/bacula-sd.conf (Bacula's Storage Daemon).
-
-```
-Storage {                             # definition of myself
-  Name = sancho-sd
-  SDPort = 9103                  # Director's port
-  WorkingDirectory = "/var/lib/bacula"
-  Pid Directory = "/run/bacula"
-  Plugin Directory = "/usr/lib/bacula"
-  Maximum Concurrent Jobs = 20
-  SDAddress = 10.0.1.11
-}
-```
-
 * Realiza diariamente una copia incremental, diferencial o delta diferencial (decidir cual es más 
 adecuada).
 
 * Implementa una planificación del almacenamiento de copias de seguridad para 
 una ejecución prevista de varios años, detallando qué copias completas se 
 almacenarán de forma permanente y cuales se irán borrando.
-
-Para realizar una configuración de copias anual, debemos seguir editando
-el fichero _/etc/bacula/bacula-dir.conf_:
-
-```
-# Configuración anual
-
-JobDefs {
- Name = "Backups-Anual"
- Type = Backup
- Level = Full
- Client = sancho-fd
- FileSet = "Full Set"
- Schedule = "Anual"
- Storage = File
- Messages = Standard
- Pool = File
- SpoolAttributes = yes
- Priority = 10
- Write Bootstrap = "/var/lib/bacula/%c.bsr"
-}
-
-Job {
- Name = "Sancho_Anual"
- JobDefs = "Backups-Anual"
- Client = "sancho-fd-anual"
-}
-
-Job {
- Name = "Quijote-Anual"
- JobDefs = "Backups-Anual"
- Client = "quijote-fd-anual"
-}
-
-Job {
- Name = "Freston-Anual"
- JobDefs = "Backups-Anual"
- Client = "freston-fd-anual"
-}
-
-Job {
- Name = "Dulcinea-Anual"
- JobDefs = "Backups-Anual"
- Client = "dulcinea-fd-anual"
-}
-
-Job {
- Name = "RestoreSancho-Anual"
- Type = Restore
- Client = sancho-fd-anual
- FileSet = "Full Set"
- Storage = File
- Pool = File
- Messages = Standard
-}
-
-Job {
- Name = "RestoreQuijote-Anual"
- Type = Restore
- Client = quijote-fd-anual
- FileSet = "Full Set"
- Storage = File
- Pool = File
- Messages = Standard
-}
-
-Job {
- Name = "RestoreFreston-Anual"
- Type = Restore
- Client = Freston-fd-anual
- FileSet = "Full Set"
- Storage = File
- Pool = File
- Messages = Standard
-}
-
-Job {
- Name = "RestoreDulcinea-Anual"
- Type = Restore
- Client = dulcinea-fd-anual
- FileSet = "Full Set"
- Storage = File
- Pool = File
- Messages = Standard
-}
-
-Schedule {
- Name = "Anual"
- Run = Full on 31 Dec at 23:50
-}
-
-Client {
- Name = sancho-fd-anual
- Address = 10.0.1.11
- FDPort = 9102
- Catalog = MyCatalog
- Password = "1q2w3e4r5t" # password for FileDaemon
- File Retention = 15 years # 60 days
- Job Retention = 15 years # six months
- AutoPrune = yes # Prune expired Jobs/Files
-}
-
-Client {
- Name = quijote-fd-anual
- Address = 10.0.2.10
- FDPort = 9102
- Catalog = MyCatalog
- Password = "1q2w3e4r5t" # password for FileDaemon 2
- File Retention = 15 years # 60 days
- Job Retention = 15 years # six months
- AutoPrune = yes # Prune expired Jobs/Files
-}
-
-Client {
- Name = freston-fd-anual
- Address = 10.0.1.10
- FDPort = 9102
- Catalog = MyCatalog
- Password = "1q2w3e4r5t" # password for FileDaemon 2
- File Retention = 15 years # 60 days
- Job Retention = 15 years # six months
- AutoPrune = yes # Prune expired Jobs/Files
-}
-
-Client {
- Name = dulcinea-fd-anual
- Address = 10.0.1.4
- FDPort = 9102
- Catalog = MyCatalog
- Password = "1q2w3e4r5t" # password for FileDaemon 2
- File Retention = 15 years # 60 days
- Job Retention = 15 years # six months
- AutoPrune = yes # Prune expired Jobs/Files
-}
-```
-
-```
-root@sancho:/home/ubuntu# cd /bacula/
-root@sancho:/bacula# bconsole 
-Connecting to Director 10.0.1.11:9101
-1000 OK: 103 sancho-dir Version: 9.4.2 (04 February 2019)
-Enter a period to cancel a command.
-*status client
-The defined Client resources are:
-     1: sancho-fd
-     2: quijote-fd
-     3: freston-fd
-     4: dulcinea-fd
-     5: sancho-fd-anual
-     6: quijote-fd-anual
-     7: freston-fd-anual
-     8: dulcinea-fd-anual
-Select Client (File daemon) resource (1-8): 
-```
-
-A continuación, usaremos la consola para etiquetar el volumen físico:
-
-```
-root@sancho:/bacula# bconsole
-Connecting to Director 10.0.1.11:9101
-1000 OK: 103 sancho-dir Version: 9.4.2 (04 February 2019)
-Enter a period to cancel a command.
-*label
-Automatically selected Catalog: MyCatalog
-Using Catalog "MyCatalog"
-The defined Storage resources are:
-     1: File
-     2: File1
-     3: File2
-Select Storage resource (1-3): 1
-Enter new Volume name: bacula
-Defined Pools:
-     1: Default
-     2: File
-     3: Scratch
-Select the Pool (1-3): 2
-Connecting to Storage daemon File at 10.0.1.11:9103 ...
-Sending label command for Volume "bacula" Slot 0 ...
-3000 OK label. VolBytes=213 VolABytes=0 VolType=1 Volume="bacula" Device="FileChgr1-Dev1" (/bacula/backups)
-Catalog record for Volume "bacula", Slot 0  successfully created.
-Requesting to mount FileChgr1 ...
-3906 File device ""FileChgr1-Dev1" (/bacula/backups)" is always mounted.
-You have messages.
-```
 
 * Crea un registro de las copias, indicando fecha, tipo de copia, si se 
 realizó correctamente o no y motivo.
@@ -743,6 +483,7 @@ Job {
 
 Job {
  Name = "Backup-mensual-Dulcinea"
+ Client = "dulcinea-fd"
  Type = Backup
  Level = Full
  Pool = "Mensual"
@@ -756,6 +497,72 @@ Job {
 }
 
 ```
+
+* Copias anuales
+
+```
+Job {
+ Name = "Backup-anual-Sancho"
+ Client = "sancho-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Anual"
+ FileSet = "CopiaSancho"
+ Schedule = "Programacion-anual"
+ Storage = Vol-Copias
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-anual-Quijote"
+ Client = "quijote-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Anual"
+ FileSet = "CopiaQuijote"
+ Schedule = "Programacion-anual"
+ Storage = Vol-Copias
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-anual-Freston"
+ Client = "freston-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Anual"
+ FileSet = "CopiaFreston"
+ Schedule = "Programacion-anual"
+ Storage = Vol-Copias
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-anual-Dulcinea"
+ Client = "dulcinea-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Anual"
+ FileSet = "CopiaDulcinea"
+ Schedule = "Programacion-anual"
+ Storage = Vol-Copias
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+```
+
 
 * Restauraciones
 
@@ -914,6 +721,11 @@ Schedule {
  Run = Level=Full Pool=Mensual 1st sat at 23:59
 }
 
+Schedule {
+ Name = "Programacion-anual"
+ Run = Level=Full Pool=Anual jan 1st sat at 00:00
+}
+
 Client {
  Name = sancho-fd
  Address = 10.0.1.11
@@ -1011,6 +823,16 @@ Pool {
  VolumeRetention = 365d
  Recycle = yes
 }
+
+Pool {
+ Name = Anual
+ Use Volume Once = yes
+ Pool Type = Backup
+ AutoPrune = yes
+ VolumeRetention = 365d
+ Recycle = yes
+}
+
 ```
 
 * Por defecto, estas son algunas de las opciones:
@@ -1057,7 +879,7 @@ Pool {
 
 Console {
   Name = sancho-mon
-  Password = "rPNmB3G7UEOX7ztuXzmvjr08SRH5HJCMT"
+  Password = "1q2w3e4r5t"
   CommandACL = status, .status
 }
 ```
@@ -1116,7 +938,8 @@ root@sancho:/bacula# chown bacula:bacula /bacula/backups/ -R
 root@sancho:/bacula# chmod 755 /bacula/backups/ -R
 ```
 
-A continuación, configuramos el fichero llamado _/etc/bacula/bacula-sd.conf_:
+También tenemos que configurar el demonio de bacula, que se encuentra en el
+fichero de configuración _/etc/bacula/bacula-sd.conf (Bacula's Storage Daemon).
 
 ```
 Director {
@@ -1587,6 +1410,30 @@ Sending label command for Volume "copiamensual" Slot 0 ...
 Catalog record for Volume "copiamensual", Slot 0  successfully created.
 Requesting to mount FileAutochanger1 ...
 3906 File device ""Dev1" (/bacula/backups)" is always mounted.
+*label
+Automatically selected Catalog: bacula
+Using Catalog "bacula"
+Automatically selected Storage: Vol-Copias
+Enter new Volume name: copiaanual
+Defined Pools:
+     1: Anual
+     2: Default
+     3: Diaria
+     4: File
+     5: Mensual
+     6: Scratch
+     7: Semanal
+     8: Vol-Backup
+Select the Pool (1-8): 1
+Connecting to Storage daemon Vol-Copias at 10.0.1.11:9103 ...
+Sending label command for Volume "copiaanual" Slot 0 ...
+[SF0209] Out of freespace caused End of Volume "copiaanual" at 0 on device "Dev1" (/bacula/backups). Write of 218 bytes got -1.
+Error getting Volume info: 1991 Catalog Request for vol=copiaanual failed: sql_get.c:1212 Media record for Volume name "copiaanual" not found.
+3912 Failed to label Volume copiaanual: ERR=Error getting Volume info: 1991 Catalog Request for vol=copiaanual failed: sql_get.c:1212 Media record for Volume name "copiaanual" not found.
+
+Label command failed for Volume copiaanual.
+Do not forget to mount the drive!!!
+You have messages.
 *
 ```
 
@@ -1728,5 +1575,3 @@ Priority: 10
 OK to run? (yes/mod/no): yes
 Job queued. JobId=11
 ```
-
-
