@@ -1134,6 +1134,7 @@ Job {
 ```
 Job {
  Name = "Backup-semanal-Sancho"
+ Client = "sancho-fd"
  Type = Backup
  Level = Full
  Pool = "Semanal"
@@ -1144,7 +1145,6 @@ Job {
  SpoolAttributes = yes
  Priority = 10
  Write Bootstrap = "/var/lib/bacula/%c.bsr"
- Client = "sancho-fd"
 }
 
 Job {
@@ -1179,6 +1179,7 @@ Job {
 
 Job {
  Name = "Backup-semanal-Dulcinea"
+ Client = "dulcinea-fd"
  Type = Backup
  Level = Full
  Pool = "Semanal"
@@ -1189,6 +1190,112 @@ Job {
  SpoolAttributes = yes
  Priority = 10
  Write Bootstrap = "/var/lib/bacula/%c.bsr"
- Client = "dulcinea-fd"
 }
 ```
+
+* Copias mensuales
+
+```
+Job {
+ Name = "Backup-mensual-Sancho"
+ Client = "sancho-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Mensual"
+ FileSet = "CopiaSancho"
+ Schedule = "Programacion-mensual"
+ Storage = Vol-Sancho
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-mensual-Quijote"
+ Client = "quijote-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Mensual"
+ FileSet = "CopiaQuijote"
+ Schedule = "Programacion-mensual"
+ Storage = Vol-Sancho
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-mensual-Freston"
+ Client = "freston-fd"
+ Type = Backup
+ Level = Full
+ Pool = "Mensual"
+ FileSet = "CopiaFreston"
+ Schedule = "Programacion-mensual"
+ Storage = Vol-Sancho
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+Job {
+ Name = "Backup-mensual-Dulcinea"
+ Type = Backup
+ Level = Full
+ Pool = "Mensual"
+ FileSet = "CopiaDulcinea"
+ Schedule = "Programacion-mensual"
+ Storage = Vol-Sancho
+ Messages = Standard
+ SpoolAttributes = yes
+ Priority = 10
+ Write Bootstrap = "/var/lib/bacula/%c.bsr"
+}
+
+```
+
+* Restauraciones
+
+```
+Job {
+ Name = "Restore-Sancho"
+ Type = Restore
+ Client = sancho-fd
+ FileSet = "CopiaSancho"
+ Storage = Vol-Sancho
+ Pool = Default
+ Messages = Standard
+}
+
+Job {
+ Name = "Restore-Quijote"
+ Type = Restore
+ Client = quijote-fd
+ FileSet = "CopiaQuijote"
+ Storage = Vol-Sancho
+ Pool = Default
+ Messages = Standard
+}
+
+Job {
+ Name = "Restore-Freston"
+ Type = Restore
+ Client = freston-fd
+ FileSet = "CopiaFreston"
+ Storage = Vol-Sancho
+ Pool = Default
+ Messages = Standard
+}
+
+Job {
+ Name = "Restore-Dulcinea"
+ Type = Restore
+ Client = dulcinea-fd
+ FileSet = "CopiaDulcinea"
+ Storage = Vol-Sancho
+ Pool = Default
+ Messages = Standard
+}
