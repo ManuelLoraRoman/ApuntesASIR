@@ -429,3 +429,8 @@ Esta tarea se puede realizar en una instancia de OpenStack y documentarla
 como habitualmente o bien grabar un vídeo con una demo de las características 
 y hacer la entrega con el enlace del vídeo.
 
+Enlace a los videos:
+
+https://www.youtube.com/watch?v=jbyXiSeEcHI
+
+https://www.youtube.com/watch?v=EtdMG3M1884
