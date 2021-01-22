@@ -55,39 +55,7 @@ Vamos a utilizar la máquina de Sancho (Ubuntu 20.04 LTS) para la realización
 de esta práctica, ya que como tal, no tiene asociado ningún servicio más allá
 de la base de datos (necesario para la instalación de Bacula).
 
-Como ya tenemos instalado el servidor de mariadb en Ubuntu, solo instalaremos
-los siguientes paquetes:
-
-```
-root@sancho:~# apt-get install apache2 php
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils libapache2-mod-php7.4 libapr1
-  libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libjansson4 liblua5.2-0
-  php-common php7.4 php7.4-cli php7.4-common php7.4-json php7.4-opcache
-  php7.4-readline ssl-cert
-Suggested packages:
-  apache2-doc apache2-suexec-pristine | apache2-suexec-custom www-browser
-  php-pear openssl-blacklist
-The following NEW packages will be installed:
-  apache2 apache2-bin apache2-data apache2-utils libapache2-mod-php7.4 libapr1
-  libaprutil1 libaprutil1-dbd-sqlite3 libaprutil1-ldap libjansson4 liblua5.2-0
-  php php-common php7.4 php7.4-cli php7.4-common php7.4-json php7.4-opcache
-  php7.4-readline ssl-cert
-.
-.
-.
-Processing triggers for ufw (0.36-6) ...
-Processing triggers for systemd (245.4-4ubuntu3.2) ...
-Processing triggers for man-db (2.9.1-1) ...
-Processing triggers for libc-bin (2.31-0ubuntu9.1) ...
-Processing triggers for php7.4-cli (7.4.3-4ubuntu2.4) ...
-Processing triggers for libapache2-mod-php7.4 (7.4.3-4ubuntu2.4) ...
-```
-
-Acto seguido, instalaremos también bacula por completo:
+Instalamos Bacula en su totalidad, con todas sus funcionalidades:
 
 ```
 root@sancho:~# apt-get install bacula bacula-client bacula-common-mysql bacula-director-mysql bacula-ser$
@@ -266,9 +234,9 @@ que no están asociados con un trabajo especifíco.
 el Director por conexiones Bacula mediante consola.
 
 
-El único parámetro que tenemos que podemos cambiar ahora si queremos sería
-la dirección del Director, ya que podríamos poner tanto localhost como su
-IP estática. En nuestro caso, vamos a cambiarla:
+El único parámetro que tenemos que cambiar si queremos sería la dirección del 
+Director, ya que podríamos poner tanto localhost como su IP estática. 
+En nuestro caso, vamos a cambiarla:
 
 ```
 Director {                            # define myself
@@ -297,7 +265,7 @@ mensual, anual, etc)
 4. Horario del trabajo.
 5. Definición de los clientes.
 6. Definición de los demonios de almacenamiento.
-7. Creación del catálogo (base de datos)
+7. Creación del catálogo (base de datos).
 8. Selección del conjunto de volúmenes (Pool) que Bacula usará para el 
 guardado de datos.
 9. Opciones de la consola.
@@ -835,6 +803,20 @@ Pool {
 
 ```
 
+El recurso FileSet define que ficheros están incluidos o excluidos en el 
+trabajo de Backup. Schedule permite una manera automática de programar
+un trabajo así como la capacidad de anular el recurso Level, Pool, Storage y
+Messages.
+
+El recurso Client define atributos de los clientes que van a ser provistos
+por el Director, es decir, son la definición de las máquinas que van a 
+hacerse copias de seguridad.
+
+El recurso Storage define que demonio de almacenamiento tenemos disponible
+para nuestro Director. Y por último, el recurso Pool define los volúmenes
+de almacenamiento que va a usar Bacula para escribir los datos.
+
+
 * Por defecto, estas son algunas de las opciones:
 
 ```
@@ -972,6 +954,9 @@ Messages {
   director = sancho-dir = all
 }
 ```
+
+El recurso Autochanger agrupa uno o más Devices (especifica los detalles de cada
+dispositivo que pueden usarse en el demonio de almacenamiento.
 
 Y como hemos hecho anteriormente, vamos a comprobar la sintaxis del fichero:
 
@@ -1196,6 +1181,7 @@ debian@dulcinea:~$ sudo apt-get install bacula-client
 
 Y configuramos el fichero anteriormente comentado:
 
+```
 Director {
   Name = sancho-mon
   Password = "1q2w3e4r5t"
