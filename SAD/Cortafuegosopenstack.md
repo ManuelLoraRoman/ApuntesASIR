@@ -45,37 +45,54 @@ una prueba de funcionamiento de la misma:
 1. Todas las máquinas de las dos redes pueden hacer ping entre ellas.
 
 ```
-iptables -A INPUT -i eth0 -p icmp -j ACCEPT
-iptables -A OUTPUT -o eth2 -p icmp -j ACCEPT
+iptables -A OUTPUT -o eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -i eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
-iptables -A INPUT -i eth2 -p icmp -j ACCEPT
-iptables -A OUTPUT -o eth0 -p icmp -j ACCEPT
+iptables -A OUTPUT -o eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
-iptables -A INPUT -i eth0 -p icmp --icmp-type echo-reply -j ACCEPT
-iptables -A OUTPUT -o eth2 -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
-iptables -A INPUT -i eth2 -p icmp --icmp-type echo-reply -j ACCEPT
-iptables -A OUTPUT -o eth0 -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 ```
    
+### Prueba
+
+```
+
+```
+
+
 2. Todas las máquinas pueden hacer ping a una máquina del exterior.
    
-### PING desde la red-interna al exterior
+```
+iptables -A FORWARD -i eth0 -o eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+
+iptables -A FORWARD -i eth2 -o eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+```
+
+### Prueba
 
 ```
-iptables -A FORWARD -i eth0 -o eth1 -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -p icmp -m state --state ESTABLISHED -j ACCEPT
-```
 
-### PING desde la DMZ al exterior
-
-```
-iptables -A FORWARD -i eth2 -o eth1 -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth2 -p icmp -m state --state ESTABLISHED -j ACCEPT
 ```
 
 3. Desde el exterior se puede hacer ping a dulcinea.
    
+```
+iptables -A INPUT -s 172.22.0.0/16 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -d 172.22.0.0/16 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+
+iptables -A INPUT -s 172.23.0.0/16 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -d 172.23.0.0/16 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+```
+
+### Prueba 
+
 ```
 
 ```
@@ -84,23 +101,55 @@ iptables -A FORWARD -i eth1 -o eth2 -p icmp -m state --state ESTABLISHED -j ACCE
 rechazar la conexión (REJECT).
 
 ```
+iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -o eth2 -d 10.0.2.0/24 -p icmp -m icmp --icmpt-type echo-reply -j ACCEPT
+
 iptables -A INPUT -i eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
+```
+
+### Prueba
+
+```
+
 ```
 
 ## ssh
 
 1. Podemos acceder por ssh a todas las máquinas.
-
-### Permitir desde la DMZ a la red-interna
    
 ```
-iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -s 10.0.2.0/24 -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -d 10.0.2.0/24 -p tcp --sport 22 -j ACCEPT
+
+iptables -A INPUT -s 10.0.1.0/24 -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -d 10.0.1.0/24 -p tcp --sport 22 -j ACCEPT 
+```
+
+### PRUEBA
 
 ```
+
+```
+
 
 2. Todas las máquinas pueden hacer ssh a máquinas del exterior.
    
+```
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+```
+
+### Prueba
+
 ```
 
 ```
@@ -109,10 +158,23 @@ iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state ESTABLISHED -j AC
 al acceder desde el exterior habrá que conectar al puerto 2222.
 
 ```
+iptables -A INPUT -s 172.22.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 172.22.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -s 172.23.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 172.23.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
 iptables -t nat -A PREROUTING -i eth1 -p tcp -m tcp --dport 2222 -j REDIRECT --to-ports 22
 ```
 
-## dns
+### Prueba
+
+```
+
+```
+
+
+## DNS
 
 1. El único dns que pueden usar los equipos de las dos redes es freston, no 
 pueden utilizar un DNS externo.
@@ -121,8 +183,20 @@ pueden utilizar un DNS externo.
 
 ```
 
+### Prueba
+
+```
+
+```
+
 2. Dulcinea puede usar cualquier servidor DNS.
-   
+
+```
+
+```
+
+### Prueba
+
 ```
 
 ```
@@ -134,12 +208,19 @@ por ejemplo, papion-dns pueda preguntar.
 
 ```
 
+### Prueba
+
+```
+
+```
+
 ## Base de datos
 
 1. A la base de datos de sancho sólo pueden acceder las máquinas de la DMZ.
 
 ```
-
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 3306 -m state NEW.ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 3306 -m state ESTABLISHED -j ACCEPT
 ```
 
 ## Web
@@ -148,7 +229,16 @@ por ejemplo, papion-dns pueda preguntar.
 máquinas de nuestra red y desde el exterior.
 
 ```
+iptables -t nat -A PREROUTING -i eth1 -p tcp - multiport --dports 80,443 -j DNAT --to 10.0.2.10
 
+iptables -A FORWARD -i eth0 -o eth2 -p tcp -multiport --dports 80,443 -m state NEW.ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp -multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+
+iptables -A OUTPUT -o eth2 -s 10.0.2.0/24 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
 ```
 
 ## Más servicios
