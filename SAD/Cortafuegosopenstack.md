@@ -42,19 +42,25 @@ Para cada configuración, hay que mostrar las reglas que se han configurado y
 una prueba de funcionamiento de la misma:
 
 
-## ping
+## Ping
 
 1. Todas las máquinas de las dos redes pueden hacer ping entre ellas.
 
 ```
+Permitir ping Dulcinea con la red interna y la DMZ
+
 iptables -A OUTPUT -o eth0 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
 iptables -A OUTPUT -o eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A INPUT -i eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
+Permitir ping DMZ con la red interna
+
 iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+
+Permitir ping red interna con la DMZ
 
 iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
@@ -70,8 +76,12 @@ iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j AC
 2. Todas las máquinas pueden hacer ping a una máquina del exterior.
    
 ```
+Permitir ping red interna al exterior
+
 iptables -A FORWARD -i eth0 -o eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+
+Permitir ping DMZ al exterior
 
 iptables -A FORWARD -i eth2 -o eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
@@ -100,8 +110,12 @@ iptables -A OUTPUT -o eth1 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 rechazar la conexión (REJECT).
 
 ```
+Permitir ping de DMZ hacia Dulcinea
+
 iptables -A INPUT -i eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A OUTPUT -o eth2 -p icmp -m icmp --icmpt-type echo-reply -j ACCEPT
+
+Rechazar ping de red interna hacia Dulcinea
 
 iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
 ```
@@ -117,11 +131,17 @@ iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-request -j REJECT --r
 1. Podemos acceder por ssh a todas las máquinas.
    
 ```
+Permitir ssh de DMZ hacia la red interna
+
 iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
+Permitir ssh de red interna hacia la DMZ
+
 iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir ssh de Dulcinea a ambas redes
 
 iptables -A INPUT -i eth2 -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -o eth2 -p tcp --sport 22 -j ACCEPT
@@ -140,8 +160,12 @@ iptables -A OUTPUT -o eth0 -p tcp --sport 22 -j ACCEPT
 2. Todas las máquinas pueden hacer ssh a máquinas del exterior.
    
 ```
+Permitir ssh desde la red interna hacia el exterior
+
 iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir ssh desde la DMZ hacia el exterior
 
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
@@ -157,13 +181,13 @@ iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 22 -m state --state ESTABLISH
 al acceder desde el exterior habrá que conectar al puerto 2222.
 
 ```
+Permitir ssh desde 
+
 iptables -A INPUT -s 172.22.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -d 172.22.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
 iptables -A INPUT -s 172.23.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -d 172.23.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
-
-iptables -t nat -A PREROUTING -i eth1 -p tcp -m tcp --dport 2222 -j REDIRECT --to-ports 22
 ```
 
 ### Prueba
