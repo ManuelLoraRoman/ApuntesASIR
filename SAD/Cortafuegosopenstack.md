@@ -10,7 +10,9 @@ La política por defecto que vamos a configurar en nuestro cortafuegos será de
 tipo DROP.
 
 ```
-
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 ```
 
 ## NAT 
@@ -45,11 +47,11 @@ una prueba de funcionamiento de la misma:
 1. Todas las máquinas de las dos redes pueden hacer ping entre ellas.
 
 ```
-iptables -A OUTPUT -o eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
-iptables -A INPUT -i eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+iptables -A OUTPUT -o eth0 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
-iptables -A OUTPUT -o eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
-iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+iptables -A OUTPUT -o eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A INPUT -i eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 
 iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
@@ -84,11 +86,8 @@ iptables -A FORWARD -i eth1 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j AC
 3. Desde el exterior se puede hacer ping a dulcinea.
    
 ```
-iptables -A INPUT -s 172.22.0.0/16 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
-iptables -A OUTPUT -d 172.22.0.0/16 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
-
-iptables -A INPUT -s 172.23.0.0/16 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
-iptables -A OUTPUT -d 172.23.0.0/16 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+iptables -A INPUT -i eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -o eth1 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 ```
 
 ### Prueba 
@@ -101,10 +100,10 @@ iptables -A OUTPUT -d 172.23.0.0/16 -p icmp -m icmp --icmp-type echo-reply -j AC
 rechazar la conexión (REJECT).
 
 ```
-iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
-iptables -A OUTPUT -o eth2 -d 10.0.2.0/24 -p icmp -m icmp --icmpt-type echo-reply -j ACCEPT
+iptables -A INPUT -i eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
+iptables -A OUTPUT -o eth2 -p icmp -m icmp --icmpt-type echo-reply -j ACCEPT
 
-iptables -A INPUT -i eth0 -s 10.0.1.0/24 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
+iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
 ```
 
 ### Prueba
@@ -124,11 +123,11 @@ iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state --state ESTABLISH
 iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state ESTABLISHED -j ACCEPT
 
-iptables -A INPUT -s 10.0.2.0/24 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -d 10.0.2.0/24 -p tcp --sport 22 -j ACCEPT
+iptables -A INPUT -i eth2 -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -o eth2 -p tcp --sport 22 -j ACCEPT
 
-iptables -A INPUT -s 10.0.1.0/24 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -d 10.0.1.0/24 -p tcp --sport 22 -j ACCEPT 
+iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 22 -j ACCEPT 
 ```
 
 ### PRUEBA
@@ -180,8 +179,19 @@ iptables -t nat -A PREROUTING -i eth1 -p tcp -m tcp --dport 2222 -j REDIRECT --t
 pueden utilizar un DNS externo.
    
 ```
+iptables -A FORWARD -s 10.0.1.10 -d 172.22.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 172.22.0.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
 
+iptables -A FORWARD -s 10.0.1.10 -d 172.23.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 172.23.0.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
+
+
+
+iptables -A FORWARD -s 10.0.2.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.0.1.10 -d 10.0.2.0/24 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
 ```
+
+Sancho no requiere de configuración por Iptables ya que se encuentra en la misma red que Freston.
 
 ### Prueba
 
@@ -192,7 +202,11 @@ pueden utilizar un DNS externo.
 2. Dulcinea puede usar cualquier servidor DNS.
 
 ```
+iptables -A OUTPUT -d 10.0.1.10 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -s 10.0.1.10 -d 10.0.1.4 -p udp --sport 53 -m state ESTABLISHED -j ACCEPT
 
+iptables -A OUTPUT -o eth1 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth1 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ### Prueba
@@ -205,7 +219,8 @@ pueden utilizar un DNS externo.
 por ejemplo, papion-dns pueda preguntar.
 
 ```
-
+iptables -A FORWARD -i eth1 -o eth0 -s 0.0.0.0/0 -d 10.0.1.10 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -s 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ### Prueba
@@ -229,22 +244,77 @@ iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 3306 -m state ESTABLISHED -j 
 máquinas de nuestra red y desde el exterior.
 
 ```
-iptables -t nat -A PREROUTING -i eth1 -p tcp - multiport --dports 80,443 -j DNAT --to 10.0.2.10
+iptables -t nat -A PREROUTING -i eth1 -p tcp -m multiport --dports 80,443 -j DNAT --to 10.0.2.10
 
-iptables -A FORWARD -i eth0 -o eth2 -p tcp -multiport --dports 80,443 -m state NEW.ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth0 -p tcp -multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW.ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
 
 iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
 
-iptables -A OUTPUT -o eth2 -s 10.0.2.0/24 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
-iptables -A INPUT -i eth2 -s 10.0.2.0/24 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth2 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+```
+
+### Prueba
+
+```
+
 ```
 
 ## Más servicios
 
 1. Configura de manera adecuada el cortafuegos, para otros servicios que tengas 
 instalado en tu red (ldap, correo, ...)
+
+## Bacula
+
+```
+iptables -A FORWARD -s 10.0.2.0/24 -p tcp --dport 9101:9103 -j ACCEPT
+iptables -A FORWARD -d 10.0.2.0/24 -p tcp --sport 9101:9103 -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp --dport 9101:9103 -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 9101:9103 -j ACCEPT
+```
+
+### Prueba
+
+```
+
+```
+
+
+## Correo
+
+```
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth1 -o eth0 --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 --sport 25 -m state --state ESTABLISHED -j ACCEPT
+
+```
+
+### Prueba
+
+```
+
+```
+
+## LDAP/LDAPS
+
+```
+iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
+```
+
+### Prueba
 
 ```
 
