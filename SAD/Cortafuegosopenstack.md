@@ -65,13 +65,6 @@ Permitir ping red interna con la DMZ
 iptables -A FORWARD -i eth0 -o eth2 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth0 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 ```
-   
-### Prueba
-
-```
-
-```
-
 
 2. Todas las máquinas pueden hacer ping a una máquina del exterior.
    
@@ -87,23 +80,11 @@ iptables -A FORWARD -i eth2 -o eth1 -p icmp -m icmp --icmp-type echo-request -j 
 iptables -A FORWARD -i eth1 -o eth2 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
 ```
 
-### Prueba
-
-```
-
-```
-
 3. Desde el exterior se puede hacer ping a dulcinea.
    
 ```
 iptables -A INPUT -i eth1 -p icmp -m icmp --icmp-type echo-request -j ACCEPT
 iptables -A OUTPUT -o eth1 -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
-```
-
-### Prueba 
-
-```
-
 ```
 
 4. A dulcinea se le puede hacer ping desde la DMZ, pero desde la LAN se le debe 
@@ -120,12 +101,6 @@ Rechazar ping de red interna hacia Dulcinea
 iptables -A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-request -j REJECT --reject-with icmp-port-unreachable
 ```
 
-### Prueba
-
-```
-
-```
-
 ## ssh
 
 1. Podemos acceder por ssh a todas las máquinas.
@@ -139,23 +114,17 @@ iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 22 -m state --state ESTABLISH
 Permitir ssh de red interna hacia la DMZ
 
 iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 22 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir ssh de Dulcinea a ambas redes
 
-iptables -A INPUT -i eth2 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -o eth2 -p tcp --sport 22 -j ACCEPT
+iptables -A OUTPUT -o eth2 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth2 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
-iptables -A INPUT -i eth0 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp --sport 22 -j ACCEPT 
-```
-
-### PRUEBA
+iptables -A OUTPUT -o eth0 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 
 ```
-
-```
-
 
 2. Todas las máquinas pueden hacer ssh a máquinas del exterior.
    
@@ -171,31 +140,13 @@ iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 22 -m state --state NEW,ESTAB
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-### Prueba
-
-```
-
-```
-
 3. La máquina dulcinea tiene un servidor ssh escuchando por el puerto 22, pero 
 al acceder desde el exterior habrá que conectar al puerto 2222.
 
 ```
-Permitir ssh desde 
-
-iptables -A INPUT -s 172.22.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -d 172.22.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
-
-iptables -A INPUT -s 172.23.0.0/16 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -d 172.23.0.0/16 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -s 0.0.0.0/0 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 0.0.0.0/0 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
 ```
-
-### Prueba
-
-```
-
-```
-
 
 ## DNS
 
@@ -203,40 +154,31 @@ iptables -A OUTPUT -d 172.23.0.0/16 -p tcp -m tcp --sport 22 -m state --state ES
 pueden utilizar un DNS externo.
    
 ```
+Permitir hacer consultas desde el exterior hacia Freston
+
 iptables -A FORWARD -s 10.0.1.10 -d 172.22.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.22.0.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 172.22.0.0/24 -d 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 
-iptables -A FORWARD -s 10.0.1.10 -d 172.23.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.23.0.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
-
-
+Permitir hacer consultas desde la DMZ hacia Freston
 
 iptables -A FORWARD -s 10.0.2.0/24 -d 10.0.1.10 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 10.0.1.10 -d 10.0.2.0/24 -p udp --dport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.0.1.10 -d 10.0.2.0/24 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-Sancho no requiere de configuración por Iptables ya que se encuentra en la misma red que Freston.
-
-### Prueba
-
-```
-
-```
+Sancho no requiere de configuración por iptables ya que se encuentra en la misma red que Freston.
 
 2. Dulcinea puede usar cualquier servidor DNS.
 
 ```
+Permitir hacer consultas desde Dulcinea a Freston
+
 iptables -A OUTPUT -d 10.0.1.10 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A INPUT -s 10.0.1.10 -d 10.0.1.4 -p udp --sport 53 -m state ESTABLISHED -j ACCEPT
+iptables -A INPUT -s 10.0.1.10 -d 10.0.1.4 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir hacer consultas desde Dulcinea hacia cualquier otro servidor DNS
 
 iptables -A OUTPUT -o eth1 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A INPUT -i eth1 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
-```
-
-### Prueba
-
-```
-
 ```
 
 3. Tenemos que permitir consultas dns desde el exterior a freston, para que, 
@@ -247,20 +189,19 @@ iptables -A FORWARD -i eth1 -o eth0 -s 0.0.0.0/0 -d 10.0.1.10 -p udp --dport 53 
 iptables -A FORWARD -i eth0 -o eth1 -s 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-### Prueba
-
-```
-
-```
-
 ## Base de datos
 
 1. A la base de datos de sancho sólo pueden acceder las máquinas de la DMZ.
 
 ```
-iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 3306 -m state NEW.ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 3306 -m state ESTABLISHED -j ACCEPT
+Permitir a la DMZ conexión a la base de datos
+
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 3306 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 3306 -m state --state ESTABLISHED -j ACCEPT
 ```
+
+FALTAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
 
 ## Web
 
@@ -270,11 +211,17 @@ máquinas de nuestra red y desde el exterior.
 ```
 iptables -t nat -A PREROUTING -i eth1 -p tcp -m multiport --dports 80,443 -j DNAT --to 10.0.2.10
 
-iptables -A FORWARD -i eth0 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW.ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+Permitir acceso desde la red interna hacia nuestra página web
+
+iptables -A FORWARD -i eth0 -o eth2 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir acceso a la página web desde el exterior
 
 iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+
+Permitir acceso a la página web desde Dulcinea
 
 iptables -A OUTPUT -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
 iptables -A INPUT -i eth2 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
@@ -294,8 +241,12 @@ instalado en tu red (ldap, correo, ...)
 ## Bacula
 
 ```
+Permitir conexión a Bacula hacia la DMZ
+
 iptables -A FORWARD -s 10.0.2.0/24 -p tcp --dport 9101:9103 -j ACCEPT
 iptables -A FORWARD -d 10.0.2.0/24 -p tcp --sport 9101:9103 -j ACCEPT
+
+Permitir conexión a Bacula hacia Dulcinea
 
 iptables -A INPUT -i eth0 -p tcp --dport 9101:9103 -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport 9101:9103 -j ACCEPT
@@ -311,11 +262,17 @@ iptables -A OUTPUT -o eth0 -p tcp --sport 9101:9103 -j ACCEPT
 ## Correo
 
 ```
+Permitir correo desde la DMZ
+
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
 
+Permitir correo desde Dulcinea
+
 iptables -A INPUT -i eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir correo desde el exterior
 
 iptables -A FORWARD -i eth1 -o eth0 --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth1 --sport 25 -m state --state ESTABLISHED -j ACCEPT
@@ -331,8 +288,12 @@ iptables -A FORWARD -i eth0 -o eth1 --sport 25 -m state --state ESTABLISHED -j A
 ## LDAP/LDAPS
 
 ```
+Permitir conexión LDAP/LDAPS desde la DMZ
+
 iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth2 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
+
+Permitir conexión LDAP/LDAPS desde Dulcinea
 
 iptables -A INPUT -i eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
