@@ -226,19 +226,13 @@ iptables -A FORWARD -i eth2 -o eth0 -p tcp -m multiport --sports 80,443 -m state
 
 Permitir acceso a la página web desde el exterior
 
-iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir acceso a la página web desde Dulcinea
 
-iptables -A OUTPUT -o eth2 -p tcp -m multiport --dports 80,443 -m state NEW,ESTABLISHED -j ACCEPT
-iptables -A INPUT -i eth2 -p tcp -m multiport --sports 80,443 -m state ESTABLISHED -j ACCEPT
-```
-
-### Prueba
-
-```
-
+iptables -A OUTPUT -o eth2 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth2 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ## Más servicios
@@ -251,21 +245,17 @@ instalado en tu red (ldap, correo, ...)
 ```
 Permitir conexión a Bacula hacia la DMZ
 
-iptables -A FORWARD -s 10.0.2.0/24 -p tcp --dport 9101:9103 -j ACCEPT
-iptables -A FORWARD -d 10.0.2.0/24 -p tcp --sport 9101:9103 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 9101:9103 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 9101:9103 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 9101:9103 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --sport 9101:9103 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir conexión a Bacula hacia Dulcinea
 
-iptables -A INPUT -i eth0 -p tcp --dport 9101:9103 -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp --sport 9101:9103 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 9101:9103 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 9101:9103 -m state --state ESTABLISHED -j ACCEPT
 ```
-
-### Prueba
-
-```
-
-```
-
 
 ## Correo
 
@@ -282,15 +272,8 @@ iptables -A OUTPUT -o eth0 -p tcp --sport 25 -m state --state ESTABLISHED -j ACC
 
 Permitir correo desde el exterior
 
-iptables -A FORWARD -i eth1 -o eth0 --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth1 --sport 25 -m state --state ESTABLISHED -j ACCEPT
-
-```
-
-### Prueba
-
-```
-
+iptables -A FORWARD -i eth1 -o eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
 ```
 
 ## LDAP/LDAPS
@@ -306,4 +289,3 @@ Permitir conexión LDAP/LDAPS desde Dulcinea
 iptables -A INPUT -i eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
 ```
-
