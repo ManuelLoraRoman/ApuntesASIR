@@ -11,6 +11,7 @@ necesito para montar mi empresa?
 Vamos a realizar la tabla con nuestros inversiones y gastos totales:
 
 |       INVERSIÓN         |          GASTO          |
+|---------------------------------------------------|
 |  DESCRIPCIÓN  |  COSTE  |  DESCRIPCIÓN  |  COSTE  |
 |---------------|---------|---------------|---------|
 | Compra de software adicional para gestión de BBDD | 150 € | Alquiler local Avenida Reyes Católicos 50 m² | 600 € |
