@@ -156,8 +156,8 @@ pueden utilizar un DNS externo.
 ```
 Permitir hacer consultas desde el exterior hacia Freston
 
-iptables -A FORWARD -s 10.0.1.10 -d 172.22.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.22.0.0/24 -d 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.0.1.10 -d 0.0.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 0.0.0.0/24 -d 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir hacer consultas desde la DMZ hacia Freston
 
@@ -200,9 +200,6 @@ iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 3306 -m state --state NEW,EST
 iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 3306 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-FALTAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-
 ## Web
 
 1. Las páginas web de quijote (80, 443) pueden ser accedidas desde todas las 
@@ -210,6 +207,17 @@ máquinas de nuestra red y desde el exterior.
 
 ```
 iptables -t nat -A PREROUTING -i eth1 -p tcp -m multiport --dports 80,443 -j DNAT --to 10.0.2.10
+
+Permitir acceso a la web desde ambas redes al exterior
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth1 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A OUTPUT -o eth1 -p tcp -m multiport --dports 80,443 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -i eth1 -p tcp -m multiport --sports 80,443 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir acceso desde la red interna hacia nuestra página web
 
@@ -299,8 +307,3 @@ iptables -A INPUT -i eth0 -p tcp -m multiport --dports 389,636 -m state --state 
 iptables -A OUTPUT -o eth0 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
 ```
 
-### Prueba
-
-```
-
-```
