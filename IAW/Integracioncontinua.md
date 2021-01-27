@@ -1,110 +1,222 @@
 # Práctica: Introducción a la integración continua 
 
-Debes realizar una de las siguientes tareas, utilizando una herramienta de 
-CI/CD: GitHub Actions, GiLab CI/CD, CircleCI, Jenkins, … (No uses Travis CI).
+## Tarea: Integración continúa de aplicación django (Test + Deploy)
 
-En nuestro caso, vamos a elegir Jenkins y usaremos surge.
 
-## Tarea: Despliegue de una página web estática (build, deploy)
+Vamos a trabajar con el repositorio de la aplicación django_tutorial. Esta 
+aplicación tiene definidas una serie de test, que podemos estudiar en el 
+fichero tests.py del directorio polls.
 
-En esta práctica investiga como generar una página web estática con la 
-herramienta que elegiste en la práctica 1 de la asignatura y desplegarla en el 
-servicio que utilizaste en esa práctica.
+Para ejecutar las pruebas unitarias, ejecutamos la instrucción 
+python3 manage.py test.
 
-* En el repositorio GitHub/GitLab sólo tienen que estar los ficheros markdown.
-   
-* La página se debe generar en el sistema de integración continúa, por lo tanto 
-debemos instalar las herramientas necesarias.
-   
-Para la instalación de Jenkins, vamos a tener que seguir los siguientes pasos:
+* Estudia las distintas pruebas que se han realizado, y modifica el código de 
+la aplicación (debes modificar el fichero views.py o los templates, no debes 
+cambiar el fichero tests.py para que al menos una de ella no se ejecute de 
+manera exitosa.
 
-1. En primer lugar actualizaremos el sistema e instalaremos OpenJDK 11 ya que
-Jenkins está escrito en Java.
+A continuación vamos a configurar la integración continúa para que cada vez 
+que hagamos un commit se haga la ejecución de test en la herramienta de CI/CD 
+que haya elegido.
+
+* Crea el pipeline en el sistema de CI/CD para que pase automáticamente los 
+tests. Muestra el fichero de configuración y una captura de pantalla con un 
+resultado exitoso de la IC y otro con un error.
+
+A continuación vamos a realziar el despliegue continuo en un servicio de 
+hosting, por ejemplo heroku.
+
+* Entrega un breve descripción de los pasos más importantes para realizar el 
+despliegue desde el sistema de CI/CS y entrega una prueba de funcionamiento 
+donde se compruebe cómo se hace el despliegue automático.
+
+
+En primer lugar, vamos a realizar un fork nuevo del repositorio de 
+_django_tutorial_. Hecho esto, clonamos el repositorio y empezamos la práctica.
 
 ```
-root@debian:~$ apt-get update && apt-get upgrade
-
-root@debian:~$ apt-get install default-jdk
+manuel@debian:/media/manuel/Datos$ sudo git clone git@github.com:ManuelLoraRoman/django_tutorial.git
+[sudo] password for manuel: 
+Clonando en 'django_tutorial'...
+remote: Enumerating objects: 41, done.
+remote: Counting objects: 100% (41/41), done.
+remote: Compressing objects: 100% (34/34), done.
+remote: Total 133 (delta 7), reused 28 (delta 5), pack-reused 92
+Recibiendo objetos: 100% (133/133), 4.25 MiB | 4.99 MiB/s, listo.
+Resolviendo deltas: 100% (31/31), listo.
+manuel@debian:/media/manuel/Datos$
 ```
 
-2. Nos descargamos e importamos las claves GPG del repositorio de Jenkins:
+A continuación, vamos a crear un entorno virtual:
 
 ```
-root@debian:~$ wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add -
+manuel@debian:~/virtualenvs$ python3 -m venv django
+manuel@debian:~/virtualenvs$ source django/bin/activate
+(django) manuel@debian:~/virtualenvs$ 
+```
+
+Instalamos los requerimientos de la aplicación:
+
+```
+(django) manuel@debian:/media/manuel/Datos/django_tutorial$ pip install -r requirements.txt 
+Collecting asgiref==3.3.0 (from -r requirements.txt (line 1))
+  Downloading https://files.pythonhosted.org/packages/c0/e8/578887011652048c2d273bf98839a11020891917f3aa638a0bc9ac04d653/asgiref-3.3.0-py3-none-any.whl
+Collecting Django==3.1.3 (from -r requirements.txt (line 2))
+  Downloading https://files.pythonhosted.org/packages/7f/17/16267e782a30ea2ce08a9a452c1db285afb0ff226cfe3753f484d3d65662/Django-3.1.3-py3-none-any.whl (7.8MB)
+    100% |████████████████████████████████| 7.8MB 245kB/s 
+Collecting pytz==2020.4 (from -r requirements.txt (line 3))
+  Using cached https://files.pythonhosted.org/packages/12/f8/ff09af6ff61a3efaad5f61ba5facdf17e7722c4393f7d8a66674d2dbd29f/pytz-2020.4-py2.py3-none-any.whl
+Collecting sqlparse==0.4.1 (from -r requirements.txt (line 4))
+  Downloading https://files.pythonhosted.org/packages/14/05/6e8eb62ca685b10e34051a80d7ea94b7137369d8c0be5c3b9d9b6e3f5dae/sqlparse-0.4.1-py3-none-any.whl (42kB)
+    100% |████████████████████████████████| 51kB 5.9MB/s 
+Installing collected packages: asgiref, sqlparse, pytz, Django
+Successfully installed Django-3.1.3 asgiref-3.3.0 pytz-2020.4 sqlparse-0.4.1
+(django) manuel@debian:/media/manuel/Datos/django_tutorial$ 
+```
+
+Y ahora vamos a comprobar los test:
+
+```
+(django) manuel@debian:/media/manuel/Datos/django_tutorial$ python3 manage.py test
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.025s
+
 OK
+Destroying test database for alias 'default'...
 ```
 
-Si la salida del comando es OK, entonces seguimos adelante.
-A continuación, debemos añadir el repositorio de Jenkins en nuestro sistema:
+El resultado de la comprobación de los test ha sido correcta. Ahora es el turno
+de modificar la aplicación para que los test nos den ERROR:
+
+Hemos modificado lo siguiente:
+
+* En el fichero _index.html_:
 
 ```
-root@debian:~$ sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_tex$
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
 ```
 
-3. Volvemos a actualizar el sistema e instalamos la última versión de Jenkins:
+A esto:
 
 ```
-root@debian:~$ apt-get update
+{% load static %}
 
-root@debian:~$ apt-get install jenkins
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_tex$
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>hhjsjsjhjdhsjhsjhsdjhdjhsdjhsjhdjh</p>
+{% endif %}
 ```
 
-Y por último, activamos el servicio de Jenkins:
+Y el resultado el siguiente:
 
 ```
-root@debian:~$ systemctl enable --now jenkins
-jenkins.service is not a native service, redirecting to systemd-sysv-install.
-Executing: /lib/systemd/systemd-sysv-install enable jenkins
+(django) manuel@debian:/media/manuel/Datos/django_tutorial$ python3 manage.py test
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+..F.F.....
+======================================================================
+FAIL: test_future_question (polls.tests.QuestionIndexViewTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/manuel/Datos/django_tutorial/polls/tests.py", line 143, in test_future_question
+    self.assertContains(response, "No polls are available.")
+  File "/home/manuel/virtualenvs/django/lib/python3.7/site-packages/django/test/testcases.py", line 470, in assertContains
+    self.assertTrue(real_count != 0, msg_prefix + "Couldn't find %s in response" % text_repr)
+AssertionError: False is not true : Couldn't find 'No polls are available.' in response
+
+======================================================================
+FAIL: test_no_questions (polls.tests.QuestionIndexViewTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/manuel/Datos/django_tutorial/polls/tests.py", line 115, in test_no_questions
+    self.assertContains(response, "No polls are available.")
+  File "/home/manuel/virtualenvs/django/lib/python3.7/site-packages/django/test/testcases.py", line 470, in assertContains
+    self.assertTrue(real_count != 0, msg_prefix + "Couldn't find %s in response" % text_repr)
+AssertionError: False is not true : Couldn't find 'No polls are available.' in response
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.026s
+
+FAILED (failures=2)
+Destroying test database for alias 'default'...
 ```
 
-Ahora vamos a proceder a configurar jenkins.
+Con este error, nos indica que la respuesta debería ser 
+```No polls are available.``` pero dicha respuesta ha cambiado.
 
-Primero de todo debemos introducirnos en nuestro navegador web e introducir 
-nuestra IP seguido del puerto 8080 (localhost:8080):
+Hecho esto, ahora tenemos que escoger un sistema CI/CD, y en nuestro caso, 
+lo haremos con Github Actions.
 
-![alt text](../Imágenes/jenkins1.png)
+Para empezar con Github Actions, debemos dirigirnos a nuestro repositorio en
+Github, y acceder a la pestaña Actions. Una vez ahí, seleccionamos
+la opción de _set up a workflow yourself_. Esto nos permitirá escoger un flujo
+de trabajo predefinido o establecer el nuestro.
 
-Nos aparecerá lo siguiente, y debemos introducir la contraseña de Administrador.
-Dicha contraseña se encuentra en la siguiente ubicación:
+Ahora nos permitirá editar un fichero _main.yml_ que es el equivalente al 
+_.yml_ de travis. Procederemos a editar dicho fichero con la siguiente 
+información:
 
 ```
-root@debian:~$ cat /var/lib/jenkins/secrets/initialAdminPassword
-2b735a84d4504773903c079adbbeb90d
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: debian-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Instalar requirements
+        run: pip install -r requirements.txt
+
+      # Runs a set of commands using the runners shell
+      - name: Ejecutar python3
+        run: python3 manage.py test
 ```
 
-La introducimos y le damos a continuar.
+Y por último, le damos al botón de _Start commit_ para que agregue dicho 
+archivo al repositorio.
 
-![alt text](../Imágenes/jenkins2.png)
-
-A continuación, nos pedirá elegir una de las dos opciones: instalar los
-plugins sugeridos o manualmente. Elegimos la opción de sugeridos y continuará
-a la instalación:
-
-![alt text](../Imágenes/jenkins3.png)
-
-Cuando haya terminado nos aparecerá lo siguiente:
-
-![alt text](../Imágenes/jenkins4.png)
-
-Completamos con los datos que nos parezcan oportunos y le damos a guardar y
-continuar.
-
-![alt text](../Imágenes/jenkins5.png)
-
-En el siguiente paso nos preguntará para una URL para la instancia de Jenkins.
-Dejamos la que viene de manera predeterminada y continuamos:
-
-![alt text](../Imágenes/jenkins6.png)
-
-Y ya tendríamos listo jenkins para su funcionamiento:
-
-![alt text](../Imágenes/jenkins7.png)
-
-Ahora vamos a comprobar que podemos acceder a la configuración del mismo:
-
-![alt text](../Imágenes/jenkins8.png)
-
-* Investiga si podemos desplegar de forma automática en el servicio elegido 
-(si es necesario cambia el servicio de hosting para el despliegue).
-
-
+Ahora, lo único que nos quedaría es comprobar algunos test correctos y otros que
+dan error.
