@@ -37,8 +37,6 @@ no tendríamos socios con los que contar con una aportación.
 
 b. Mediante el alquiler.
 
-
-
 c. Mediante dinero prestado.
 
 Podríamos pedir un préstamo participativo por parte de ENISA. Dicho préstamo
@@ -69,3 +67,8 @@ financiación, aseguramiento legal, desarrollo laboral, etc.
 
 e. Subvenciones. Busqueda de diferentes tipos de ayudas disponibles a nuevos 
 emprendedores, jovenes emprendedores, emprendedores, etc. 
+
+De esta manera, podríamos probar con el plan de jóvenes emprendedores de
+ENISA, el pago único por desempleo (capitalización del paro), el programa
+Innovatia 8.3 cofinanciado por el Fondo Social Europeo, el programa Neotec, etc.
+
