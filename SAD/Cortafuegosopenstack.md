@@ -755,8 +755,8 @@ Running network test between Client=dulcinea-fd and Storage=Vol-Copias with 52.4
 ```
 Permitir correo desde la DMZ
 
-iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir correo desde Dulcinea
 
@@ -765,8 +765,8 @@ iptables -A OUTPUT -o eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j
 
 Permitir envio de correo desde Freston
 
-iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
 ```
 
 ![alt text](../Imágenes/iptablesmail.png)
@@ -784,6 +784,15 @@ Connection closed.
 ```
 
 ```
+[centos@quijote ~]$ telnet 10.0.1.10 25
+Trying 10.0.1.10...
+Connected to 10.0.1.10.
+Escape character is '^]'.
+220 freston.manuel-lora.gonzalonazareno.org ESMTP Postfix (Debian/GNU)
+^]
+telnet> quit
+Connection closed.
+```
 
 ## LDAP/LDAPS
 
@@ -797,4 +806,25 @@ Permitir conexión LDAP/LDAPS desde Dulcinea
 
 iptables -A INPUT -i eth0 -p tcp -m multiport --sports 389,636 -m state --state ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp -m multiport --dports 389,636 -m state --state NEW,ESTABLISHED -j ACCEPT
+```
+
+### Prueba 
+
+```
+[centos@quijote ~]$ telnet 10.0.1.10 389
+Trying 10.0.1.10...
+Connected to 10.0.1.10.
+Escape character is '^]'.
+^]
+telnet> quit
+```
+
+```
+debian@dulcinea:~$ telnet 10.0.1.10 389
+Trying 10.0.1.10...
+Connected to 10.0.1.10.
+Escape character is '^]'.
+^]
+telnet> quit
+Connection closed.
 ```
