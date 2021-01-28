@@ -1,4 +1,4 @@
-ç# Tabla de inversiones y gastos de mi empresa
+# Tabla de inversiones y gastos de mi empresa
 
 El plan de financiación:
 
