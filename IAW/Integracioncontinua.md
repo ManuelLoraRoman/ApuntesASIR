@@ -191,28 +191,27 @@ on:
   pull_request:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
-    runs-on: debian-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Instalar requirements
-        run: pip install -r requirements.txt
-
-      # Runs a set of commands using the runners shell
-      - name: Ejecutar python3
-        run: python3 manage.py test
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Instalar requerimientos
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+      
+    - name: Probar python3
+      run: python3 manage.py test
 ```
 
 Y por último, le damos al botón de _Start commit_ para que agregue dicho 
@@ -220,3 +219,88 @@ archivo al repositorio.
 
 Ahora, lo único que nos quedaría es comprobar algunos test correctos y otros que
 dan error.
+
+* Comprobación correcta
+
+![alt text](../Imágenes/buildcorrecta.png)
+
+* Comprobación cambiando los ficheros como al principio:
+
+![alt text](../Imágenes/buildincorrecta.png)
+
+A continuación, para desplegar en heroku, necesitamos lo siguiente:
+
+* A la hora de desplegar en heroku, necesitamos un método de proveer
+un token de autenticación. Para ello, vamos a irnos a nuestro perfil de
+Heroku y vamos a mirar nuestra API_KEY. Copiamos dicha Key y la ponemos en
+la pestaña _Settings/Secrets_ de nuestro repositorio:
+
+![alt text](../Imágenes/herokusecret.png)
+
+Vamos a crear un nuevo proyecto en heroku y conectarlo con Github (algo
+relativamente trivial).
+
+Una vez hemos hecho esto, vamos a cambiar el fichero main.yml creado
+anteriormente para implementarlo con heroku:
+
+```
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: akhileshns/heroku-deploy@v3.8.9 # This is the action
+      with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "djangotutorialora" #Must be unique in Heroku
+          heroku_email: "manuelloraroman@gmail.com"
+          procfile: "web: npm start"    
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Instalar requerimientos
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
+      
+    - name: Probar python3
+      run: python3 manage.py test
+```
+
+Y por último, vamos a editar el fichero _settings.py_ y vamos a añadirle al
+principio del documento la siguiente línea:
+
+```
+import os
+```
+
+Y al final del mismo lo siguiente:
+
+```
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+```
+
+Y hacemos un git push hacia el repositorio.
+
+![alt text](../Imágenes/herokuci.png)
+
+![alt text](../Imágenes/herokuci2.png)
