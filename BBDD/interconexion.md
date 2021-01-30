@@ -705,15 +705,13 @@ Enlace con la base de datos creado.
 Y comprobamos su funcionamiento:
 
 ```
-SQL> SELECT * FROM "usuario1"@psql1;
+SQL> SELECT * FROM "temporadas"@psql1;
 
-+----------+------------------------------------+
-| codigo   | nombre                             |
-+----------+------------------------------------+
-| 01       | Baja                               |
-| 02       | Alta                               |
-| 03       | Especial                           |
-+----------+------------------------------------+
+CODIGO	  NOMBRE
+--------- -----------------------------------
+01	  Baja
+02	  Alta
+03	  Especial
 
 ```
 
