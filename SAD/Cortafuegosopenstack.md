@@ -387,8 +387,8 @@ pueden utilizar un DNS externo.
 ```
 Permitir hacer consultas desde Freston hacia el exterior
 
-iptables -A FORWARD -s 10.0.1.10 -d 0.0.0.0/24 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 0.0.0.0/24 -d 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 10.0.1.10 -d 0.0.0.0/0 -p udp --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 0.0.0.0/0 -d 10.0.1.10 -p udp --sport 53 -m state --state ESTABLISHED -j ACCEPT
 
 Permitir hacer consultas desde la DMZ hacia Freston
 
