@@ -498,21 +498,15 @@ iptables -A FORWARD -i eth2 -o eth0 -p tcp --sport 514 -m state --state ESTABLIS
 iptables -A INPUT -s 10.0.2.10 -p tcp --sport 514 -j ACCEPT
 iptables -A OUTPUT -d 10.0.2.10 -p tcp --dport 514 -j ACCEPT
 
-* Dulcinea a exterior
-
-iptables -A INPUT -s 0.0.0.0/0 -p tcp -m tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -d 0.0.0.0/0 -p tcp -m tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
-
 * Exterior a DMZ
 
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 514 -j DNAT --to 10.0.2.10
 
-iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 514 -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 514 -j ACCEPT
 
-
-iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 514 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 514 -j ACCEPT
 ```
 
 Y ahora, para comprobar su funcionamiento, vamos a enviar un mensaje desde
