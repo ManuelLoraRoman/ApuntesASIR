@@ -35,29 +35,8 @@ Prometheus utiliza el puerto 9090, por lo tanto, tendríamos que incorporar
 nuevas reglas en nuestro cortafuegos en Dulcinea y en el propio cortafuegos
 de Quijote.
 
-Las reglas que vamos a añadir en el cortafuegos de Dulcinea son los
-siguientes:
-
-LAs 4 primeras son las unicas que he puesto y no funcionan
-
 ```
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 9090 -j DNAT --to 10.0.2.10
-
-* DMZ a red interna
-
-
-
-* DMZ a Dulcinea 
-
-iptables -A INPUT -i eth2 -p tcp --sport 9090 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -o eth2 -p tcp --dport 9090 -m state --state ESTABLISHED -j ACCEPT
-
-* DMZ al exterior y viceversa
-
-
-
-
-correcta
 
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 9090 -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 9090 -m state --state ESTABLISHED -j ACCEPT
@@ -67,6 +46,10 @@ Y en Quijote debemos realizar adicionalmente:
 
 ```
 [centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-port 9090/tcp
+success
+[centos@quijote ~]$ sudo firewall-cmd --reload
+success
+[centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-port 9100/tcp
 success
 [centos@quijote ~]$ sudo firewall-cmd --reload
 success
@@ -233,11 +216,327 @@ Ahora podremos acceder a Prometheus mediante la web:
 ![alt text](../Imágenes/prometheus.png)
 
 Con esto, tendríamos ya configurado el servidor Prometheus. Pero las gráficas 
-mostradas son solo de Quijote. Para mostrar las demás máquinas, debemos 
-editar de nuevo el fichero _prometheus.yml_ y cambiamos el siguiente parámetro:
-
+mostradas son solo de Quijote. Para mostrar las demás máquinas, debemos instalar 
+el paquete _node exporter_. Para ello, vamos a hacer lo mismo que cuando 
+instalamos prometheus. Nos vamos a la página de Prometheus
+y nos descargamos la versión de Linux:
 
 ```
-- targets: ['localhost:9090','10.0.1.10:9090','10.0.1.11:9090','10.0.2.11:9090','146.59.196.92:9090']
+[centos@quijote ~]$ curl -LO url -LO https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+curl: Remote file name has no length!
+curl: try 'curl --help' or 'curl --manual' for more information
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   642  100   642    0     0    524      0  0:00:01  0:00:01 --:--:--   524
+100 9297k  100 9297k    0     0  3101k      0  0:00:02  0:00:02 --:--:-- 5764k
+[centos@quijote tmp]$ ls
+node_exporter-1.0.1.linux-amd64.tar.gz
+systemd-private-30531daec3cd45b8aacf947f06994c4c-chronyd.service-sRDyYS
+systemd-private-30531daec3cd45b8aacf947f06994c4c-httpd.service-JYr0pp
+systemd-private-30531daec3cd45b8aacf947f06994c4c-php-fpm.service-pLTxF8
+systemd-private-30531daec3cd45b8aacf947f06994c4c-postfix.service-YYeCcG
 ```
 
+Lo descomprimimos y movemos el binario hacia el directorio _/usr/local/bin/_:
+
+```
+[centos@quijote ~]$ tar -xvf node_exporter-1.0.1.linux-amd64.tar.gz 
+node_exporter-1.0.1.linux-amd64/
+node_exporter-1.0.1.linux-amd64/NOTICE
+node_exporter-1.0.1.linux-amd64/node_exporter
+node_exporter-1.0.1.linux-amd64/LICENSE
+[centos@quijote ~]$ sudo mv node_exporter-1.0.1.linux-amd64/node_exporter /usr/local/bin/
+```
+
+Vamos a crear un usuario y un servicio para _node_exporter_:
+
+```
+[centos@quijote ~]$ sudo useradd -rs /bin/false node_exporter
+[centos@quijote ~]$ sudo nano /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Recargamos la configuración de systemd e iniciamos el servicio:
+
+```
+[centos@quijote ~]$ sudo systemctl daemon-reload
+[centos@quijote ~]$ sudo systemctl start node_exporter
+[centos@quijote ~]$ sudo systemctl enable node_exporter
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+```
+
+Y comprobamos el status:
+
+```
+[centos@quijote ~]$ sudo systemctl status node_exporter.service
+● node_exporter.service - Node Exporter
+   Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2021-02-02 11:04:13 UTC; 1min 17s ago
+ Main PID: 48850 (node_exporter)
+    Tasks: 3 (limit: 2731)
+   Memory: 10.5M
+   CGroup: /system.slice/node_exporter.service
+           └─48850 /usr/local/bin/node_exporter
+
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=thermal_zone
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=time
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=timex
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=udp_queues
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=uname
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=vmstat
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=xfs
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:112 collector=zfs
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=node_exporter.go:191 msg="Listening on" address=:9100
+Feb 02 11:04:13 quijote node_exporter[48850]: level=info ts=2021-02-02T11:04:13.424Z caller=tls_config.go:170 msg="TLS is disabled and it cannot be enabled on the fly." http2=false
+```
+
+Este proceso, debemos hacerlo en cada máquina. Una vez terminada la instalación
+en las tres máquinas, procedemos a configurar de nuevo Quijote.
+
+
+A continuación, vamos a añadir al fichero _prometheus.yml_ las 
+siguientes líneas de configuración:
+
+```
+global:
+  scrape_interval: 5m
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5m
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter_metrics'
+    scrape_interval: 5m
+    static_configs:
+      - targets: ['10.0.1.10:9100','10.0.1.11:9100','10.0.2.11:9100','146.59.196.92:9100']
+```
+
+Por último, vamos a configurar las reglas iptables para
+poder conectar:
+
+```
+* Red interna a DMZ y viceversa
+
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 9100 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --sport 9100 -m state --state ESTABLISHED -j ACCEPT
+
+
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 9100 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --sport 9100 -m state --state ESTABLISHED -j ACCEPT
+
+* Dulcinea a DMZ
+
+iptables -A INPUT -s 10.0.2.10 -p tcp --sport 9100 -j ACCEPT
+iptables -A OUTPUT -d 10.0.2.10 -p tcp --dport 9100 -j ACCEPT
+
+iptables -A INPUT -s 10.0.2.10 -p tcp --dport 9100 -j ACCEPT
+iptables -A OUTPUT -d 10.0.2.10 -p tcp --sport 9100 -j ACCEPT
+
+
+* Exterior a DMZ
+
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 9100 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 9100 -m state --state ESTABLISHED -j ACCEPT
+
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 9100 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 9100 -m state --state ESTABLISHED -j ACCEPT
+```
+
+E introducidas las reglas en el cortafuegos, reiniciamos el servicio prometheus
+y accedemos a la página:
+
+![alt text](../Imágenes/prometheus2.png)
+
+![alt text](../Imágenes/prometheus3.png)
+
+
+
+Ahora pasaremos a la instalación de rsyslog.
+
+Vamos a comprobar que disponemos del servicio de manera predeterminada
+en nuestro sistema CentOS 8:
+
+```
+[centos@quijote ~]$ sudo systemctl status rsyslog
+● rsyslog.service - System Logging Service
+   Loaded: loaded (/usr/lib/systemd/system/rsyslog.service; enabled; vendor pre>
+   Active: active (running) since Mon 2021-02-01 16:33:22 UTC; 22h ago
+     Docs: man:rsyslogd(8)
+           https://www.rsyslog.com/doc/
+ Main PID: 8896 (rsyslogd)
+    Tasks: 3 (limit: 2731)
+   Memory: 2.8M
+   CGroup: /system.slice/rsyslog.service
+           └─8896 /usr/sbin/rsyslogd -n
+
+Feb 01 16:33:22 quijote systemd[1]: Starting System Logging Service...
+Feb 01 16:33:22 quijote rsyslogd[8896]: [origin software="rsyslogd" swVersion=">
+Feb 01 16:33:22 quijote systemd[1]: Started System Logging Service.
+Feb 01 16:33:22 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+Feb 01 16:36:01 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+Feb 01 16:37:07 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+Feb 01 16:38:06 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+Feb 02 09:40:40 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+Feb 02 09:40:40 quijote rsyslogd[8896]: imjournal: journal files changed, reloa>
+lines 1-20/20 (END)
+```
+
+Como ya lo tenemos instalado, vamos a pasar al siguiente punto, descomentando
+las siguientes líneas del fichero _/etc/rsyslog.conf_:
+
+```
+# Provides TCP syslog reception
+# for parameters see http://www.rsyslog.com/doc/imtcp.html
+module(load="imtcp") # needs to be done just once
+input(type="imtcp" port="514")
+```
+
+Si preferimos conexión udp, descomentamos este otro par de líneas:
+
+```
+# Provides UDP syslog reception
+# for parameters see http://www.rsyslog.com/doc/imudp.html
+#module(load="imudp") # needs to be done just once
+#input(type="imudp" port="514")
+```
+
+Adicionalmente, vamos a añadir las siguientes líneas justo después
+de la sección ```#RULES#```:
+
+```
+$template TmplAuth, "/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"
+$template TmplMsg, "/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"
+authpriv.*   ?TmplAuth
+*.info,mail.none,authpriv.none,cron.none   ?TmplMsg
+```
+
+Guardamos los cambios y vamos a crear el directorio para los logs:
+
+```
+[centos@quijote ~]$ sudo mkdir /var/log/rsyslog
+```
+
+Incluimos el puerto 514 en el firewall de Quijote:
+
+```
+[centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-port=514/tcp
+success
+[centos@quijote ~]$ sudo firewall-cmd --reload
+success
+```
+
+Y reiniciamos el servicio de rsyslog y habilitamos el inicio en el arranque:
+
+```
+[centos@quijote ~]$ sudo systemctl restart rsyslog
+[centos@quijote ~]$ sudo systemctl enable rsyslog
+```
+
+Haciendo ```netstat -pnltu``` podemos ver que efectivamos Rsyslog está
+escuchando en el puerto 514:
+
+```
+[centos@quijote ~]$ sudo netstat -pnltu
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 0.0.0.0:514             0.0.0.0:*               LISTEN      49583/rsyslogd      
+tcp        0      0 0.0.0.0:9102            0.0.0.0:*               LISTEN      1948/bacula-fd      
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/systemd           
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      9038/sshd           
+tcp6       0      0 ::1:25                  :::*                    LISTEN      1374/master         
+tcp6       0      0 :::443                  :::*                    LISTEN      1061/httpd          
+tcp6       0      0 :::514                  :::*                    LISTEN      49583/rsyslogd      
+tcp6       0      0 :::9090                 :::*                    LISTEN      49464/prometheus    
+tcp6       0      0 :::9100                 :::*                    LISTEN      49026/node_exporter 
+tcp6       0      0 :::111                  :::*                    LISTEN      1/systemd           
+tcp6       0      0 :::80                   :::*                    LISTEN      1061/httpd          
+tcp6       0      0 :::22                   :::*                    LISTEN      9038/sshd           
+udp        0      0 127.0.0.1:323           0.0.0.0:*                           717/chronyd         
+udp        0      0 0.0.0.0:111             0.0.0.0:*                           1/systemd           
+udp6       0      0 ::1:323                 :::*                                717/chronyd         
+udp6       0      0 :::111                  :::*                                1/systemd         
+```
+
+Ya tendríamos configurado el servidor de Rsyslog en Quijote. Ahora vamos
+a configurar las demás máquinas. El procedimiento a seguir es el siguiente:
+
+1. Instalación del paquete rsyslog en caso de no estar instalado.
+
+2. Editar el fichero _/etc/rsyslog.conf_ y añadir la siguiente línea
+al final del mismo:
+
+```
+*. *  @@quijote.manuel-lora.gonzalonazareno.org:514
+```
+
+Haremos lo siguiente para todas las máquinas. Después de esto, tenemos
+que permitir el paso de las conexiones mediante el cortafuegos:
+
+```
+* Red interna a DMZ
+
+iptables -A FORWARD -i eth0 -o eth2 -p tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -p tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+
+* Dulcinea a DMZ
+
+iptables -A INPUT -s 10.0.2.10 -p tcp --sport 514 -j ACCEPT
+iptables -A OUTPUT -d 10.0.2.10 -p tcp --dport 514 -j ACCEPT
+
+* Dulcinea a exterior
+
+iptables -A INPUT -s 0.0.0.0/0 -p tcp -m tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 0.0.0.0/0 -p tcp -m tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+
+* Exterior a DMZ
+
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 514 -j DNAT --to 10.0.2.10
+
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+
+
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 514 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 514 -m state --state ESTABLISHED -j ACCEPT
+```
+
+Y ahora, para comprobar su funcionamiento, vamos a enviar un mensaje desde
+los clientes, y Quijote debería de verlo:
+
+```
+debian@dulcinea:~$ logger "Hola, esto es una prueba"
+
+[root@quijote centos]# tail -f /var/log/rsyslog/dulcinea/debian.log 
+Feb  2 16:07:40 dulcinea debian: Hola, esto es una prueba
+```
+
+```
+debian@freston:~$ logger "Esto es una prueba"
+
+[root@quijote centos]# tail -f /var/log/rsyslog/freston/debian.log 
+Feb  2 16:20:15 freston debian: Esto es una prueba
+```
+
+```
+ubuntu@sancho:~$ logger "Hola esto es una prueba"
+
+[root@quijote centos]# tail -f /var/log/rsyslog/sancho/ubuntu.log 
+Feb  2 16:20:10 sancho ubuntu: Hola esto es una prueba
+```
+
+```
