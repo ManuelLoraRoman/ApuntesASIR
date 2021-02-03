@@ -532,4 +532,25 @@ ubuntu@sancho:~$ logger "Hola esto es una prueba"
 Feb  2 16:20:10 sancho ubuntu: Hola esto es una prueba
 ```
 
-La máquina de OVH no es capaz de enviar los ficheros de logs
+La máquina de OVH no es capaz de enviar los ficheros de logs al
+servidor puesto que está en una red interna. 
+
+Investigando sobre este incidente y hablando con algún profesor,
+he llegado a la conclusión que el funcionamiento de rsyslog
+solo permite a los clientes el envío de logs al servidor, y
+no a este mismo de recolectarlos.
+
+Según la documentación de rsyslog en la versión v.8-stable,
+rsyslog es capaz de:
+
+* Aceptar entrada de las diferentes máquinas origen.
+
+* Transformar esas peticiones.
+
+* Y capaz de manejar dichos resultados.
+
+Las opciones que manejabamos hacer era configurar en otra
+máquina el servidor rsyslog, pero nos encontraríamos con el
+mismo problema, o realizar un túnel ssh, pero esta última
+solución requiere que se haga la conexión desde OVH y no
+desde Dulcinea como teníamos planteado hacer.
