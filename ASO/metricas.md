@@ -502,7 +502,6 @@ iptables -A OUTPUT -d 10.0.2.10 -p tcp --dport 514 -j ACCEPT
 
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 514 -j DNAT --to 10.0.2.10
 
-
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 514 -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 514 -j ACCEPT
 
