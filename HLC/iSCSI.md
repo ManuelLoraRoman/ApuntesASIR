@@ -32,4 +32,31 @@ initiator. Tenemos varias opciones:
 
 * scst
 
+## Demo y comandos
+
+Creación de dos máquinas y a una de ellas se le ha asignado 3 dispositivos de
+bloques. Usaremos tgt para el server y open-iscsi para el cliente.
+
+```
+tgtadm --lld iscsi --op new --mode target --tid 1 -T iqn.2020-01.es.tinaja:target1
+
+tgtadm --lld iscsi --op delete --mode target --tid 1
+
+tgtadm --lld iscsi --op new --mode logicalunit --tid 1 --lun 1 -b /dev/vdb
+tgtadm --lld iscsi --op new --mode logicalunit --tid 1 --lun 2 -b /dev/vdc
+tgtadm --lld iscsi --op new --mode logicalunit --tid 1 --lun 2 -b /dev/vdd
+
+tgtadm --lld iscsi --op show --mode target
+
+tgtadm --lld iscsi --op bind --mode target --tid 1 -I ALL
+
+El initiator se encuentra _/etc/iscsi/initiatorname.iscsi_.
+
+iscsiadm --mode discovery --type sendtargets --portal iscsi1
+
+iscsiadm --mode node -T iqn.2020-01.es.tinaja:target1 --portal iscsi1 --login
+
+Y cuando haces un lsblk tienes los tres dispositivos configurados anteriormente.
+```
+
 
