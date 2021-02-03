@@ -502,6 +502,10 @@ iptables -A OUTPUT -d 10.0.2.10 -p tcp --dport 514 -j ACCEPT
 
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 514 -j DNAT --to 10.0.2.10
 
+
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 514 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 514 -j ACCEPT
+
 ```
 
 Y ahora, para comprobar su funcionamiento, vamos a enviar un mensaje desde
@@ -528,4 +532,4 @@ ubuntu@sancho:~$ logger "Hola esto es una prueba"
 Feb  2 16:20:10 sancho ubuntu: Hola esto es una prueba
 ```
 
-```
+La máquina de OVH no es capaz de enviar los ficheros de logs

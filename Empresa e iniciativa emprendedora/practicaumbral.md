@@ -21,3 +21,9 @@ En esta práctica se trata pues de recoger los siguientes datos:
 Tras el cálculo de rentabilidad, debemos responder a la pregunta: 
 
 ¿Con qué nivel de producción la empresa produce beneficios? ¿Y pérdidas? 
+
+
+No vamos a contabilizar las inversiones en el coste fijo, ya que es un
+gasto inicial,por lo tanto cogemos los gastos:
+
+* Coste fijo --> 1580 € 
