@@ -538,3 +538,23 @@ debian@pandora:~$ logger "Hola esto es una prueba"
 Feb  3 13:10:27 pandora debian: Hola esto es una prueba
 ```
 
+La configuración en el servidor rsyslog para que nos avise mediante email
+debe incluirse en el fichero _/etc/rsyslog.conf_ y tiene la siguiente
+estructura:
+
+```
+module(load="ommail")
+
+template (name="mailBody"  type="string" string="RSYSLOG Alert\\r\\nmsg='%msg%'")
+template (name="mailSubject" type="string" string="disk problem on %hostname%")
+
+if $msg contains "hard disk fatal failure" then {
+   action(type="ommail" server="root@manuel-lora.gonzalonazareno.org" port="25"
+          mailfrom="root@manuel-lora.gonzalonazareno.org"
+          mailto="manuelloraroman@gmail.com"
+          subject.template="mailSubject"
+          action.execonlyonceeveryinterval="7200")
+}
+```
+
+Dicho módulo permite enviar un correo al 

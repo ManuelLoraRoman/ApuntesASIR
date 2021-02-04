@@ -460,7 +460,6 @@ Processing triggers for libc-bin (2.28-10) ...
 Processing triggers for dovecot-core (1:2.3.4.1-5+deb10u4) ...
 ```
 
-Y a continuación, instalamos el paquete de maildir:
 
 * Tarea 9: Instala configura dovecot para ofrecer el protocolo IMAP. Configura 
 dovecot de manera adecuada para ofrecer autentificación y cifrado.
