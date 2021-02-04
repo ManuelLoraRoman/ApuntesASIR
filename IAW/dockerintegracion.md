@@ -61,3 +61,28 @@ docker build --> sirve para crear imágenes propias
 
 docker ps -a -s --> ver cuanto ocupa
 ```
+
+Cuando creas un volumen docker, es el propio docker quien crea un directorio
+y lo monta donde le da la gana. Es el propio docker quien tiene control sobre
+él. Sin embargo un bind mounts, no deja montar a docker el volumen, montamos
+nosotros el directorio que queramos.
+
+Trabajando con volúmenes docker:
+
+```
+docker volume ls
+
+docker volume prune
+
+docker volume create
+
+docker volume rm
+
+docker volume inspect
+```
+
+Tendriamos que tener cuidado a la hora de montar directorios en ciertas
+imágenes, por eso debemos informarnos de eso, para saber que directorios son
+importantes en los servicios ofrecidos (base de datos, web, etc.)
+
+
