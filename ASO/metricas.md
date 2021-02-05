@@ -662,3 +662,110 @@ receivers:
       - to: 'manuelloraroman@gmail.com'
 ```
 
+Y volvemos a asignarle el propietario indicado:
+
+```
+[centos@quijote ~]$ sudo chown alertmanager:alertmanager -R /etc/alertmanager
+```
+
+A continuación, vamos a crear un servicio en systemd:
+
+```
+
+
+[Unit]
+Description=Alertmanager
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=alertmanager
+Group=alertmanager
+Type=simple
+WorkingDirectory=/etc/alertmanager/
+ExecStart=/usr/local/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Y configuraremos también el .yml de Prometheus, añadiéndole las siguientes
+líneas:
+
+```
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets: ['localhost:9093']
+```
+
+A continuación, recargamos el demonio de systemd y reiniciamos los servicios:
+
+```
+[centos@quijote ~]$ sudo systemctl daemon-reload
+[centos@quijote ~]$ sudo systemctl restart prometheus
+[centos@quijote ~]$ sudo systemctl restart alertmanager
+[centos@quijote ~]$ sudo systemctl enable alertmanager
+Created symlink /etc/systemd/system/multi-user.target.wants/alertmanager.service → /etc/systemd/system/alertmanager.service.
+[centos@quijote ~]$ sudo systemctl status prometheus
+● prometheus.service - Prometheus
+   Loaded: loaded (/etc/systemd/system/prometheus.service; disabled; vendor preset: disabled)
+   Active: active (running) since Fri 2021-02-05 09:55:08 UTC; 26s ago
+ Main PID: 56969 (prometheus)
+    Tasks: 7 (limit: 2731)
+   Memory: 64.0M
+   CGroup: /system.slice/prometheus.service
+           └─56969 /usr/local/bin/prometheus --config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/lib/prometheus --web.console.templates=/etc/prometheus/consoles --web.console.libraries=/etc/pr>
+
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.437Z caller=head.go:717 component=tsdb msg="WAL segment loaded" segment=54 maxSegment=57
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.500Z caller=head.go:717 component=tsdb msg="WAL segment loaded" segment=55 maxSegment=57
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.515Z caller=head.go:717 component=tsdb msg="WAL segment loaded" segment=56 maxSegment=57
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.515Z caller=head.go:717 component=tsdb msg="WAL segment loaded" segment=57 maxSegment=57
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.515Z caller=head.go:722 component=tsdb msg="WAL replay completed" checkpoint_replay_duration=36.403857ms wal_replay_duration=105.4570>
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.521Z caller=main.go:758 fs_type=XFS_SUPER_MAGIC
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.521Z caller=main.go:761 msg="TSDB started"
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.521Z caller=main.go:887 msg="Loading configuration file" filename=/etc/prometheus/prometheus.yml
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.521Z caller=main.go:918 msg="Completed loading of configuration file" filename=/etc/prometheus/prometheus.yml totalDuration=787.937µs>
+Feb 05 09:55:10 quijote prometheus[56969]: level=info ts=2021-02-05T09:55:10.522Z caller=main.go:710 msg="Server is ready to receive web requests."
+[centos@quijote ~]$ sudo systemctl status alertmanager
+● alertmanager.service - Alertmanager
+   Loaded: loaded (/etc/systemd/system/alertmanager.service; disabled; vendor preset: disabled)
+   Active: active (running) since Fri 2021-02-05 09:55:14 UTC; 5min ago
+ Main PID: 56982 (alertmanager)
+    Tasks: 6 (limit: 2731)
+   Memory: 30.0M
+   CGroup: /system.slice/alertmanager.service
+           └─56982 /usr/local/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml
+
+Feb 05 09:55:14 quijote systemd[1]: Started Alertmanager.
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.185Z caller=main.go:216 msg="Starting Alertmanager" version="(version=0.21.0, branch=HEAD, revision=4c6c03ebfe21009c546e4d1e9b92c37>
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.185Z caller=main.go:217 build_context="(go=go1.14.4, user=root@dee35927357f, date=20200617-08:54:02)"
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.188Z caller=cluster.go:161 component=cluster msg="setting advertise address explicitly" addr=10.0.2.10 port=9094
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.249Z caller=cluster.go:623 component=cluster msg="Waiting for gossip to settle..." interval=2s
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.261Z caller=coordinator.go:119 component=configuration msg="Loading configuration file" file=/etc/alertmanager/alertmanager.yml
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.261Z caller=coordinator.go:131 component=configuration msg="Completed loading of configuration file" file=/etc/alertmanager/alertma>
+Feb 05 09:55:15 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:15.269Z caller=main.go:485 msg=Listening address=:9093
+Feb 05 09:55:17 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:17.249Z caller=cluster.go:648 component=cluster msg="gossip not settled" polls=0 before=0 now=1 elapsed=2.000073093s
+Feb 05 09:55:25 quijote alertmanager[56982]: level=info ts=2021-02-05T09:55:25.251Z caller=cluster.go:640 component=cluster msg="gossip settled; proceeding" elapsed=10.001382418s
+```
+
+Añadimos las reglas iptables pertinentes:
+
+```
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 9093 -j DNAT --to 10.0.2.10
+
+iptables -A FORWARD -i eth1 -o eth2 -p tcp --dport 9093 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth1 -p tcp --sport 9093 -m state --state ESTABLISHED -j ACCEPT
+```
+
+```
+[centos@quijote ~]$ sudo firewall-cmd --zone=public --permanent --add-port=9093/tcp
+success
+[centos@quijote ~]$ sudo firewall-cmd --reload
+success
+```
+
+Y ya deberíamos poder acceder al servicio de alertas en la propia página de 
+Prometheus:
+
+![alt text](../Imágenes/alertmanager.png)
