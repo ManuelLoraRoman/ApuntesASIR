@@ -753,6 +753,12 @@ Running network test between Client=dulcinea-fd and Storage=Vol-Copias with 52.4
 ## Correo
 
 ```
+Permitir correo desde Freston hacia papion
+
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --dport 25 -d 192.168.203.3 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth0 -p tcp --sport 25 -s 192.168.203.3 -m state --state ESTABLISHED -j ACCEPT
+
+
 Permitir correo desde la DMZ
 
 iptables -A FORWARD -i eth2 -o eth0 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT

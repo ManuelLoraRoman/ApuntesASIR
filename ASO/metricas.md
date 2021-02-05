@@ -589,3 +589,76 @@ iptables -A FORWARD -i eth2 -o eth1 -p tcp --dport 25 -j ACCEPT
 iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 25 -j ACCEPT
 ```
 
+Y ya nos enviaría un mensaje al email en cualquiera de los casos anteriores.
+
+![alt text](../Imágenes/correorsyslog.png)
+
+Por último, vamos a configurar Alertmanager para que nos notifique via email
+cuando alguno de los nodos se caiga.
+
+Vamos a descargarnos el paquete al igual que con prometheus, y descomprimirlo:
+
+```
+[centos@quijote ~]$ curl -LO curl -LO https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
+curl: Remote file name has no length!
+curl: try 'curl --help' or 'curl --manual' for more information
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   644  100   644    0     0    471      0  0:00:01  0:00:01 --:--:--   471
+100 24.5M  100 24.5M    0     0  3858k      0  0:00:06  0:00:06 --:--:-- 5865k
+[centos@quijote ~]$ ls
+alertmanager-0.21.0.linux-amd64.tar.gz  node_exporter-1.0.1.linux-amd64
+ifcfg-eth0                              prometheus-files
+mikey.pubkey
+[centos@quijote ~]$ tar -xvf alertmanager-0.21.0.linux-amd64.tar.gz 
+alertmanager-0.21.0.linux-amd64/
+alertmanager-0.21.0.linux-amd64/alertmanager
+alertmanager-0.21.0.linux-amd64/amtool
+alertmanager-0.21.0.linux-amd64/NOTICE
+alertmanager-0.21.0.linux-amd64/LICENSE
+alertmanager-0.21.0.linux-amd64/alertmanager.yml
+[centos@quijote ~]$ ls
+alertmanager-0.21.0.linux-amd64         mikey.pubkey
+alertmanager-0.21.0.linux-amd64.tar.gz  node_exporter-1.0.1.linux-amd64
+ifcfg-eth0                              prometheus-files
+[centos@quijote ~]$ rm alertmanager-0.21.0.linux-amd64.tar.gz 
+```
+
+Movemos los binarios del directorio recién descomprimido al directorio 
+_/usr/local/bin_ y le asignamos los propietarios adecuados (para ello, vamos a
+crear el usuario alertamanager):
+
+```
+[centos@quijote ~]$ sudo useradd --no-create-home --shell /bin/false alertmanager
+[centos@quijote ~]$ sudo mv alertmanager-0.21.0.linux-amd64/alertmanager /usr/local/bin/
+[centos@quijote ~]$ sudo mv alertmanager-0.21.0.linux-amd64/amtool /usr/local/bin/
+[centos@quijote ~]$ sudo chown alertmanager:alertmanager /usr/local/bin/alertmanager 
+[centos@quijote ~]$ sudo chown alertmanager:alertmanager /usr/local/bin/amtool 
+```
+
+Y ya podriamos eliminar el directorio descomprimido. Ahora pasaremos a la
+configuración del propio Alertmanager.
+
+Primero crearemos el directorio adecuado y acto seguido, crearemos un fichero
+_alertmanager.yml_ que tendrá la siguiente configuración:
+
+```
+global:
+  smtp_smarthost: 'localhost:25'
+  smtp_from: 'AlertManager <mailer@domain.com>'
+  smtp_hello: 'alertmanager'
+
+
+route:
+  group_by: ['instance', 'alert']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: team-1
+
+receivers:
+  - name: 'team-1'
+    email_configs:
+      - to: 'manuelloraroman@gmail.com'
+```
+
