@@ -460,7 +460,129 @@ Processing triggers for libc-bin (2.28-10) ...
 Processing triggers for dovecot-core (1:2.3.4.1-5+deb10u4) ...
 ```
 
-Ahora, nos dirigimos hacia el directorio _/etc
+Ahora, nos dirigimos hacia el directorio _/etc/dovecot/conf.d/_ y modificamos
+el fichero _10-mail.conf_:
+
+```
+mail_location = maildir:~/Maildir
+```
+
+De esta manera podriamos guardar los mensajes en el directorio de Maildir. A 
+su vez, también debemos configurar el fichero _/etc/postfix/main.cf_ y 
+añadir las siguientes líneas:
+
+```
+home_mailbox = Maildir/
+mailbox_command =
+```
+
+De esta manera, se creará un directorio _~/Maildir_ que recibirá los correos:
+
+```
+debian@pandora:~/Maildir$ ls
+cur  new  tmp
+debian@pandora:~/Maildir$ cd new
+debian@pandora:~/Maildir/new$ ls
+1612516548.V801I42371M952999.pandora.iesgn10.es
+debian@pandora:~/Maildir/new$ cat 1612516548.V801I42371M952999.pandora.iesgn10.es 
+Return-Path: <manuelloraroman@gmail.com>
+X-Original-To: debian@pandora.iesgn10.es
+Delivered-To: debian@pandora.iesgn10.es
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	by pandora.iesgn10.es (Postfix) with ESMTPS id E6A3E81B0C
+	for <debian@pandora.iesgn10.es>; Fri,  5 Feb 2021 09:15:48 +0000 (UTC)
+Received: by mail-wr1-f41.google.com with SMTP id 7so6883351wrz.0
+        for <debian@pandora.iesgn10.es>; Fri, 05 Feb 2021 01:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Q+8oe7O3kSgMBbJdBaqa+zeQT8hLFSMFPgazn3jdb5U=;
+        b=gzcfbp8Gzjklx9DlTAt3FXDKJtodXf6cOtrNWcm85dn15AVT8zK8GEmTM24Q1zBkBq
+         gOEBBR+lfN9963dstcX90o636zkK0dnzX/jR+hHzTgQU1qZ51+BaCPYnmDehdHgXjz/A
+         sCReFpjYMigsl8n0N2TvDJ/wc/7/2bxjgCUY6UZod8KhCuO2vl9mgnPn59Ww7xbtDxzK
+         bH419V7Nf88uOJFX7yfmVlUeINyVtQCSJsK7B7aBMZ+Y1hc+dsSjwu7RtRUiwLO1u1Df
+         O9qlYQUiJznnyL/4ZDaQNFCAcIqfwIAP2c4tMjA5YeVZTnBHA995u0QrwE45jSB4xNkQ
+         h4rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Q+8oe7O3kSgMBbJdBaqa+zeQT8hLFSMFPgazn3jdb5U=;
+        b=g7nzY3uwxc5h6SS2FDPvUsleL6fPqJ+vZ9STRRa6bIzNgCiSTQNgsxtzBICEn7Qnuv
+         xVJeUnscR/R6CLfOAZoPwkz85RhNQCqIKfda8jWciM2VC9CEeKEtdA/QcSItuMDDK7V5
+         Zb1+WWPcd1bNGs8R68P68cT/ln4qYtloPDMpdnjiAKke6Jyp/SjiOx1iJTAbsq6IE5cm
+         bOsj904yELaosRogBHNWvEkjtcrk20aWvFRajWK45KCPtdF4ga5jq9WaXX4vxm3/+Wfb
+         wEdqRsMxZPD6jLuTG3ZnT9cQACjwQ+p802x+5g9H539JlK1fb1vzj7bswz5wh0sJHfCC
+         UY1w==
+X-Gm-Message-State: AOAM530i8JUoN8V/1rFQuGuUG+9pDzu2NzT+jRRY+6CyKDhPID2O+IVi
+	/lLZYJTRtgNGvUvQNhlC5CLxoIjv+DPgCZp3ofDtq2Q9jTY=
+X-Google-Smtp-Source: ABdhPJwWdMwB0EVlU7Xs3zeouhoDhFjROPGUrvov7Ld8tLIRxD28MELPD2e2w8CSSwWtoDH6PRJjsRNCcXhivsN/p8U=
+X-Received: by 2002:adf:ed02:: with SMTP id a2mr3827793wro.197.1612516548170;
+ Fri, 05 Feb 2021 01:15:48 -0800 (PST)
+MIME-Version: 1.0
+From: =?UTF-8?Q?Manuel_Lora_Rom=C3=A1n?= <manuelloraroman@gmail.com>
+Date: Fri, 5 Feb 2021 10:15:37 +0100
+Message-ID: <CAKFDburWmj1F_Tt0h=gOBjydcL-5=-cVXEX7uA_n3ba+8necKA@mail.gmail.com>
+Subject: Hola prueba
+To: debian@pandora.iesgn10.es
+Content-Type: multipart/alternative; boundary="0000000000000c540805ba934434"
+
+--0000000000000c540805ba934434
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hola pruebita
+<https://about.me/manuelloraroman?promo=3Demail_sig&utm_source=3Dproduct&ut=
+m_medium=3Demail_sig&utm_campaign=3Dgmail_api&utm_content=3Dthumb>
+Manuel Lora Rom=C3=A1n
+about.me/manuelloraroman
+<https://about.me/manuelloraroman?promo=3Demail_sig&utm_source=3Dproduct&ut=
+m_medium=3Demail_sig&utm_campaign=3Dgmail_api&utm_content=3Dthumb>
+
+--0000000000000c540805ba934434
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hola pruebita<br clear=3D"all"><div><div><div dir=3D"ltr" =
+class=3D"gmail_signature" data-smartmail=3D"gmail_signature"><table cellspa=
+cing=3D"0" cellpadding=3D"0" border=3D"0">
+    <tbody>
+        <tr>
+            <td style=3D"line-height:0;vertical-align:bottom;padding-right:=
+10px;padding-top:20px;padding-bottom:20px" width=3D"107" valign=3D"bottom" =
+align=3D"left">
+                <a href=3D"https://about.me/manuelloraroman?promo=3Demail_s=
+ig&amp;utm_source=3Dproduct&amp;utm_medium=3Demail_sig&amp;utm_campaign=3Dg=
+mail_api&amp;utm_content=3Dthumb" style=3D"text-decoration:none" target=3D"=
+_blank">
+                    <img src=3D"https://thumbs.about.me/thumbnail/users/m/a=
+/n/manuelloraroman_emailsig.jpg?_1522769628_985" alt=3D"" style=3D"margin:0=
+;padding:0;display:block;border:1px solid #eeeeee" width=3D"105" height=3D"=
+70">
+                </a>
+            </td>
+            <td style=3D"line-height:1.1;vertical-align:bottom;padding-top:=
+20px;padding-bottom:20px" valign=3D"bottom" align=3D"left">
+                <img src=3D"https://about.me/t/sig?u=3Dmanuelloraroman" sty=
+le=3D"border:0;margin:0;padding:0;width:1;height:1;overflow:hidden" width=
+=3D"1" height=3D"1">
+                <div style=3D"font-size:18px;font-weight:bold;color:#333333=
+;font-family:&#39;Proxima Nova&#39;,Helvetica,Arial,sans-serif!important">M=
+anuel Lora Rom=C3=A1n</div>
+                <a href=3D"https://about.me/manuelloraroman?promo=3Demail_s=
+ig&amp;utm_source=3Dproduct&amp;utm_medium=3Demail_sig&amp;utm_campaign=3Dg=
+mail_api&amp;utm_content=3Dthumb" style=3D"text-decoration:none;font-size:1=
+2px;color:#2b82ad;font-family:&#39;Proxima Nova&#39;,Helvetica,Arial,sans-s=
+erif!important" target=3D"_blank">about.me/manuelloraroman
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div></div></div></div>
+
+--0000000000000c540805ba934434--
+```
+
 * Tarea 9: Instala configura dovecot para ofrecer el protocolo IMAP. Configura 
 dovecot de manera adecuada para ofrecer autentificación y cifrado.
 
