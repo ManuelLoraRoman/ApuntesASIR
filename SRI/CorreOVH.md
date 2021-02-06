@@ -586,6 +586,34 @@ erif!important" target=3D"_blank">about.me/manuelloraroman
 * Tarea 9: Instala configura dovecot para ofrecer el protocolo IMAP. Configura 
 dovecot de manera adecuada para ofrecer autentificación y cifrado.
 
+Necesitaríamos el paquete instalado con anterioridad _dovecot-imapd_.
+Teniéndolo instalado, simplemente debemos irnos a un cliente de correo. En 
+mi caso usaré Evolution y vamos a dirigirnos allí en nuestra máquina física.
+
+Debemos ir a _Archivo > Nuevo > Cuenta de correo_:
+
+![alt text](../Imágenes/correovh.png)
+
+Una vez ahí, le damos a _Siguiente_, y en la siguiente ventana, rellenamos con
+la información necesaria:
+
+![alt text](../Imágenes/correovh2.png)
+
+Le damos a _Siguiente_ y una vez haya comprobado la búsqueda, debemos 
+rellenar la información referente al IMAP y nuestro servidor:
+
+![alt text](../Imágenes/correovh3.png)
+
+Después vamos a seguir rellenando la información requerida:
+
+![alt text](../Imágenes/correovh4.png)
+
+![alt text](../Imágenes/correovh5.png)
+
+Y ya llegados al final podemos continuar para enviar un email:
+
+![alt text](../Imágenes/correovh6.png)
+ 
 Para realizar el cifrado de la comunicación crea un certificado en LetsEncrypt 
 para el dominio mail.iesgnXX.es. Recuerda que para el ofrecer el cifrado 
 tiene varias soluciones:
