@@ -14,4 +14,14 @@ Aquí estarán los diferentes apuntes, ejercicios y prácticas de HLC.
 
 [5. Configuración de cloud-init](./cloud-init.md)
 
+[6. Sistema de ficheros](./SistemaBtrfs.md)
+
+[6.1. Práctica sistema de ficheros](./practicaZFS.md)
+
+[7. VMWare](./VMWare.md)
+
+[8. iSCSI](./iSCSI.md)
+
+[9. Práctica de iSCSI](./iSCIpractica.md)
+
 </div>

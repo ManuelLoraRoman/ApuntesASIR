@@ -29,4 +29,8 @@ haciendo.
 
 [4. Configuración de HTTPS en CentOS8](./ConfHTTPS.md)
 
+[5. Cortafuegos en Openstack](./Cortafuegosopenstack.md)
+
+[6. VPN](./vpn.md)
+
 </div>

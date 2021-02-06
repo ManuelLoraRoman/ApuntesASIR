@@ -24,4 +24,8 @@ Apuntes y prácticas de esta asignatura.
 
 [6. Despliegue de CMS en Java](./CMSJava.md)
 
+[7. Práctica Integración Continua](./integracioncontinua.md)
+
+[8. Integración con Docker](./dockerintegracion.md)
+
 </div>

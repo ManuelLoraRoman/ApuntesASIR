@@ -28,4 +28,10 @@
 
 [4.4. LDAP en Alta Disponibilidad](./LDAPAD.md)
 
+[5. Copias de Seguridad](./copiaseguridad.md)
+
+[6. Métricas, Logs y monitorización](./metricas.md)
+
+[7. Seguridad en Sistemas de ficheros y MAC](./repasoseguridad.md)
+
 </div>
