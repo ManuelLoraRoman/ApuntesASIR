@@ -583,12 +583,51 @@ erif!important" target=3D"_blank">about.me/manuelloraroman
 --0000000000000c540805ba934434--
 ```
 
-* Tarea 9: Instala configura dovecot para ofrecer el protocolo IMAP. Configura 
+* Tarea 9: Instala y configura dovecot para ofrecer el protocolo IMAP. Configura 
 dovecot de manera adecuada para ofrecer autentificación y cifrado.
 
-Necesitaríamos el paquete instalado con anterioridad _dovecot-imapd_.
-Teniéndolo instalado, simplemente debemos irnos a un cliente de correo. En 
-mi caso usaré Evolution y vamos a dirigirnos allí en nuestra máquina física.
+Dovecot solo permite autenticar de manera predeterminada utilizando contraseñas
+en texto simple sin SSL/TLS, sólo desde el anfitrión local. Para habilitar
+la autenticación, vamos a descomentar la siguiente línea del fichero 
+_/etc/dovecot/conf.d/10-auth.conf_:
+
+```
+# Disable LOGIN command and all other plaintext authentications unless
+# SSL/TLS is used (LOGINDISABLED capability). Note that if the remote IP
+# matches the local IP (ie. you're connecting from the same computer), the
+# connection is considered secure and plaintext authentication is allowed.
+# See also ssl=required setting.
+disable_plaintext_auth = yes
+```
+
+A continuación, vamos a editar el fichero _/etc/dovecot/dovecot.conf_ para
+habilitar los protocolos (en caso de no venir de manera predeterminada):
+
+```
+# Enable installed protocols
+!include_try /usr/share/dovecot/protocols.d/*.protocol
+protocols = imap imaps
+```
+
+A continuación, debemos verificar que tenemos el soporte de ssl activado
+(_/etc/dovecot/conf.d/10-ssl.conf_):
+
+```
+# SSL/TLS support: yes, no, required. <doc/wiki/SSL.txt>
+ssl = yes
+
+# PEM encoded X.509 SSL/TLS certificate and private key. They're opened before
+# dropping root privileges, so keep the key file unreadable by anyone but
+# root. Included doc/mkcert.sh can be used to easily generate self-signed
+# certificate, just make sure to update the domains in dovecot-openssl.cnf
+ssl_cert = </etc/dovecot/private/dovecot.pem
+ssl_key = </etc/dovecot/private/dovecot.key
+```
+
+Y reiniciamos el servicio. Ahora, necesitaríamos el paquete instalado con 
+anterioridad, _dovecot-imapd_. Teniéndolo instalado, simplemente debemos 
+irnos a un cliente de correo. En mi caso usaré Evolution y vamos a dirigirnos 
+ahí en nuestra máquina física.
 
 Debemos ir a _Archivo > Nuevo > Cuenta de correo_:
 
@@ -614,18 +653,6 @@ Y ya llegados al final podemos continuar para enviar un email:
 
 ![alt text](../Imágenes/correovh6.png)
  
-Para realizar el cifrado de la comunicación crea un certificado en LetsEncrypt 
-para el dominio mail.iesgnXX.es. Recuerda que para el ofrecer el cifrado 
-tiene varias soluciones:
-       - IMAP con STARTTLS: STARTTLS transforma una conexión insegura en una 
-	segura mediante el uso de SSL/TLS. Por lo tanto usando el mismo puerto 
-	143/tcp tenemos cifrada la comunicación.
-       - IMAPS: Versión segura del protocolo IMAP que usa el puerto 993/tcp.
-       - Ofrecer las dos posibilidades.
-
-Elige una de las opciones anterior para realizar el cifrado. Y muestra la 
-configuración de un cliente de correo (evolution, thunderbird, …) y muestra 
-como puedes leer los correos enviado a tu usuario.
 
 * Tarea 10 (No obligatoria): Instala un webmail (roundcube, horde, rainloop) 
 para gestionar el correo del equipo mediante una interfaz web. Muestra la 
@@ -645,6 +672,47 @@ cifrar esta comunicación puedes usar dos opciones:
 Elige una de las opciones anterior para realizar el cifrado. Y muestra la 
 configuración de un cliente de correo (evolution, thunderbird, …) y muestra 
 como puedes enviar los correos.
+
+Debemos modificar el contenido del fichero _/etc/dovecot/conf.d/10-master.conf_
+y descomentar y añadir las siguientes lineas:
+
+```
+  unix_listener /var/spool/postfix/private/auth {
+    mode = 0660
+    user = postfix
+    group = postfix
+  }
+```
+
+Y acto seguido, añadimos las siguientes líneas al fichero de configuración
+de Postfix:
+
+```
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_authenticated_header = yes
+broken_sasl_auth_clients = yes
+```
+
+También, debemos permitir el acceso a los usuario autenticados mediante SASL,
+y para ello debemos incorporar las siguientes líneas:
+
+```
+smtpd_client_restrictions = permit_mynetworks,
+                            permit_sasl_authenticated,
+                            reject
+
+smtpd_recipient_restrictions = permit_mynetworks,
+                               permit_sasl_authenticated,
+                               reject_unauth_destination
+```
+
+Y hecho esto, reiniciamos los servicios tanto de dovecot como de postfix,
+y comprobamos que funciona el envío desde el cliente:
+
+
+
 
 * Tarea 12 (No obligatoria): Configura el cliente webmail para el envío de 
 correo. Realiza una prueba de envío con el webmail.

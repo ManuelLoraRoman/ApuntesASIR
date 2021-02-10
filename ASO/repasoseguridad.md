@@ -112,7 +112,21 @@ http_port_t		tcp	80,81,443,488,8008,8009,8443,9000
 
 * Servicio lee o escribe ficheros de un tipo no definido en la política:
 
-Para modificar un contexto debemos realizar lo siguiente:
+```
+chcon
 
+restorecon
+
+semanage
+```
+
+## APPARMOR
+
+Alternativa a SELinux. Incluida en el Kérnel Linux y por ejemplo, Debian,
+Ubuntu, OPENSUSE vienen con AppArmor habilitado.
+
+```
+aa-status
+```
 
 
