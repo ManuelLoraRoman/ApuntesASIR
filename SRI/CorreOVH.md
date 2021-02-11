@@ -4,6 +4,10 @@ Instala y configura de manera adecuada el servidor de correos en tu máquina de
 OVH, para tu dominio iesgnXX.es. El nombre del servidor de correo será 
 mail.iesgnXX.es (Este es el nombre que deberá aparecer en el registro MX).
 
+Vamos a crear un registro en OVH MX:
+
+![alt text](../Imágenes/registromxovh.png)
+
 En primer lugar vamos a instalar el servidor de correos postfix en nuestra 
 máquina OVH:
 
@@ -133,10 +137,6 @@ update-alternatives: using /usr/bin/bsd-mailx to provide /usr/bin/mailx (mailx) 
 Processing triggers for man-db (2.8.5-2) ...
 Processing triggers for libc-bin (2.28-10) ...
 ```
-
-Añadimos ahora el registro MX a nuestra zona DNS en la máquina OVH:
-
-![alt text](../Imágenes/registromx.png)
 
 ## Gestión de correos desde el servidor
 
@@ -638,6 +638,10 @@ la información necesaria:
 
 ![alt text](../Imágenes/correovh2.png)
 
+(Hemos cambiado el apartado de dirección de correo-e a _debian@iesgn10.es_):
+
+![alt text](../Imágenes/cambiovh.png)
+
 Le damos a _Siguiente_ y una vez haya comprobado la búsqueda, debemos 
 rellenar la información referente al IMAP y nuestro servidor:
 
@@ -649,10 +653,11 @@ Después vamos a seguir rellenando la información requerida:
 
 ![alt text](../Imágenes/correovh5.png)
 
-Y ya llegados al final podemos continuar para enviar un email:
-
 ![alt text](../Imágenes/correovh6.png)
- 
+
+Y ya podríamos recibir el email: 
+
+![alt text](../Imágenes/emailentrante.png)
 
 * Tarea 10 (No obligatoria): Instala un webmail (roundcube, horde, rainloop) 
 para gestionar el correo del equipo mediante una interfaz web. Muestra la 
@@ -688,31 +693,37 @@ Y acto seguido, añadimos las siguientes líneas al fichero de configuración
 de Postfix:
 
 ```
-smtpd_sasl_auth_enable = yes
-smtpd_sasl_type = dovecot
-smtpd_sasl_path = private/auth
-smtpd_sasl_authenticated_header = yes
-broken_sasl_auth_clients = yes
+sudo postconf -e 'smtpd_sasl_type = dovecot'
+sudo postconf -e 'smtpd_sasl_path = private/auth'
+sudo postconf -e 'smtpd_sasl_local_domain ='
+sudo postconf -e 'smtpd_sasl_security_options = noanonymous'
+sudo postconf -e 'broken_sasl_auth_clients = yes'
+sudo postconf -e 'smtpd_sasl_auth_enable = yes'
+sudo postconf -e 'smtpd_recipient_restrictions = permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination'
 ```
 
-También, debemos permitir el acceso a los usuario autenticados mediante SASL,
-y para ello debemos incorporar las siguientes líneas:
+Debemos a continuación, descomentar las líneas del fichero _/etc/postfix/master.cf_:
 
 ```
-smtpd_client_restrictions = permit_mynetworks,
-                            permit_sasl_authenticated,
-                            reject
-
-smtpd_recipient_restrictions = permit_mynetworks,
-                               permit_sasl_authenticated,
-                               reject_unauth_destination
+smtps     inet  n       -       y       -       -       smtpd
+  -o syslog_name=postfix/smtps
+  -o smtpd_tls_wrappermode=yes
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_client_restrictions=$mua_client_restrictions
+  -o smtpd_helo_restrictions=$mua_helo_restrictions
+  -o smtpd_sender_restrictions=$mua_sender_restrictions
+  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
 ```
 
 Y hecho esto, reiniciamos los servicios tanto de dovecot como de postfix,
 y comprobamos que funciona el envío desde el cliente:
 
+![alt text](../Imágenes/Envioemail.png)
 
-
+![alt text](../Imágenes/enviocorrecto.png)
 
 * Tarea 12 (No obligatoria): Configura el cliente webmail para el envío de 
 correo. Realiza una prueba de envío con el webmail.
