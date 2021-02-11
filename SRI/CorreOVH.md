@@ -725,6 +725,8 @@ y comprobamos que funciona el envío desde el cliente:
 
 ![alt text](../Imágenes/enviocorrecto.png)
 
+![alt text](../Imágenes/pruebaevo.png)
+
 * Tarea 12 (No obligatoria): Configura el cliente webmail para el envío de 
 correo. Realiza una prueba de envío con el webmail.
 
