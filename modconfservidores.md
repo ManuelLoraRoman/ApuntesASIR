@@ -1,4 +1,4 @@
-ç# Modificación del escenario de Openstack
+# Modificación del escenario de Openstack
 
 Vamos a modificar el escenario que tenemos actualmente en OpenStack para que 
 se adecúe a la realización de todas las prácticas en todos los módulos de 2º, 
