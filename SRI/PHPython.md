@@ -712,8 +712,8 @@ Percentage of the requests served within a certain time (ms)
 El rendimiento ha aumentado exponencialmente con respecto a las pruebas
 anteriores sin Varnish.
 
-Al realizar varias peticiones a la vez, vemos que no hace peticiones directamente
-porque tiene la caché:
+Al realizar varias peticiones a la vez, debido a que tenemos una caché, 
+solamente hará la primera petición:
 
 ```
 127.0.0.1 - - [14/Feb/2021:12:18:17 +0000] "GET /wordpress/index.php HTTP/1.1" 301 5 "-" "ApacheBench/2.3"
