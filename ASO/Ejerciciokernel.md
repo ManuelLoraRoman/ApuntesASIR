@@ -20,7 +20,7 @@ consola gráfica (texto).
 1. Instala el paquete linux-source correspondiente al núcleo que estés usando 
 en tu máquina.
 
-Debido a que linux-source es un metapaquete, simplemente con ejecutar el 
+Debido a que _linux-source_ es un metapaquete, simplemente con ejecutar el 
 siguiente comando ya lo tendríamos:
 
 ```sudo apt-get install linux-source```
@@ -77,8 +77,6 @@ manuel@debian:~/KernelLinux/linux-source-4.19$ grep 'm' .config | wc -l
 6. Configura el núcleo en función de los módulos que está utilizando tu equipo 
 (para no incluir en la compilación muchos controladores de dispositivos que 
 no utiliza el equipo):
-
-```make localmodconfig```
 
 ```
 manuel@debian:~/KernelLinux/linux-source-4.19$ make localmodconfig
@@ -236,7 +234,7 @@ dpkg-buildpackage: información: arquitectura del sistema amd64
 dpkg-buildpackage: aviso: «debian/rules» no es un fichero ejecutable, reparando
  dpkg-source --before-build .
  debian/rules build
-make KERNELRELEASE=4.19.152 ARCH=x86 	KBUILD_BUILD_VERSION=1 KBUILD_SRC=
+make KERNELRELEASE=4.19.152 ARCH=x86	KBUILD_BUILD_VERSION=1 KBUILD_SRC=
   SYSTBL  arch/x86/include/generated/asm/syscalls_32.h
   WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
   WRAP    arch/x86/include/generated/uapi/asm/poll.h
@@ -321,6 +319,7 @@ manuel@debian:~/KernelLinux/linux-source-4.19$ make clean
 ```
    
 Y procedemos con la ejecución del comando ```make xconfig```.
+
 Ahora vamos a pasar a describir el ejercicio al final de los enunciados. (*)
 11. Vuelve a contar el número de componentes que se han configurado para 
 incluir en vmlinuz o como módulos.
@@ -336,8 +335,6 @@ el arranque.
 14. Continuamos reiterando el proceso poco a poco hasta conseguir el núcleo lo 
 más pequeño posible que pueda arrancar en nuestro equipo.
 
-
-
 (*) Cuando ejecutamos dicho comando, nos aparecerá la siguiente ventana con los
 diferentes módulos. Iremos poco a poco retirando módulos hasta simplificar el
 kernel al máximo.
@@ -347,14 +344,14 @@ En nuestra primera compilación retiramos los siguientes módulos:
 
 1. General Setup
 
-* CPU Isolation --> se asegura de que cuando la CPU está corriendo tareas
+* _CPU Isolation_ --> se asegura de que cuando la CPU está corriendo tareas
 críticas, no sea disturbado por ruido.
 
 * Support initial ramdisk/ramfs compressed using bzip2, LZMA, XZ, LZO y LZ4 --> permite
 la carga de RAM inicial codificado en bzip2, LZMA, XZ, LZO, LZ4 o con un buffer
 cpio.
 
-2. Processor type and features
+2. _Processor type and features_
 
 * Intel Low Power Subsystem Support
 
@@ -373,7 +370,7 @@ usuario instalar LDT.
 
 * Linux guest support
 
-3. Networking support
+3. _Networking support_
 
 * Amateur Radio support --> Si queremos conectar nuestro Linux con una radio
 amateur.
@@ -382,12 +379,12 @@ amateur.
 
 * RF switch subsystem support --> si queremos tener control sobre Switches RF.
 
-4. Device Drivers
+4. _Device Drivers_
 
 * Multimedia support --> Si queremos usar webcams o otros tipos de grabadores de
 video.
 
-5. File systems
+5. _File systems_
 
 * Old quota format support
 

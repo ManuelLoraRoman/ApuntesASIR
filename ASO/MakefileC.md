@@ -15,7 +15,7 @@ crear palabras por la terminal hechas con texto ordinario.
 Nos descargaremos su repositorio desde el siguiente enlace: _https://github.com/cmatsuoka/figlet_.
 
 Una vez tengamos el directorio de _figlet_ en nuestra posesión, debemos en
-primer lugar el fichero README. En este, nos comenta (en este caso), el
+primer lugar el fichero _README_. En este, nos comenta (en este caso), el
 proceso de instalación del paquete _figlet_.
 
 

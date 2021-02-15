@@ -86,3 +86,42 @@ imágenes, por eso debemos informarnos de eso, para saber que directorios son
 importantes en los servicios ofrecidos (base de datos, web, etc.)
 
 
+```
+docker commit contenedor nombreusuario/capa
+
+docker save nombreusuario/capa > capa.tar
+
+docker load -i capa.tar
+
+docker login
+
+docker push
+
+docker build DockerFile
+```
+
+Ejemplo de DockerFile:
+
+```
+FROM debian:buster-slim
+MAINTAINER nombre "nombreusuario"
+RUN apt update && apt install -y apache2
+COPY index.html /var/www/html/index.html
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+```
+
+Instrucciones:
+
+```
+FROM
+MANTEINER
+LABEL
+RUN
+COPY
+ADD
+WORKDIR --> es parecido a un cd en GNU/Linux
+USER, EXPOSE, ENV --> variables de entorno
+CMD
+ENTRYPOINT
+```
+

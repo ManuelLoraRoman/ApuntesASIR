@@ -1295,5 +1295,6 @@ Y ya tendríamos el upgrade a CentOS 8.
 
 **¡¡¡IMPORTANTE!!!**
 
-Cuando reiniciamos el sistema, debido a que la máquina está en openstack, la red de Quijote se reiniciará
-por el servicio de _cloud.init_ y habría que configurarla de nuevo.
+Cuando reiniciamos el sistema, debido a que la máquina está en Openstack, 
+la red de Quijote se reiniciará por el servicio de _cloud.init_ y habría que 
+configurarla de nuevo.

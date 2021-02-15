@@ -80,7 +80,7 @@ del servidor LDAP.
 El paquete que proporciona el servicio de LDAP se llama _slapd_ y antes de eso,
 debemos tener definido correctamente nuestro hostname.
 
-* slapcat permite un volcado en bruto de los objetos.
+* _slapcat_ permite un volcado en bruto de los objetos.
 
 * Al hacer un ```dpkg reconfigure -plow slapd``` permite configurar el servidor.
 
@@ -97,7 +97,7 @@ en _/var/lib/ldap_.
 El conjunto de herramientas del paquete ldap-utils permite varias 
 funcionalidades muy útiles para la configuración del servidor LDAP.
 
-El comando ldapsearch se asemeja a una consulta en una base de datos. El 
+El comando _ldapsearch_ se asemeja a una consulta en una base de datos. El 
 parámetro -x es para no hacerlo con un mecanismo de autenticación, -D se usa
 para filtrar por el nombre distintivo (entre comillas), -W es para que nos
 pregunte por la contraseña y -b para que busque por una base en concreto.
@@ -146,7 +146,7 @@ sudo update-ca-certificates
 Y se creará un enlace simbólico hacia _/usr/local/share/ca-certificates/mozilla_.
 
 
-Apache Directory Studio es un cliente LDAP que usaremos como complemento a los
+_Apache Directory Studio_ es un cliente LDAP que usaremos como complemento a los
 ldap-utils. Se conectará de la misma manera que nos conectamos a una base de 
 datos. útil si hacemos cambios pequeños. Si por el contrario hacemos cambios
 masivos, mejor por consola.
@@ -157,10 +157,10 @@ Para añadir unidades organizativas a la estructura del árbol, haremos:
 sudo ldapadd -x -D "[loquesea]" -W -f .ldif
 ```
 
-La rama People sirve para guardar personas y la rama Group para grupos.
+La rama _People_ sirve para guardar personas y la rama _Group_ para grupos.
 
-Ahora vamos a pasar a la creación de usuarios pertenecientes a una cuenta POSIX.
-Para ello, usaremos el objectClass posixAccount. 
+Ahora vamos a pasar a la creación de usuarios pertenecientes a una cuenta _POSIX_.
+Para ello, usaremos el _objectClass posixAccount_. 
 
 Ejemplo: usuario1.ldif
 
@@ -188,7 +188,7 @@ En la búsqueda anónima no sale el atributo de la contraseña. Para poder
 visualizarla debemos iniciar sesión con algún usuario pero este se verá 
 codificada con base64. 
 
-Para modificar un objeto, usaremos el comando ldapmodify. 
+Para modificar un objeto, usaremos el comando _ldapmodify_. 
 
 Ejemplo: usuario1-1.ldif
 
@@ -205,8 +205,8 @@ replace: cn
 cn:: [loquesea] en base64
 ```
 
-Y le pasamos esta modificación con el comando ldapmodify con los parámetros 
+Y le pasamos esta modificación con el comando _ldapmodify_ con los parámetros 
 que hemos usado anteriormente.
 
-Para realizar el purge de slapd, debemos hacerlo mediante apt y además, eliminar
-el directorio /var/lib/slapd.
+Para realizar el purge de slapd, debemos hacerlo mediante _apt_ y además, eliminar
+el directorio _/var/lib/slapd_.

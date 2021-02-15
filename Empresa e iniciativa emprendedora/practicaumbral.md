@@ -38,28 +38,28 @@ servicio y lo que cuesta realizar dicho servicio.
 Como nuestra empresa se encarga de ofrecer un servicio, vamos a seleccionar
 el coste de realizar el trabajo que son unos 9,25 €/hora. Adicionalmente,
 habría que multiplicar los costes variables por las respectivas horas 
-trabajadas:
+trabajadas. Supondremos que cada cliente nos conlleva unas 80 horas.
 
 ```
-CV(0) = 9,25 * 0 = 0 €
-CV(1) = 9,25 * 1 = 9,25 €
-CV(2) = 9,25 * 2 = 18,5 €
-CV(5) = 9,25 * 5 = 46,25 €
-CV(10) = 9,25 * 10 = 92,5 €
-CV(20) = 9,25 * 20 = 185 €
-CV(25) = 9,25 * 25 = 231,25 €
+CV(0) = 9,25 * 0 * 80 = 0 €
+CV(1) = 9,25 * 1 * 80 = 740 €
+CV(2) = 9,25 * 2 * 80 = 1480 €
+CV(5) = 9,25 * 5 * 80 = 3700 €
+CV(10) = 9,25 * 10 * 80 = 7400 €
+CV(20) = 9,25 * 20 * 80 = 14800 €
+CV(25) = 9,25 * 25 * 80 = 18500 €
 ```
 
 * Costes totales = CF + CV
 
 ```
 CT(0) = 1580 + 0 = 1580 €
-CT(1) = 1580 + 9,25 = 1589,25 €
-CT(2) = 1580 + 18,5 = 1598,5 €
-CT(5) = 1580 + 46,25 = 1626,25 €
-CT(10) = 1580 + 92,5 = 1672,5 €
-CT(20) = 1580 + 185 = 1765 €
-CT(25) = 1580 + 231,25 = 1811,25 €
+CT(1) = 1580 + 740 = 2320 €
+CT(2) = 1580 + 1480 = 3060 €
+CT(5) = 1580 + 3700 = 5280 €
+CT(10) = 1580 + 7400 = 8980 €
+CT(20) = 1580 + 14800 = 16380 €
+CT(25) = 1580 + 18500 = 20080 €
 ```
 
 * Coste Marginal = Incremento CT / Incremento de la cantidad
@@ -95,13 +95,14 @@ Beneficio = IT - CT (Costes totales)
 
 ```
 B(0) = 0 - 1580 = -1580 €
-B(1) = 2000 - 1589,25 = 410,75 €
-B(2) = 4000 - 1598,5 = 2401,5 €
-B(5) = 10000 - 1626,25 = 8373,75 €
-B(10) = 20000 - 1672,5 = 18327,5 €
-B(20) = 40000 - 1765 = 38235 €
-B(25) = 50000 - 1811,25 = 48188,75 € 
+B(1) = 2000 - 2320 = -320 €
+B(2) = 4000 - 3060 = 940 €
+B(5) = 10000 - 5280 = 4720 €
+B(10) = 20000 - 8980 = 11020 €
+B(20) = 40000 - 16380 = 23620 €
+B(25) = 50000 - 20080 = 29920 € 
 ```
 
-Empezaremos a obtener beneficio técnicamente a partir del primer cliente
+Empezaremos a obtener beneficio técnicamente a partir del segundo cliente
 dependiendo de las horas trabajadas en dicho cliente.
+

@@ -7,12 +7,12 @@
 **Tarea 1.** Que acciones consigo al realizar apt update y apt upgrade. 
 Explica detalladamente.
 
-* **apt-get update** --> lo que hace es actualizar los repositorios, para ver 
+* _apt-get update_ --> lo que hace es actualizar los repositorios, para ver 
 si hay algo nuevo que actualizar de la lista de todos los paquetes, con la
 dirección de dónde obtenerlos.Esta lista la coge de los servidores con 
 repositorios que tenemos definidos en el _sources.list_.
 
-* **apt-get upgrade** --> intentará actualizar con cuidado todo el sistema. 
+* _apt-get upgrade_ --> intentará actualizar con cuidado todo el sistema. 
 upgrade nunca intentará instalar un paquete nuevo o eliminar un paquete 
 existente, y en ningún caso actualizará un paquete que pueda causar un problema 
 de dependencias rotas a otro paquete. upgrade mostrará todos los paquetes 

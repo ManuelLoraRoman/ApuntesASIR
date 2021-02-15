@@ -4,7 +4,7 @@
 
 * PC 
 
-* CD o USB booteable para la iso de Debian 10 (en nuestro caso, USB)
+* CD o USB booteable para la ISO de Debian 10 (en nuestro caso, USB)
 
 * Acceso a Internet para descargar los paquetes necesarios (por cable)
 
@@ -17,11 +17,11 @@ para mayor legibilidad, usaré la instalación gráfica.
 necesario pulsar el botón F2 unas cinco veces mientras aparecía el logotipo de Lenovo)
 
 **2.** A continuación, veremos el Menú de instalación de Debian 10. Aparecen varias opciones
-para instalarlo, y nosotros elegiremos la opción de **Install**.
+para instalarlo, y nosotros elegiremos la opción de _Install_.
 
 ![alt text](../Imágenes/paso2.png)
 
-**3.** Lo siguiente en aparecer será el idioma, el cual elegiremos **Spanish - Español**. Una
+**3.** Lo siguiente en aparecer será el idioma, el cual elegiremos _Spanish - Español_. Una
 vez hecho esto, debemos seleccionar nuestro país. Esto le permite al instalador asignar
 las opciones de nuestra localización (_zona horaria, distancia, moneda, etc_)
 
@@ -30,7 +30,7 @@ las opciones de nuestra localización (_zona horaria, distancia, moneda, etc_)
 ![alt text](../Imágenes/paso32.png)
 
 **4.** En la siguiente pantalla, configuraremos la distribución del teclado. En nuestro caso,
-pondremos **Español**.
+pondremos _Español_.
 
 ![alt text](../Imágenes/paso4.png)
 
@@ -41,7 +41,7 @@ descarga de paquetes adicionales necesarios.
 ![alt text](../Imágenes/paso5.png)
 
 **6.** Introducimos el nombre que queremos ponerle a nuestra máquina. Recomendable ponerle
-un nombre indicativo, por ejemplo **debian**.
+un nombre indicativo, por ejemplo _debian_.
 
 **7.** A continuación, si nuestro ordenador pertenece a un grupo de red exclusivo de un
 conjunto de ordenadores, deberíamos poner el nombre de dominio.
@@ -60,13 +60,13 @@ conjunto de ordenadores, deberíamos poner el nombre de dominio.
 (Nombre completo y nombre de usuario) y la de la contraseña para dicho usuario.
 
 **10.** Según el país que hayamos elegido, nos tocará ahora configurar el reloj según la
-localización de donde estemos. En nuestro caso, elegiremos **Península**.
+localización de donde estemos. En nuestro caso, elegiremos _Península_.
 
 ![alt text](../Imágenes/paso10.png)
 
 **11.** Debian, después de la anterior opción, comenzará la detección de los discos presentes
 en nuestro sistema, para acto seguido, presentarte las opciones de particionado de disco.
-De entre ellas elegiremos **Manual**.
+De entre ellas elegiremos _Manual_.
 
 Seleccionaremos nuestro disco, y al hacerlo, nos aparecerá la siguiente pantalla:
 
@@ -88,12 +88,12 @@ mismos):
 ![alt text](../Imágenes/paso118.png)
 
 **12.** Después del particionado, nos preguntará si queremos participar en una encuesta de
-popularidad. Elige tu respuesta, y haz clic en **Continuar**.
+popularidad. Elige tu respuesta, y haz clic en _Continuar_.
 
 ![alt text](../Imágenes/paso12.png)
 
 **13.** Ahora, el instalador nos da la opción de emplear métodos de instalación 
-adicionales. En nuestro caso, seleccionamos **No** y continuamos.
+adicionales. En nuestro caso, seleccionamos _No_ y continuamos.
 
 **14.** Lo siguiente que nos aparece en la selección de una réplica, que es el servidor donde 
 se descargaran los ficheros. Primero debemos escoger el País y después la réplica.
@@ -109,13 +109,13 @@ caso, no escribiremos nada y pasaremos al siguiente paso.
 
 **16.** Lo que toca ahora es elegir si queremos una interfaz gráfica, además de elegir cual 
 es la que quieras. Seleccionamos las otras opciones si queremos instalar diferentes
-paquetes como **SSH_Server**.
+paquetes como _SSH_Server_.
 
 **17.** Una vez ya configurado todo lo anterior, procederá a la descarga de paquetes.
 
 **18.** El gestor de arranque de GNU-Linux es el GRUB, y es requerido para completar 
 la instalación. Se nos pregunta si instalamos el cargador de arranque en el registro
-principal de arranque. Le decimos que no, seleccionamos **/boot** para cargar el GRUB
+principal de arranque. Le decimos que no, seleccionamos _/boot_ para cargar el GRUB
 y le damos a continuar.
 
 **19.** Fin de la instalación. 
@@ -125,18 +125,14 @@ y le damos a continuar.
   
 La instalación de Debian Buster estaría ya completada. Lo siguiente que vamos
 a comprobar es si tenemos a nuestra disposición la red WiFi. Para comprobarlo,
-haremos lo siguiente:
+haremos ```sudo ip a```.
 
-```sudo ip a```
-
-Y nos saldrán los dispositivos, interfaces y túneles de red:
+Nos saldrán los dispositivos, interfaces y túneles de red:
 
 ![alt text](../Imágenes/WiFi1.png)
 
 Nosotros no disponemos por ahora de una interfaz de red correspondiente al WiFi,
 así que en primer lugar vamos a comprobar nuestra tarjeta de red inalámbrica.
-
-```lspci | grep Network```
 
 ![alt text](../Imágenes/pasoNetwork.png)
 
@@ -149,14 +145,16 @@ de la version de _sid_.
 
 Ahora, los comandos que usé para lograr tener WiFi:
 
-```sudo apt-get install curl```  
-```curl -L -O https://github.com/kvalo/ath10k-firmware/archive/master.zip```  
-```unzip master.zip```  
-```mkdir -p /lib/firmware/ath10k/QCA6174/hw3.0/```  
-```cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/*.bin* /lib/firmware/ath10k/QCA6174/hw3.0/```  
-```cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/4.4/*.bin*  /lib/firmware/ath10k/QCA6174/hw3.0/```  
-```sudo update-initramfs -u```  
-```sudo reboot```  
+```
+sudo apt-get install curl  
+curl -L -O https://github.com/kvalo/ath10k-firmware/archive/master.zip  
+unzip master.zip
+mkdir -p /lib/firmware/ath10k/QCA6174/hw3.0/ 
+cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/*.bin* /lib/firmware/ath10k/QCA6174/hw3.0/  
+cp ./ath10k-firmware-master/ath10k/QCA6174/hw3.0/4.4/*.bin*  /lib/firmware/ath10k/QCA6174/hw3.0/  
+sudo update-initramfs -u
+sudo reboot
+```  
 
 Una vez terminado con el WiFi, nos pondremos con la tarjeta gráfica. Al usar
 este comando:
@@ -167,12 +165,12 @@ Nos aparecerá las tarjetas gráficas que tenemos en ese momento.
 
 ![alt text](../Imágenes/pasoIntel.png)
 
-En mi caso, el ordenador posee una tarjeta gráfica Nvidia GeForce GTX 1060 y no
+En mi caso, el ordenador posee una tarjeta gráfica _Nvidia GeForce GTX 1060_ y no
 la estaría detectando. Por lo tanto, vamos a hacer lo siguiente:
 
 
-**1.** Ejecutaremos _sudo apt-get install nvidia-detect_ y luego ejecutaremos 
-la instrucción _sudo nvidia detect_ para ver que drivers son los que
+**1.** Ejecutaremos ```sudo apt-get install nvidia-detect``` y luego ejecutaremos 
+la instrucción ```sudo nvidia detect``` para ver que drivers son los que
 necesitariamos instalarnos para que funcionase.
 
 ![alt text](../Imágenes/pasodetect.png)
