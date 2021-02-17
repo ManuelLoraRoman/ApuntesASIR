@@ -1,6 +1,5 @@
 # OLIGOPLY
 
-
 En la primera parte del video, Jordi nos presenta a Carmen Monforte, la cual
 declara que en España se paga la electricidad más cara de Europa, quitando a 
 Chipre y Malta. En sí, nos comenta que el pago de electricidad no es la más

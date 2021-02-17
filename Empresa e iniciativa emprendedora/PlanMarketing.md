@@ -62,7 +62,6 @@ de los administradores de bases de datos. Gracias al apoyo de sus trabajadores
 expertos en la gestión de datos, se espera que no haya competidor alguno.
 
 
-
 C) **Política de Precios**
 
 Mi-Grate ofrece dos planes indicativos, los cuales se pueden adaptar a las 
