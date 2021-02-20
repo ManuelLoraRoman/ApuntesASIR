@@ -24,4 +24,8 @@ Apuntes, boletines y prácticas de BBDD.
 
 [5. Interconexión de Servidores de bases de datos](./interconexion.md)
 
+[6. Almacenamiento](./Almacenamiento.md)
+
+[7. Auditorías](./auditorias.md)
+
 </div>
