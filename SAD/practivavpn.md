@@ -153,13 +153,13 @@ push "route 192.168.1.0 255.255.255.0"
 
 tls-server
 
-dh /etc/openvpn/dhparams.pem
+dh /etc/openvpn/keys/dh.pem
 
-ca /etc/openvpn/ca.crt.pem
+ca /etc/openvpn/keys/ca.crt
 
-cert /etc/openvpn/VPN.crt
+cert /etc/openvpn/keys/servidor.crt
 
-key /etc/openvpn/VPN.key
+key /etc/openvpn/keys/servidor.key
 
 comp-lzo
 
@@ -168,23 +168,56 @@ keepalive 10 60
 verb 3
 ```
 
-Con anterioridad hemos creado los certificados y el _.csr_ pertinente para
-nuestro cliente, y vamos a firmar la solicitud de certificado del equipo
-en la lan de la siguiente manera:
+Vamos a crear todos los certificados necesarios y las claves con _easy_rsa_.
+
+Seguiremos las pasos encontrados en el siguiente [enlance](https://juncotic.com/openvpn-easyrsa-3-montando-la-vpn/).
+
+Una vez ya hecho esto, debemos comprobar el funcionamiento:
 
 ```
-root@vpn-server:/home/debian# openssl x509 -req -in lan.csr -CA /etc/openvpn/ca.cert.pem -CAkey /etc/openvpn/ca.key.pem -CAcreateserial -out VPNlan.cert
-Signature ok
-subject=C = sp, ST = Seville, L = Dos Hermanas, O = manuel, CN = manuel.iesgn.org
-Getting CA Private Key
-Enter pass phrase for /etc/openvpn/ca.key.pem:
+root@vpn-server:/ca# systemctl status openvpn.service
+● openvpn.service - OpenVPN service
+   Loaded: loaded (/lib/systemd/system/openvpn.service; enabled; vendor preset: 
+   Active: active (exited) since Mon 2021-02-15 09:49:38 UTC; 3 days ago
+  Process: 561 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+ Main PID: 561 (code=exited, status=0/SUCCESS)
+
+Warning: Journal has been rotated since unit was started. Log output is incomple
+
+root@vpn-server:/ca# ip a
+
+8: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 100
+    link/none 
+    inet 10.99.99.1 peer 10.99.99.2/32 scope global tun0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::3357:7e35:151b:ca32/64 scope link stable-privacy 
+       valid_lft forever preferred_lft forever
+```
+Pasaremos los ficheros necesarios al cliente (ca.crt, cliente1.key y cliente1.crt)
+A continuación, nos conectaremos a una máquina del Cloud que actuará como
+cliente. Nos instalaremos el paquete de openvpn también en la máquina y una
+vez hecho eso, configuramos el fichero de configuración del cliente:
+
+```
+dev tun
+
+remote 172.22.201.57  
+
+pull
+
+tls-client
+
+ca /etc/openvpn/keys/ca.crt
+
+cert /etc/openvpn/keys/cliente1.crt
+
+key /etc/openvpn/keys/cliente1.key
+
+comp-lzo
+
+keepalive 10 60
+
+verb 3
 ```
 
-También vamos a descomentar la siguiente linea en el fichero _/etc/default/openvpn_:
 
-```
-AUTOSTART="all"
-```
-
-Y reiniciamos el servicio. Hecho esto, debemos tener ya el servidor VPN ya
-funcionando. Ahora vamos a pasar a la configuración del cliente. 
