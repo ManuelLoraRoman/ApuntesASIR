@@ -235,6 +235,164 @@ Jaime y Lidia pueden leer la información de esas tablas pero no pueden
 modificar la información. Crea los usuarios y dale los roles y permisos que 
 creas conveniente.  
 
+Primer vamos a crear al usuario _Pepe_, y el asignaremos los privilegios
+_dba_. Después, crearemos al usuario _Juan_ y a _Ana_. A estos, le asignaremos 
+los privilegios de _resource_. Creamos también a los usuarios _Eva y Ana_ y les
+asignamos los privilegios correspondientes. También, crearemos a Jaime y a Lidia
+con los privilegios pertinentes:
+
+```
+SQL> CREATE USER PEPE IDENTIFIED BY PEPE;
+
+Usuario creado.
+ 
+SQL> GRANT DBA TO PEPE;
+
+Concesion terminada correctamente.
+
+SQL> CREATE USER JUAN IDENTIFIED BY JUAN;
+
+Usuario creado.
+
+SQL> CREATE USER CLARA IDENTIFIED BY CLARA;
+
+Usuario creado.
+
+SQL> GRANT RESOURCE TO JUAN;
+
+Concesion terminada correctamente.
+
+SQL> GRANT RESOURCE TO CLARA;
+
+Concesion terminada correctamente.
+
+SQL> CREATE USER ANA IDENTIFIED BY ANA;
+
+Usuario creado.
+
+SQL> CREATE USER EVA IDENTIFIED BY EVA;
+
+Usuario creado.
+
+SQL> GRANT CREATE SESSION TO ANA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT CREATE TABLE TO ANA;
+
+Concesion terminada correctamente.
+
+SQL> CONNECT ANA;
+Introduzca la contrase?a: 
+Conectado.
+SQL> CREATE TABLE VENTAS(
+  2  CODIGO VARCHAR2(10),
+  3  DESCRIPCION VARCHAR2(100),
+  4  IMPORTE NUMBER(7,2),
+  5  CONSTRAINT PK_CODIGO PRIMARY KEY (CODIGO));
+
+Tabla creada.
+
+SQL> CREATE TABLE PRODUCTOS(
+  2  CODIGO VARCHAR2(10),
+  3  NOMBRE VARCHAR2(50),
+  4  COSTE NUMBER(7,2),
+  5  CONSTRAINT PK_CODPROD PRIMARY KEY (CODIGO));
+
+Tabla creada.
+
+SQL> GRANT SELECT ON ANA.VENTAS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT INSERT ON ANA.VENTAS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT UPDATE ON ANA.VENTAS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT DELETE ON ANA.VENTAS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON ANA.PRODUCTOS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT INSERT ON ANA.PRODUCTOS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT UPDATE ON ANA.PRODUCTOS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT DELETE ON ANA.PRODUCTOS TO EVA;
+
+Concesion terminada correctamente.
+
+SQL> CREATE USER JAIME IDENTIFIED BY JAIME;
+
+Usuario creado.
+
+SQL> CREATE USER LIDIA IDENTIFIED BY LIDIA;
+
+Usuario creado.
+
+SQL> GRANT SELECT ON ANA.VENTAS TO JAIME;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON ANA.VENTAS TO LIDIA;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON ANA.PRODUCTOS TO JAIME;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON ANA.PRODUCTOS TO LIDIA;
+
+Concesion terminada correctamente.
+```
+
+Podemos crear también roles para una mejor gestión de los permisos y privilegios
+de usuario:
+
+* Rol para producción
+
+```
+SQL> CREATE ROLE PRODUCCION;
+
+Rol creado.
+
+SQL> GRANT SELECT ON ANA.VENTAS TO PRODUCCION;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON ANA.PRODUCTOS TO PRODUCCION;
+
+Concesion terminada correctamente.
+```
+
+* Rol para Ventas
+
+```
+SQL> CREATE ROLE VENTAS;
+
+Rol creado.
+
+SQL> GRANT SELECT,INSERT,UPDATE,DELETE ON ANA.VENTAS TO VENTAS;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT,INSERT,UPDATE,DELETE ON ANA.PRODUCTOS TO VENTAS;
+
+Concesion terminada correctamente.
+```
+
 b) Los espacios de tablas son System, Producción (ficheros prod1.dbf y prod2.dbf)
 y Ventas (fichero vent.dbf). Los programadores del departamento de Informática 
 pueden crear objetos en cualquier tablespace de la base de datos, excepto en 
@@ -243,17 +401,134 @@ correspondiente teniendo un límite de espacio de 30 M los del departamento de
 Ventas y 100K los del de Producción. Pepe tiene cuota ilimitada en todos los 
 espacios, aunque el suyo por defecto es System.
 
+Crearemos los tablespaces de system, produccion y ventas:
+
+```
+SQL> CREATE TABLESPACE TS_PRODUCCION
+  2  DATAFILE 'prod1.dbf' SIZE 100M,
+  3  'prod2.dbf' SIZE 100M AUTOEXTEND ON;
+
+Tablespace creado.
+
+SQL> CREATE TABLESPACE TS_VENTA
+  2  DATAFILE 'vent.dbf'
+  3  SIZE 100M AUTOEXTEND ON;
+
+Tablespace creado.
+```
+
+Y les asignamos las cuotas a los usuarios Ana, Eva, Jaime y Lidia:
+
+```
+SQL> ALTER USER ANA QUOTA 30M ON TS_VENTA;
+
+Usuario modificado.
+
+SQL> ALTER USER EVA QUOTA 30M ON TS_VENTA;
+
+Usuario modificado.
+
+SQL> ALTER USER JAIME QUOTA 100K ON TS_PRODUCCION;
+
+Usuario modificado.
+
+SQL> ALTER USER LIDIA QUOTA 100K ON TS_PRODUCCION;
+
+Usuario modificado.
+
+```
+
+A continuación, vamos a modificar el tablespace de Pepe (default)
+a system:
+
+```
+SQL> ALTER USER PEPE DEFAULT TABLESPACE SYSTEM;
+
+Usuario modificado.
+
+SQL> GRANT UNLIMITED TABLESPACE TO PEPE;
+
+Concesion terminada correctamente.
+```
+
+Ahora, revocaremos los privilegios sobre los usuarios Juan y Clara en
+el tablespace System y para ello tenemos que asignarle un tamaño de
+cuota 0:
+
+```
+SQL> GRANT UNLIMITED TABLESPACE TO JUAN;
+
+Concesion terminada correctamente.
+
+SQL> GRANT UNLIMITED TABLESPACE TO CLARA;
+
+Concesion terminada correctamente.
+
+SQL> ALTER USER JUAN QUOTA 0 ON SYSTEM;
+
+Usuario modificado.
+
+SQL> ALTER USER CLARA QUOTA 0 ON SYSTEM;
+
+Usuario modificado.
+
+```
+
 c) Pepe quiere crear una tabla Prueba que ocupe inicialmente 256K en el 
 tablespace Ventas.
+
+```
+SQL> CREATE TABLE PEPE.PRUEBA (
+  2  CODIGO VARCHAR2(10),
+  3  NOMBRE VARCHAR2(50),
+  4  CONSTRAINT PK_CODIGO PRIMARY KEY(CODIGO))
+  5  STORAGE(INITIAL 256K);
+
+Tabla creada.
+
+```
 
 d) Pepe decide que los programadores tengan acceso a la tabla Prueba antes 
 creada y puedan ceder ese derecho y el de conectarse a la base de datos a los 
 usuarios que ellos quieran.
+
+```
+SQL> GRANT SELECT ON PEPE.PRUEBA TO JUAN WITH GRANT OPTION;
+
+Concesion terminada correctamente.
+
+SQL> GRANT SELECT ON PEPE.PRUEBA TO CLARA WITH GRANT OPTION;
+
+Concesion terminada correctamente.
+
+SQL> GRANT CONNECT TO CLARA WITH ADMIN OPTION;
+
+Concesion terminada correctamente.
+
+SQL> GRANT CONNECT TO JUAN WITH ADMIN OPTION;
+
+Concesion terminada correctamente.
+```
+
 	
 e) Lidia y Jaime dejan la empresa, borra los usuarios y el espacio de tablas 
 correspondiente, detalla los pasos necesarios para que no quede rastro del 
 espacio de tablas.
        
+```
+SQL> DROP USER LIDIA CASCADE;
+
+Usuario borrado.
+
+SQL> DROP USER JAIME CASCADE;
+
+Usuario borrado.
+
+SQL> DROP TABLESPACE TS_PRODUCCION INCLUDING CONTENTS AND DATAFILES;
+
+Tablespace borrado.
+
+```
 
 ## POSTGRES
 
@@ -316,8 +591,10 @@ Oracle.
 9. Averigua si existe la posibilidad en MongoDB de decidir en qué archivo se 
 almacena una colección.
 
-Para ello, existe la siguiente instrucción ```db.collection.save()```. Tiene
-la siguiente estructura:
+Lo único que he encontrado es lo siguiente.
+
+Existe la siguiente instrucción ```db.collection.save()```. Tiene la siguiente 
+estructura:
 
 ```
 db.collection.save(
@@ -327,4 +604,10 @@ db.collection.save(
    }
 )
 ```
+
+El parámetro _document_ es el documento a guardar la colleción. El parámetro 
+_WriteConcern_ es opcional y describe el nivel de reconocimiento pedido por
+MongoDB para escribir operaciones en mongod.
+
+The _save()_ devuelve un objeto que contiene el status de la operación.
 
