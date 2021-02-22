@@ -142,7 +142,7 @@ Acto seguido, vamos a activar el bit de forward en el servidor:
 root@vpn-server:~# echo 1 > /proc/sys/net/ipv4/ip_forward
 ```
 
-Después de esto, vamos a crear el fichero _/etc/openvpn/servidorvpn.com_:
+Después de esto, vamos a crear el fichero _/etc/openvpn/servidorvpn.conf_:
 
 ```
 dev tun
@@ -193,6 +193,7 @@ root@vpn-server:/ca# ip a
     inet6 fe80::3357:7e35:151b:ca32/64 scope link stable-privacy 
        valid_lft forever preferred_lft forever
 ```
+
 Pasaremos los ficheros necesarios al cliente (ca.crt, cliente1.key y cliente1.crt)
 A continuación, nos conectaremos a una máquina del Cloud que actuará como
 cliente. Nos instalaremos el paquete de openvpn también en la máquina y una
@@ -220,4 +221,154 @@ keepalive 10 60
 verb 3
 ```
 
+Después, procedemos a comprobar que efectivamente funciona la conexión:
+
+```
+debian@vonvarnish:~$ ssh -i clave_openstack.pem debian@192.168.100.10
+The authenticity of host '192.168.100.10 (192.168.100.10)' can't be established.
+ECDSA key fingerprint is SHA256:ISst8DoiVtRJuOFDJZlZ+t11Uv7bi9MrzeiU+EuKpmI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.100.10' (ECDSA) to the list of known hosts.
+Linux lan 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Fri Feb 19 09:53:17 2021 from 192.168.100.2
+debian@lan:~$ 
+```
+
+## Tarea 3: VPN de acceso remoto a Dulcinea
+
+Realiza la configuración de una servidor VPN en dulcinea utilizando 
+certificados x509.
+
+¿Qué tienes que entregar?
+
+* Entrega los ficheros de configuración.
+
+* Una captura de pantalla donde se vea, claramente, que desde un ordenador 
+externo se esta haciendo ping a un cliente de la red interna.
+   
+* Una captura de pantalla donde se vea, claramente, que desde un ordenador 
+externo se esta haciendo ping a un cliente de la red DMZ.
+
+Por último, enseña al profesor el funcionamiento.
+
+En primer lugar, siguiendo los pasos que hemos hecho en el primer ejercicio,
+nos instalaremos el paquete _openvpn_:
+
+```
+debian@dulcinea:~$ sudo apt-get install openvpn 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  easy-rsa libccid libpcsclite1 libpkcs11-helper1 libusb-1.0-0 opensc
+  opensc-pkcs11 pcscd
+Suggested packages:
+  pcmciautils openvpn-systemd-resolved
+The following NEW packages will be installed:
+  easy-rsa libccid libpcsclite1 libpkcs11-helper1 libusb-1.0-0 opensc
+  opensc-pkcs11 openvpn pcscd
+0 upgraded, 9 newly installed, 0 to remove and 3 not upgraded.
+Need to get 2,250 kB of archives.
+After this operation, 6,342 kB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://deb.debian.org/debian buster/main amd64 easy-rsa all 3.0.6-1 [37.9 kB]
+Get:2 http://deb.debian.org/debian buster/main amd64 libusb-1.0-0 amd64 2:1.0.22-2 [55.3 kB]
+Get:3 http://deb.debian.org/debian buster/main amd64 libccid amd64 1.4.30-1 [334 kB]
+Get:4 http://deb.debian.org/debian buster/main amd64 libpcsclite1 amd64 1.8.24-1 [58.5 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 libpkcs11-helper1 amd64 1.25.1-1 [47.6 kB]
+Get:6 http://deb.debian.org/debian buster/main amd64 opensc-pkcs11 amd64 0.19.0-1 [826 kB]
+Get:7 http://deb.debian.org/debian buster/main amd64 opensc amd64 0.19.0-1 [305 kB]
+Get:8 http://deb.debian.org/debian buster/main amd64 openvpn amd64 2.4.7-1 [490 kB]
+Get:9 http://deb.debian.org/debian buster/main amd64 pcscd amd64 1.8.24-1 [95.3 kB]
+Fetched 2,250 kB in 2s (1,267 kB/s)
+Preconfiguring packages ...
+Selecting previously unselected package easy-rsa.
+(Reading database ... 30282 files and directories currently installed.)
+Preparing to unpack .../0-easy-rsa_3.0.6-1_all.deb ...
+Unpacking easy-rsa (3.0.6-1) ...
+Selecting previously unselected package libusb-1.0-0:amd64.
+Preparing to unpack .../1-libusb-1.0-0_2%3a1.0.22-2_amd64.deb ...
+Unpacking libusb-1.0-0:amd64 (2:1.0.22-2) ...
+Selecting previously unselected package libccid.
+Preparing to unpack .../2-libccid_1.4.30-1_amd64.deb ...
+Unpacking libccid (1.4.30-1) ...
+Selecting previously unselected package libpcsclite1:amd64.
+Preparing to unpack .../3-libpcsclite1_1.8.24-1_amd64.deb ...
+Unpacking libpcsclite1:amd64 (1.8.24-1) ...
+Selecting previously unselected package libpkcs11-helper1:amd64.
+Preparing to unpack .../4-libpkcs11-helper1_1.25.1-1_amd64.deb ...
+Unpacking libpkcs11-helper1:amd64 (1.25.1-1) ...
+Selecting previously unselected package opensc-pkcs11:amd64.
+Preparing to unpack .../5-opensc-pkcs11_0.19.0-1_amd64.deb ...
+Unpacking opensc-pkcs11:amd64 (0.19.0-1) ...
+Selecting previously unselected package opensc.
+Preparing to unpack .../6-opensc_0.19.0-1_amd64.deb ...
+Unpacking opensc (0.19.0-1) ...
+Selecting previously unselected package openvpn.
+Preparing to unpack .../7-openvpn_2.4.7-1_amd64.deb ...
+Unpacking openvpn (2.4.7-1) ...
+Selecting previously unselected package pcscd.
+Preparing to unpack .../8-pcscd_1.8.24-1_amd64.deb ...
+Unpacking pcscd (1.8.24-1) ...
+Setting up libpkcs11-helper1:amd64 (1.25.1-1) ...
+Setting up opensc-pkcs11:amd64 (0.19.0-1) ...
+Setting up libpcsclite1:amd64 (1.8.24-1) ...
+Setting up libusb-1.0-0:amd64 (2:1.0.22-2) ...
+Setting up easy-rsa (3.0.6-1) ...
+Setting up openvpn (2.4.7-1) ...
+[ ok ] Restarting virtual private network daemon.:.
+Created symlink /etc/systemd/system/multi-user.target.wants/openvpn.service → /lib/systemd/system/openvpn.service.
+Setting up libccid (1.4.30-1) ...
+Setting up opensc (0.19.0-1) ...
+Setting up pcscd (1.8.24-1) ...
+Created symlink /etc/systemd/system/sockets.target.wants/pcscd.socket → /lib/systemd/system/pcscd.socket.
+Processing triggers for man-db (2.8.5-2) ...
+Processing triggers for mime-support (3.62) ...
+Processing triggers for libc-bin (2.28-10) ...
+Processing triggers for systemd (241-7~deb10u4) ...
+```
+
+Seguimos todos los pasos que hemos seguido anteriormente, salvo que en esta
+ocasión, no vamos a crear una autoridad certificadora, ya que cogeremos la
+del gonzalo nazareno y también cogeremos el certificado Wildcard que 
+realizamos en las prácticas anteriores. A su vez, el certificado Wildcard y
+su clave privada nos sirve también para el cliente. 
+
+Pasaremos dichos ficheros al cliente Openstack y crearemos en Dulcinea
+el fichero de configuración de VPN:
+
+```
+dev tun
+    
+server 10.99.99.0 255.255.255.0 
+
+push "route 10.0.1.0 255.255.255.0"
+
+tls-server
+
+dh /etc/openvpn/keys/dh.pem
+
+ca /etc/openvpn/keys/gonzalonazareno.crt
+
+cert /etc/openvpn/keys/ca.crt
+
+key /etc/openvpn/keys/mikey.key
+
+comp-lzo
+
+keepalive 10 60
+
+verb 3
+```
+
+Una vez hemos configurado el fichero de configuración, iniciamos el servicio:
+
+```
 
