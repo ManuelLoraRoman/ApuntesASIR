@@ -351,6 +351,8 @@ server 10.99.99.0 255.255.255.0
 
 push "route 10.0.1.0 255.255.255.0"
 
+push "route 10.0.2.0 255.255.255.0"
+
 tls-server
 
 dh /etc/openvpn/keys/dh.pem
@@ -371,4 +373,92 @@ verb 3
 Una vez hemos configurado el fichero de configuración, iniciamos el servicio:
 
 ```
+debian@dulcinea:/etc/openvpn$ sudo systemctl restart openvpn@servidor
 
+9: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 100
+    link/none 
+    inet 10.99.99.1 peer 10.99.99.2/32 scope global tun0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::fbb2:8759:8510:c991/64 scope link stable-privacy 
+       valid_lft forever preferred_lft forever
+```
+
+Ahora procedemos con el cliente. En dicho cliente (el usado en el ejercicio
+anterior) vamos a crear el fichero de configuración para el cliente VPN:
+
+```
+dev tun
+
+remote 172.22.200.146
+
+pull
+
+tls-client
+
+ca /etc/openvpn/keys/gonzalonazareno.crt
+
+cert /etc/openvpn/keys/ca.crt
+
+key /etc/openvpn/keys/mikey.key
+
+comp-lzo
+
+keepalive 10 60
+
+verb 3
+```
+
+Iniciamos el servicio y comprobamos que tenemos conexión.
+
+En principio no deberíamos tener conexión, puesto que el router rechaza la
+conexión puesto que la conexión VPN no está incluida en el cortafuegos.
+
+Añadimos las siguientes reglas:
+
+```
+iptables -A INPUT -s 0.0.0.0/0 -p udp -m udp --dport 1194 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -d 0.0.0.0/0 -p udp -m udp --sport 1194 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i tun0 -o eth0 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth0 -o tun0 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o tun0 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i tun0 -o eth0 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i tun0 -o eth2 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i eth2 -o tun0 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth2 -o tun0 -p tcp -m tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i tun0 -o eth2 -p tcp -m tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+```
+
+Y volvemos a comprobar la conexión:
+
+```
+debian@vonvarnish:/etc/openvpn$ ssh -i ~/clave_openstack.pem debian@10.0.1.10
+The authenticity of host '10.0.1.10 (10.0.1.10)' can't be established.
+ECDSA key fingerprint is SHA256:ZpAyyBANTd5u3S5GrZQsgDZgHnksCKbNZFIM1l5okrA.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '10.0.1.10' (ECDSA) to the list of known hosts.
+Linux freston 4.19.0-11-cloud-amd64 #1 SMP Debian 4.19.146-1 (2020-09-17) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+You have mail.
+Last login: Sun Feb 14 11:45:53 2021 from 10.0.1.4
+debian@freston:~$ 
+```
+
+```
+debian@vonvarnish:~$ ssh -i ~/clave_openstack.pem centos@10.0.2.10
+The authenticity of host '10.0.2.10 (10.0.2.10)' can't be established.
+ECDSA key fingerprint is SHA256:6BvUfstNJUF6lK9bxnpMk5HKRJrVIMHKshF0ys1BGNc.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '10.0.2.10' (ECDSA) to the list of known hosts.
+Last login: Mon Feb 22 09:55:02 2021 from 10.0.2.11
+[centos@quijote ~]$ 
+```
