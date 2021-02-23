@@ -410,6 +410,17 @@ verb 3
 
 Iniciamos el servicio y comprobamos que tenemos conexión.
 
+```
+debian@vonvarnish:~$ sudo systemctl restart openvpn@clientedulcinea
+
+17: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 100
+    link/none 
+    inet 10.99.99.6 peer 10.99.99.5/32 scope global tun0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7b3e:dd0b:67a5:8996/64 scope link stable-privacy 
+       valid_lft forever preferred_lft forever
+```
+
 En principio no deberíamos tener conexión, puesto que el router rechaza la
 conexión puesto que la conexión VPN no está incluida en el cortafuegos.
 
