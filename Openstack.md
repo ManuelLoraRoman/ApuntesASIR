@@ -63,7 +63,7 @@ end
 Y procedemos a la creación de las máquinas. Una vez haya acabado la creación,
 tendríamos las siguientes máquinas:
 
-![alt text](../Imágenes/vmopenstack.png)
+![alt text](./Imágenes/vmopenstack.png)
 
 A continuación, nos conectaremos por _vagrant ssh_ a las diferentes máquinas y
 comprobamos las diferentes interfaces red que vamos a tener:
@@ -547,9 +547,9 @@ fichero _/etc/kolla/globals.yml_:
 kolla_external_vip_address: "192.168.0.55"
 ```
 
-![alt text](../Imágenes/openstackubuntu.png)
+![alt text](./Imágenes/openstackubuntu.png)
 
-![alt text](../Imágenes/openstackubuntu2.png)
+![alt text](./Imágenes/openstackubuntu2.png)
 
 Para realizar el lanzamiento de una máquina, vamos a descargarnos el paquete
 de openstack-client y ejecutaremos la prueba que nos proporciona:
@@ -582,7 +582,8 @@ Collecting python-zunclient>=3.4.0
 Collecting python-watcherclient>=1.1.0
   Downloading python_watcherclient-3.1.1-py3-none-any.whl (123 kB)
      |████████████████████████████████| 123 kB 5.9 MB/s 
-Requirement already satisfied: pbr!=2.1.0,>=2.0.0 in ./openstack/lib/python3.6/site-packages (from openstackclient) (5.5.1)
+Requirement already satisfied: pbr
+!=2.1.0,>=2.0.0 in ./openstack/lib/python3.6/site-packages (from openstackclient) (5.5.1)
 Collecting python-congressclient<2000,>=1.3.0
   Downloading python_congressclient-2.0.1-py3-none-any.whl (40 kB)
      |████████████████████████████████| 40 kB 4.3 MB/s 
@@ -646,7 +647,8 @@ Collecting cmd2>=1.0.0
   Downloading cmd2-1.5.0-py3-none-any.whl (133 kB)
      |████████████████████████████████| 133 kB 6.8 MB/s 
 Requirement already satisfied: PyYAML>=3.12 in ./openstack/lib/python3.6/site-packages (from cliff!=1.16.0,>=1.14.0->aodhclient>=0.9.0->openstackclient) (5.4.1)
-Requirement already satisfied: stevedore>=2.0.1 in ./openstack/lib/python3.6/site-packages (from cliff!=1.16.0,>=1.14.0->aodhclient>=0.9.0->openstackclient) (3.3.0)
+Requirement already satisfied: stevedore>=2.0.1 in ./openstack/lib/python3.6/site-packages (from cliff
+!=1.16.0,>=1.14.0->aodhclient>=0.9.0->openstackclient) (3.3.0)
 Collecting PrettyTable>=0.7.2
   Downloading prettytable-2.0.0-py3-none-any.whl (22 kB)
 Collecting attrs>=16.3.0
@@ -1218,13 +1220,13 @@ Y por último, ejecutamos el comando que nos ponen al final:
 
 Y nos aparecerá de la siguiente manera:
 
-![alt text](../Imágenes/openstackubuntu3.png)
+![alt text](./Imágenes/openstackubuntu3.png)
 
 Podemos acceder a la consola de manera normal:
 
-![alt text](../Imágenes/openstackubuntu4.png)
+![alt text](./Imágenes/openstackubuntu4.png)
 
-![alt text](../Imágenes/openstackubuntu5.png)
+![alt text](./Imágenes/openstackubuntu5.png)
 
 Para probar el funcionamiento de los volúmenes, vamos a crear uno manualmente.
 En primer lugar, vamos a comprobar nuestra zona disponible y las imágenes:
