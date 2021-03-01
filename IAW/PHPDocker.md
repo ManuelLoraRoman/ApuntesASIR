@@ -198,3 +198,77 @@ Ahora, debemos comprobar el buen funcionamiento:
 ![alt text](../Imágenes/bookmedik2.png)
 
 El repositorio con todo el contenido se encuentra [aquí](https://github.com/ManuelLoraRoman/Docker-Bookmedik/tree/master).
+
+
+## Tarea 2: Ejecución de una aplicación web PHP en docker
+
+* Realiza la imagen docker de la aplicación a partir de la imagen oficial PHP 
+que encuentras en docker hub. Lee la documentación de la imagen para 
+configurar una imagen con apache2 y php, además seguramente tengas que 
+instalar alguna extensión de php.
+   
+* Crea esta imagen en docker hub.
+   
+* Crea un script con docker compose que levante el escenario con los dos 
+contenedores.
+
+* Entrega la url del repositorio GitHub donde tengas la construcción 
+(directorio build y el despliegue (directorio deploy))
+   
+* Entrega una captura de pantalla donde se vea funcionando la aplicación, una 
+vez que te has logueado.
+
+Nos descargamos la imagen de php:
+
+```
+manuel@debian:/media/manuel/Datos1/Docker/bookmedik/build$ sudo docker pull php
+[sudo] password for manuel: 
+Using default tag: latest
+latest: Pulling from library/php
+45b42c59be33: Already exists 
+a48991d6909c: Pull complete 
+935e2abd2c2c: Pull complete 
+61ccf45ccdb9: Pull complete 
+5804e3449053: Pull complete 
+d702e619cf5e: Pull complete 
+617bddff94d0: Pull complete 
+d2aa39e842fc: Pull complete 
+3788dfe34b03: Pull complete 
+Digest: sha256:936a37592ef1a9486ffe60430947b7e6ad0494254fc59c8465053af2ff230841
+Status: Downloaded newer image for php:latest
+```
+
+A continuación, vamos a modificar el _Dockerfile_ para usar esta imagen:
+
+```
+
+```
+
+
+
+
+## Tarea 3: Ejecución de una aplicación PHP en docker
+
+
+* En este caso queremos usar un contenedor que utilice nginx para servir la 
+aplicación PHP. Puedes crear la imagen desde una imagen base debian o ubuntu 
+o desde la imagen oficial de nginx.
+    
+* Vamos a crear otro contenedor que sirva php-fpm.
+   
+* Y finalmente nuestro contenedor con la aplicación.
+   
+* Crea un script con docker compose que levante el escenario con los tres 
+contenedores.
+
+A lo mejor te puede ayudar el siguiente enlace: Dockerise your PHP application 
+with Nginx and PHP7-FPM
+
+* Entrega la url del repositorio GitHub donde tengas la construcción 
+(directorio build y el despliegue (directorio deploy))
+   
+* Entrega una captura de pantalla donde se vea funcionando la aplicación, una 
+vez que te has logueado.
+
+
+
