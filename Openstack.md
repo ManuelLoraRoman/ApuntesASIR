@@ -364,6 +364,7 @@ neutron_external_interface: "enp0s8"
 
 enable_cinder: "yes"
 enable_cinder_backup: "yes"
+enable_cinder_backend_nfs: "yes"
 
 ########################
 # Nova - Compute Options
