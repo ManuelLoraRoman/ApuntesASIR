@@ -719,4 +719,130 @@ Para el fichero _ingress.yaml_ hay que modificarlo para ajustarlo a la
 versión estable:
 
 ```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-letschat
+spec:
+  rules:
+  - host: www.letschat.com
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: letschat
+            port: 
+              number: 8080
+```
 
+Antes de incorporarlo, vamos a clonar el repositorio de nginx-ingress y vamos
+a el espacio de nombre y el servicio, en primer lugar, para el controlador
+ingress:
+
+```
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ sudo git clone git@github.com:nginxinc/kubernetes-ingress.git
+Clonando en 'kubernetes-ingress'...
+remote: Enumerating objects: 1985, done.
+remote: Counting objects: 100% (1985/1985), done.
+remote: Compressing objects: 100% (1555/1555), done.
+remote: Total 33422 (delta 236), reused 1867 (delta 205), pack-reused 31437
+Recibiendo objetos: 100% (33422/33422), 45.65 MiB | 4.80 MiB/s, listo.
+Resolviendo deltas: 100% (17985/17985), listo.
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/common/ns-and-sa.yaml 
+namespace/nginx-ingress created
+serviceaccount/nginx-ingress created
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/rbac/rbac.yaml
+clusterrole.rbac.authorization.k8s.io/nginx-ingress created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress created
+```
+
+Hecho esto, vamos a ejecutar el controlador Ingress:
+
+```
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/deployment/nginx-ingress.yaml 
+deployment.apps/nginx-ingress created
+```
+
+Y vamos a desplegar a continuación, el fichero _ingress.yaml_:
+
+```
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl create -f ingress.yaml 
+ingress.networking.k8s.io/ingress-letschat created
+```
+
+Comprobamos el status:
+
+```
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl get ingress
+NAME               CLASS    HOSTS              ADDRESS   PORTS   AGE
+ingress-letschat   <none>   www.letschat.com             80      37s
+```
+
+Y comprobamos que funciona el proxy inverso:
+
+```
+No he llegado a conseguir que me funcionase
+```
+
+Para escalar a varias réplicas, debemos ejecutar el siguiente comando:
+
+```
+manuel@debian:~/Vagrant/Kubernetes$ kubectl scale --replicas=3 deploy/letschat
+deployment.apps/letschat scaled
+manuel@debian:~/Vagrant/Kubernetes$ kubectl get deploy,pod
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/letschat   3/3     3            3           13m
+deployment.apps/mongo      1/1     1            1           12m
+
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/letschat-7c66bd64f5-6vflf   1/1     Running   0          2m46s
+pod/letschat-7c66bd64f5-h2nfs   1/1     Running   0          2m46s
+pod/letschat-7c66bd64f5-xs2vn   1/1     Running   2          13m
+pod/mongo-5c694c878b-n9l4j      1/1     Running   0          12m
+```
+
+Se han creado dos nuevos pods. Con esto se estará balanceando la carga entre
+los tres contenedores. También podríamos ver que los pods se están ejecutando
+en los distintos nodos de nuestro clúster:
+
+```
+manuel@debian:~/Vagrant/Kubernetes$ kubectl get pod -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+letschat-7c66bd64f5-6vflf   1/1     Running   0          11m   192.168.247.2    node-2   <none>           <none>
+letschat-7c66bd64f5-h2nfs   1/1     Running   0          11m   192.168.84.130   node-1   <none>           <none>
+letschat-7c66bd64f5-xs2vn   1/1     Running   2          21m   192.168.247.1    node-2   <none>           <none>
+mongo-5c694c878b-n9l4j      1/1     Running   0          21m   192.168.84.129   node-1   <none>           <none>
+```
+
+
+En la columna _NODE_ podemos ver donde se están ejecutando cada pod. 
+
+A continuación vamos a crear un cuarto pod para ver donde se situaría:
+
+```
+manuel@debian:~/Vagrant/Kubernetes$ kubectl scale --replicas=4 deploy/letschat
+deployment.apps/letschat scaled
+manuel@debian:~/Vagrant/Kubernetes$ kubectl get pod -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+letschat-7c66bd64f5-6vflf   1/1     Running   0          15m   192.168.247.2    node-2   <none>           <none>
+letschat-7c66bd64f5-h2nfs   1/1     Running   0          15m   192.168.84.130   node-1   <none>           <none>
+letschat-7c66bd64f5-nxwbh   1/1     Running   0          6s    192.168.247.3    node-2   <none>           <none>
+letschat-7c66bd64f5-xs2vn   1/1     Running   2          25m   192.168.247.1    node-2   <none>           <none>
+mongo-5c694c878b-n9l4j      1/1     Running   0          25m   192.168.84.129   node-1   <none>           <none>
+```
+
+En caso de eleiminar un pod, se creará uno automáticamente:
+
+```
+manuel@debian:~/Vagrant/Kubernetes$ kubectl delete pod letschat-7c66bd64f5-nxwbh
+pod "letschat-7c66bd64f5-nxwbh" deleted
+manuel@debian:~/Vagrant/Kubernetes$ kubectl get pod -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP               NODE     NOMINATED NODE   READINESS GATES
+letschat-7c66bd64f5-6vflf   1/1     Running   0          18m   192.168.247.2    node-2   <none>           <none>
+letschat-7c66bd64f5-96q5f   1/1     Running   0          43s   192.168.84.131   node-1   <none>           <none>
+letschat-7c66bd64f5-h2nfs   1/1     Running   0          18m   192.168.84.130   node-1   <none>           <none>
+letschat-7c66bd64f5-xs2vn   1/1     Running   2          28m   192.168.247.1    node-2   <none>           <none>
+mongo-5c694c878b-n9l4j      1/1     Running   0          28m   192.168.84.129   node-1   <none>           <none>
+```

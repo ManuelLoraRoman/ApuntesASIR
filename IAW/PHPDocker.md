@@ -241,14 +241,153 @@ Status: Downloaded newer image for php:latest
 A continuación, vamos a modificar el _Dockerfile_ para usar esta imagen:
 
 ```
+FROM php:7.4.3-apache
+MAINTAINER Manuel Lora Román "manuelloraroman@gmail.com"
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+RUN a2enmod rewrite
+COPY bookmedik_origin/ /var/www/html
+EXPOSE 80
 
+ENV USER=bookmedik 
+ENV PASSWORD=bookmedik 
+ENV HOST=db 
+ENV DB=bookmedik
 ```
 
+A su vez, vamos a modificar el directorio de _bookmedik_ y modificaremos el
+contenido de _Database.php_:
 
+```
+<?php
+class Database {
+	public static $db;
+	public static $con;
+	function Database(){
+		$this->user=getenv("USER");$this->pass=getenv("PASSWORD");$this->host=getenv("HOST");$this->ddbb=getenv("DB");
+	}
+
+	function connect(){
+		$con = new mysqli($this->host,$this->user,$this->pass,$this->ddbb);
+		$con->query("set sql_mode=''");
+		return $con;
+	}
+
+	public static function getCon(){
+		if(self::$con==null && self::$db==null){
+			self::$db = new Database();
+			self::$con = self::$db->connect();
+		}
+		return self::$con;
+	}
+	
+}
+?>
+```
+
+Y creamos la imagen:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/build$ docker build -t manuellora/bookmedik:v1 .
+Sending build context to Docker daemon  11.55MB
+Step 1/10 : FROM php:7.4.3-apache
+ ---> d753d5b380a1
+Step 2/10 : MAINTAINER Manuel Lora Román "manuelloraroman@gmail.com"
+ ---> Running in d9561cb48c9e
+Removing intermediate container d9561cb48c9e
+ ---> 83d3235aca00
+Step 3/10 : RUN docker-php-ext-install pdo pdo_mysql mysqli
+.
+.
+.
+Step 4/10 : RUN a2enmod rewrite
+ ---> Running in f4ecd0a61d10
+Enabling module rewrite.
+To activate the new configuration, you need to run:
+  service apache2 restart
+Removing intermediate container f4ecd0a61d10
+ ---> 0a8b2f38dd66
+Step 5/10 : COPY bookmedik_origin/ /var/www/html
+ ---> e8f812e2c917
+Step 6/10 : EXPOSE 80
+ ---> Running in 5714b9171b96
+Removing intermediate container 5714b9171b96
+ ---> 21fd0eab30f2
+Step 7/10 : ENV USER=bookmedik
+ ---> Running in 7cc7f734980a
+Removing intermediate container 7cc7f734980a
+ ---> 363c78ef5014
+Step 8/10 : ENV PASSWORD=bookmedik
+ ---> Running in a8bc154eaf06
+Removing intermediate container a8bc154eaf06
+ ---> ce0c24197b76
+Step 9/10 : ENV HOST=db
+ ---> Running in eb5fbca54457
+Removing intermediate container eb5fbca54457
+ ---> 8ef89a01154e
+Step 10/10 : ENV DB=bookmedik
+ ---> Running in 61816d5e2817
+Removing intermediate container 61816d5e2817
+ ---> 320320b5426c
+Successfully built 320320b5426c
+Successfully tagged manuellora/bookmedik:v1
+```
+
+A su vez, modificaremos el contenido del fichero _docker-compose.yml_:
+
+```
+version: '3.1'
+
+services:
+
+  db:
+    container_name: servidor_mysql
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: bookmedik
+      MYSQL_USER: bookmedik
+      MYSQL_PASSWORD: bookmedik
+      MYSQL_ROOT_PASSWORD: bookmedik
+    volumes:
+      - /media/manuel/Datos/Docker/bookmedik/volmaria:/var/lib/mysql
+
+
+  bookmedik:
+    container_name: servidor_bookmedik
+    image: manuellora/bookmedik:v1
+    restart: always
+    environment:
+      USER: bookmedik
+      PASSWORD: bookmedik
+      HOST: db
+      DB: bookmedik
+    ports:
+      - 8081:80
+    volumes:
+      - /media/manuel/Datos1/Docker/bookmedik/volapache:/var/log/apache2
+```
+
+Y levantamos el escenario:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/deploy$ docker-compose up -d
+Creating network "deploy_default" with the default driver
+Creating servidor_mysql     ... done
+Creating servidor_bookmedik ... done
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/deploy$ docker-compose ps
+       Name                    Command              State          Ports        
+--------------------------------------------------------------------------------
+servidor_bookmedik   docker-php-entrypoint apac     Up      0.0.0.0:8081->80/tcp
+                     ...                                                        
+servidor_mysql       docker-entrypoint.sh mysqld    Up      3306/tcp            
+```
+
+Y comprobamos que funciona:
+
+![alt text](../Imágenes/DockerPHP21.png)
 
 
 ## Tarea 3: Ejecución de una aplicación PHP en docker
-
 
 * En este caso queremos usar un contenedor que utilice nginx para servir la 
 aplicación PHP. Puedes crear la imagen desde una imagen base debian o ubuntu 
@@ -269,6 +408,91 @@ with Nginx and PHP7-FPM
    
 * Entrega una captura de pantalla donde se vea funcionando la aplicación, una 
 vez que te has logueado.
+
+Utilizaremos la imagen oficial tanto de nginx y mariadb, sin embargo, a 
+la imagen de php-fpm le haremos algún cambio. 
+
+Para ello, vamos a crear un Dockerfile para php-fpm:
+
+```
+FROM php:7.4.3-apache
+MAINTAINER Manuel Lora Román "manuelloraroman@gmail.com"
+RUN docker-php-ext-install pdo_mysql mysqli
+```
+
+Acto seguido, modificaremos el fichero _docker-compose.yml_ con las siguientes 
+lineas:
+
+```
+version: '3.1'
+
+services:
+
+  bookmedik:
+    image: nginx:latest
+    container_name: servidor_bookmedik
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ../build3/bookmedik_origin:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+  
+  php:
+    image: manuellora/bookmedik:v1
+    container_name: php:7-fpm
+    restart: always
+    environment:
+      USER: bookmedik
+      PASSWORD: bookmedik
+      HOST: db
+    volumes:
+      - ../build3//bookmedik_origin:/var/www/html
+  
+  db:
+    image: mariadb
+    container_name: servidor_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: bookmedik
+      MYSQL_USER: bookmedik
+      MYSQL_PASSWORD: bookmedik
+      MYSQL_ROOT_PASSWORD: bookmedik
+    volumes:
+      - /media/manuel/Datos1/Docker/bookmedik/volmaria:/var/lib/mysql
+```
+
+Y desplegamos el escenario:
+
+```
+
+
+## Tarea 4: Ejecución de un CMS en Docker
+
+* A partir de una imagen base (que no sea una imagen con el CMS), genera una 
+imagen que despliegue un CMS PHP (que no sea wordpress).
+   
+* Crea los volúmenes necesarios para que la información que se guarda sea 
+persistente.
+
+* Elige un CMS PHP y crea la imagen que despliega la aplicación. Crea los 
+contenedores necesarios para servir el CMS. Entrega una prueba de 
+funcionamiento.
+   
+* Elimina los contenedores, vuelve a crearlos y demuestra que la información 
+no se ha perdido.
+
+
+
+## Tarea 5: Ejecución de un CMS en Docker
+
+* Busca una imagen oficial de un CMS PHP en docker hub (distinto al que has 
+instalado en la tarea anterior, ni wordpress), y crea los contenedores 
+necesarios para servir el CMS, siguiendo la documentación de docker hub.
+
+* Explica el proceso que has seguido para realizar la tarea, pon alguna prueba 
+de funcionamiento. ¿Se ha creado algún volumen para que la información sea 
+persistente?
 
 
 
