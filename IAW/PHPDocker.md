@@ -466,6 +466,7 @@ Y desplegamos el escenario:
 
 ```
 
+```
 
 ## Tarea 4: Ejecución de un CMS en Docker
 
@@ -482,7 +483,159 @@ funcionamiento.
 * Elimina los contenedores, vuelve a crearlos y demuestra que la información 
 no se ha perdido.
 
+Nos descargamos drupal en el directorio build y descomprimimos el archivo:
 
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/build4$ wget https://www.drupal.org/download-latest/zip
+--2021-03-04 11:12:49--  https://www.drupal.org/download-latest/zip
+Resolviendo www.drupal.org (www.drupal.org)... 151.101.134.217
+Conectando con www.drupal.org (www.drupal.org)[151.101.134.217]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 302 Moved Temporarily
+Localización: https://ftp.drupal.org/files/projects/drupal-9.1.4.zip [siguiendo]
+--2021-03-04 11:12:50--  https://ftp.drupal.org/files/projects/drupal-9.1.4.zip
+Resolviendo ftp.drupal.org (ftp.drupal.org)... 151.101.134.217
+Conectando con ftp.drupal.org (ftp.drupal.org)[151.101.134.217]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 200 OK
+Longitud: 30367235 (29M) [application/zip]
+Grabando a: “zip”
+
+zip                 100%[===================>]  28,96M  11,5MB/s    en 2,5s    
+
+2021-03-04 11:12:53 (11,5 MB/s) - “zip” guardado [30367235/30367235]
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/build4$ unzip zip
+```
+
+Antes de nada, vamos a crear el script que nos permita ejecutar apache:
+
+```
+#!/bin/bash
+
+sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+apache2ctl -D FOREGROUND
+```
+
+Creamos en ese mismo directorio un fichero _Dockerfile_ para crear la imagen
+del CMS con la base de Debian:
+
+```
+FROM debian
+RUN apt-get update && apt-get install -y apache2 libapache2-mod-php php php-mysql php-dom php-xml php-gd php-mbstring && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN rm /var/www/html/index.html
+EXPOSE 80
+COPY ./drupal-9.1.4 /var/www/html
+ADD script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
+RUN chmod a+w /var/www/html/sites/default/
+RUN cp /var/www/html/sites/default/default.settings.php /var/www/html/sites/default/settings.php
+RUN chmod a+w /var/www/html/sites/default/settings.php
+RUN a2enmod rewrite 
+CMD ["/usr/local/bin/script.sh"]
+```
+
+Y creamos dicha imagen:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/build4$ docker build -t manuellora/drupal:v1 .
+Sending build context to Docker daemon  91.79MB
+Step 1/12 : FROM debian
+ ---> e7d08cddf791
+Step 2/12 : RUN apt-get update && apt-get install -y apache2 libapache2-mod-php php php-mysql php-dom php-xml php-gd php-mbstring && apt-get clean && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> ffdfecdc8a1e
+Step 3/12 : RUN rm /var/www/html/index.html
+ ---> Using cache
+ ---> 4a5917bf0872
+Step 4/12 : EXPOSE 80
+ ---> Using cache
+ ---> 2d07931027bb
+Step 5/12 : COPY ./drupal-9.1.4 /var/www/html
+ ---> Using cache
+ ---> bcf7e33953d3
+Step 6/12 : ADD script.sh /usr/local/bin/script.sh
+ ---> Using cache
+ ---> 552e15078b5a
+Step 7/12 : RUN chmod +x /usr/local/bin/script.sh
+ ---> Using cache
+ ---> e63a71514017
+Step 8/12 : RUN chmod a+w /var/www/html/sites/default/
+ ---> Running in 0afb8bc2b9d2
+Removing intermediate container 0afb8bc2b9d2
+ ---> 942cbe04d051
+Step 9/12 : RUN cp /var/www/html/sites/default/default.settings.php /var/www/html/sites/default/settings.php
+ ---> Running in 50dc0a2f5cc4
+Removing intermediate container 50dc0a2f5cc4
+ ---> bf9c976758b7
+Step 10/12 : RUN chmod a+w /var/www/html/sites/default/settings.php
+ ---> Running in a5e298dd0cbf
+Removing intermediate container a5e298dd0cbf
+ ---> 8858b43b82a5
+Step 11/12 : RUN a2enmod rewrite
+ ---> Running in 34c0134b8c07
+Enabling module rewrite.
+To activate the new configuration, you need to run:
+  service apache2 restart
+Removing intermediate container 34c0134b8c07
+ ---> 6207bf2a2b33
+Step 12/12 : CMD ["/usr/local/bin/script.sh"]
+ ---> Running in 4290e2f8bb56
+Removing intermediate container 4290e2f8bb56
+ ---> 7f7931172cbe
+Successfully built 7f7931172cbe
+Successfully tagged manuellora/drupal:v1
+```
+
+Nos dirigiremos hacia el directorio de deploy, y crearemos el fichero
+_docker-compose.yml_ para el despliegue del escenario:
+
+```
+version: '3.1'
+
+services:
+
+  drupal:
+    image: manuellora/drupal:v1
+    container_name: drupal
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      USER: drupal
+      PASSWORD: drupal
+      HOST: db
+      DB: drupal
+    volumes:
+      - /media/manuel/Datos/Docker/bookmedik/voldrupal:/var/log/apache2
+  
+  db:
+    image: mariadb
+    container_name: servidor_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+      MYSQL_ROOT_PASSWORD: drupal
+    volumes:
+      - /media/manuel/Datos/Docker/bookmedik/volmaria4:/var/lib/mysql
+
+```
+
+Y desplegamos el escenario para su comprobación:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/deploy4$ docker-compose up -d
+Creating network "deploy4_default" with the default driver
+Creating servidor_mysql ... done
+Creating drupal         ... done
+```
+
+Y cuando accedemos a la página:
+
+![alt text](../Imágenes/drupaldocker.png)
+
+Instalaremos de manera normal y comprobamos que funciona correctamente:
+
+![alt text](../Imágenes/drupaldocker2.png)
 
 ## Tarea 5: Ejecución de un CMS en Docker
 
@@ -494,5 +647,89 @@ necesarios para servir el CMS, siguiendo la documentación de docker hub.
 de funcionamiento. ¿Se ha creado algún volumen para que la información sea 
 persistente?
 
+Vamos a crear el directorio _deploy5_ y dentro del mismo, vamos a crear un
+fichero _docker-compose.yml_ el cual tendrá la siguiente información:
 
+```
+version: '3.1'
 
+services:
+  joomla:
+    image: joomla
+    restart: always
+    links:
+      - joomladb:mysql
+    ports:
+      - 8080:80
+    environment:
+      JOOMLA_DB_HOST: joomladb
+      JOOMLA_DB_PASSWORD: example
+
+  joomladb:
+    image: mysql:5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+```
+
+Creado el fichero, lo desplegamos:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/deploy5$ docker-compose up -d
+Creating network "deploy5_default" with the default driver
+Pulling joomladb (mysql:5.6)...
+5.6: Pulling from library/mysql
+cae7303ade7f: Pull complete
+1054a79d5f43: Pull complete
+416bf57c9026: Pull complete
+48c88503fb7a: Pull complete
+1a5098f97b18: Pull complete
+ed666c916387: Pull complete
+86ed6d755e75: Pull complete
+d02f354a199c: Pull complete
+7c73c04a085d: Pull complete
+0321b62dc9a8: Pull complete
+520080f8d317: Pull complete
+Digest: sha256:6cacab35e5b6485621c20f54a27e3024965e5bebbd465edb5de8c5c556347392
+Status: Downloaded newer image for mysql:5.6
+Pulling joomla (joomla:)...
+latest: Pulling from library/joomla
+45b42c59be33: Already exists
+a48991d6909c: Already exists
+935e2abd2c2c: Already exists
+61ccf45ccdb9: Already exists
+27b5ac70765b: Pull complete
+5638b69045ba: Pull complete
+0fdaed064166: Pull complete
+a2f3a7f56761: Pull complete
+dabb00fe464c: Pull complete
+a17a0d01f8a1: Pull complete
+d8e68bd34917: Pull complete
+6d16e76f57fd: Pull complete
+5c2f9b1b0c42: Pull complete
+284b3b977732: Pull complete
+b985553d1b34: Pull complete
+e5de1d46ecc3: Pull complete
+b47eb2980a8d: Pull complete
+ff4043ae5630: Pull complete
+a5eb91e3763e: Pull complete
+Digest: sha256:e79be167e872faaad79d5726f5a76f257d148fc2636bbc50784479c2212835d0
+Status: Downloaded newer image for joomla:latest
+Creating deploy5_joomladb_1 ... done
+Creating deploy5_joomla_1   ... done
+```
+
+Y comprobamos su funcionamiento:
+
+```
+manuel@debian:/media/manuel/Datos/Docker/bookmedik/deploy5$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                  NAMES
+5f7459b7e95b        joomla              "/entrypoint.sh apac…"   49 seconds ago      Up 48 seconds       0.0.0.0:8080->80/tcp   deploy5_joomla_1
+0e49b0d414f9        mysql:5.6           "docker-entrypoint.s…"   49 seconds ago      Up 48 seconds       3306/tcp               deploy5_joomladb_1
+```
+
+![alt text](../Imágenes/joomladocker.png)
+
+Y comprobamos que la instalación ha ido correctamente:
+
+![alt text](../Imágenes/joomladocker2.png)
