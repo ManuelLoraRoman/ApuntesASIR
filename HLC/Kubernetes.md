@@ -758,6 +758,10 @@ clusterrole.rbac.authorization.k8s.io/nginx-ingress created
 clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress created
 ```
 
+Podemos ver que funciona el servicio de letschat:
+
+![alt text](../Imágenes/letschatkube.png)
+
 Hecho esto, vamos a ejecutar el controlador Ingress:
 
 ```
@@ -833,7 +837,7 @@ letschat-7c66bd64f5-xs2vn   1/1     Running   2          25m   192.168.247.1    
 mongo-5c694c878b-n9l4j      1/1     Running   0          25m   192.168.84.129   node-1   <none>           <none>
 ```
 
-En caso de eleiminar un pod, se creará uno automáticamente:
+En caso de eliminar un pod, se creará uno automáticamente:
 
 ```
 manuel@debian:~/Vagrant/Kubernetes$ kubectl delete pod letschat-7c66bd64f5-nxwbh
