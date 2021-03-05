@@ -715,6 +715,10 @@ manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl create -f letschat-
 service/letschat created
 ```
 
+Y comprobamos que funciona:
+
+![alt text](../Imágenes/letschatkube.png)
+
 Para el fichero _ingress.yaml_ hay que modificarlo para ajustarlo a la
 versión estable:
 
@@ -758,13 +762,25 @@ clusterrole.rbac.authorization.k8s.io/nginx-ingress created
 clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress created
 ```
 
-Podemos ver que funciona el servicio de letschat:
-
-![alt text](../Imágenes/letschatkube.png)
-
-Hecho esto, vamos a ejecutar el controlador Ingress:
+Ahora vamos a incorporar al clúster lo que necesitamos para tener _nginx-ingress_
+que encontramos en [esta página](https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/#configure-rbac):
 
 ```
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/common/ns-and-sa.yaml 
+namespace/nginx-ingress created
+serviceaccount/nginx-ingress created
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl get ns
+NAME              STATUS   AGE
+calico-system     Active   22h
+default           Active   22h
+kube-node-lease   Active   22h
+kube-public       Active   22h
+kube-system       Active   22h
+nginx-ingress     Active   42s
+tigera-operator   Active   22h
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/rbac/rbac.yaml 
+clusterrole.rbac.authorization.k8s.io/nginx-ingress created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-ingress created
 manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl apply -f kubernetes-ingress/deployments/deployment/nginx-ingress.yaml 
 deployment.apps/nginx-ingress created
 ```
@@ -786,9 +802,81 @@ ingress-letschat   <none>   www.letschat.com             80      37s
 
 Y comprobamos que funciona el proxy inverso:
 
+>No me ha llegado a funcionar porque el nginx-ingress no funciona correctamente
+>dándome el siguiente error:
+
 ```
-No he llegado a conseguir que me funcionase
+manuel@debian:~/Vagrant/Kubernetes/kubernetes-setup$ kubectl describe pod/nginx-ingress-555f75f85f-s85gh -n nginx-ingress
+Name:         nginx-ingress-555f75f85f-s85gh
+Namespace:    nginx-ingress
+Priority:     0
+Node:         node-2/192.168.50.12
+Start Time:   Fri, 05 Mar 2021 08:40:08 +0100
+Labels:       app=nginx-ingress
+              pod-template-hash=555f75f85f
+Annotations:  cni.projectcalico.org/podIP: 192.168.247.7/32
+              cni.projectcalico.org/podIPs: 192.168.247.7/32
+Status:       Running
+IP:           192.168.247.7
+IPs:
+  IP:           192.168.247.7
+Controlled By:  ReplicaSet/nginx-ingress-555f75f85f
+Containers:
+  nginx-ingress:
+    Container ID:  docker://c4a348b0272ae1b409eff99655dba416d09c7c8c2d9a70303ff126b20ee47604
+    Image:         nginx/nginx-ingress:edge
+    Image ID:      docker-pullable://nginx/nginx-ingress@sha256:b1b9ac653050a0c2d9c936f14a639fd524bc1dca7e8a9a23cd615c5302c72f03
+    Ports:         80/TCP, 443/TCP, 8081/TCP
+    Host Ports:    0/TCP, 0/TCP, 0/TCP
+    Args:
+      -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+      -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+    State:          Terminated
+      Reason:       Error
+      Exit Code:    255
+      Started:      Fri, 05 Mar 2021 08:40:29 +0100
+      Finished:     Fri, 05 Mar 2021 08:40:29 +0100
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    255
+      Started:      Fri, 05 Mar 2021 08:40:14 +0100
+      Finished:     Fri, 05 Mar 2021 08:40:14 +0100
+    Ready:          False
+    Restart Count:  2
+    Readiness:      http-get http://:readiness-port/nginx-ready delay=0s timeout=1s period=1s #success=1 #failure=3
+    Environment:
+      POD_NAMESPACE:  nginx-ingress (v1:metadata.namespace)
+      POD_NAME:       nginx-ingress-555f75f85f-s85gh (v1:metadata.name)
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from nginx-ingress-token-76kmd (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  nginx-ingress-token-76kmd:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  nginx-ingress-token-76kmd
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  26s               default-scheduler  Successfully assigned nginx-ingress/nginx-ingress-555f75f85f-s85gh to node-2
+  Normal   Pulled     24s               kubelet            Successfully pulled image "nginx/nginx-ingress:edge" in 1.795920208s
+  Normal   Pulled     22s               kubelet            Successfully pulled image "nginx/nginx-ingress:edge" in 1.96410958s
+  Normal   Pulling    8s (x3 over 26s)  kubelet            Pulling image "nginx/nginx-ingress:edge"
+  Normal   Created    6s (x3 over 24s)  kubelet            Created container nginx-ingress
+  Normal   Started    6s (x3 over 24s)  kubelet            Started container nginx-ingress
+  Normal   Pulled     6s                kubelet            Successfully pulled image "nginx/nginx-ingress:edge" in 1.858106273s
+  Warning  BackOff    5s (x3 over 20s)  kubelet            Back-off restarting failed container
 ```
+
 
 Para escalar a varias réplicas, debemos ejecutar el siguiente comando:
 
