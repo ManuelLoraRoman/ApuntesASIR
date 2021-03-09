@@ -1,4 +1,4 @@
- Instalación y Configuración de Openstack
+# Instalación y Configuración de Openstack
 
 Selecciona un método de instalación de OpenStack entre los explicados en clase 
 o alguna alternativa que encuentres e instala una nube privada que tenga al 
