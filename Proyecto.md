@@ -24,7 +24,7 @@ Otra ventaja de la que dispone Rocket.Chat es que es una aplicación multilingü
 Slack cuya interfaz está enteramente en inglés.
 
 A todo esto, incluyele la posible integración de autenticación con _OpenLDAP_ u _Active Directory_, 
-además de por hacerlo mediante otros sistemas como Github, Nextcloud u Google, entre otros.
+además de poder hacerlo mediante otros sistemas como Github, Nextcloud u Google, entre otros.
 
 Para resumir un poco, _Rocket.Chat_ dispone de estas funcionalidades esenciales:
 
@@ -32,7 +32,7 @@ Para resumir un poco, _Rocket.Chat_ dispone de estas funcionalidades esenciales:
 
 * Autenticación mediante diferentes sistemas.
 
-* Compartir pantalla.
+* Compartir pantalla o directorios.
 
 * Transferencia de ficheros.
 
