@@ -1,4 +1,8 @@
+<div align="center">
+
 ## Proyecto TFG
+
+</div>
 
 La idea principal de mi proyecto es la implementación de la aplicación _Rocket.Chat_ con contenedores
 Docker. Rocket.Chat es una herramienta que permite, de manera segura, mantener los datos y las 
