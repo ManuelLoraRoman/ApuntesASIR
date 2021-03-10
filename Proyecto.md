@@ -26,6 +26,21 @@ Slack cuya interfaz está enteramente en inglés.
 A todo esto, incluyele la posible integración de autenticación con _OpenLDAP_ u _Active Directory_, 
 además de por hacerlo mediante otros sistemas como Github, Nextcloud u Google, entre otros.
 
+Para resumir un poco, _Rocket.Chat_ dispone de estas funcionalidades esenciales:
+
+* Videoconferencia, con posibilidad de integrar el servicio con jitsi o BigBlueButton.
+
+* Autenticación mediante diferentes sistemas.
+
+* Compartir pantalla.
+
+* Transferencia de ficheros.
+
+* Buscador avanzado de conversaciones.
+
+* Grupos de discusión.
+
+* Programación de Bots.
 
 La documentación de dicha herramienta se encuentra aquí:
 
