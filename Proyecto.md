@@ -1,6 +1,6 @@
 <div align="center">
 
-## Proyecto TFG
+## Rocket.Chat implementado con Docker y autenticación con LDAP
 
 </div>
 
