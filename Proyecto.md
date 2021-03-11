@@ -88,6 +88,8 @@ Para resumir un poco, _Rocket.Chat_ dispone de estas funcionalidades esenciales:
 
 * Programación de Bots.
 
+### Objetivos Generales
+
 
 Explicado un poco qué es _Rocket.Chat_ y algunas de sus funcionalidades, los objetivos a conseguir
 con este proyecto serían:
@@ -100,6 +102,8 @@ con este proyecto serían:
 
 * Implementación de dicha herramienta en el clúster del instituto.
 
+
+### Previsión de medios
 
 Con respecto a la previsión de medios, los requisitos para la instalación de dicha aplicación 
 varían muchos con respecto a los usuarios conectados concurrentemente, la cantidad de  dispositivos 
@@ -129,6 +133,7 @@ Si la configuración va a ser virtual, los requisitos serían los siguientes:
 La configuración permite hasta 200 usuarios, 50 de ellos activos de manera concurrente, mientras que la
 recomendada sería de 500 y hasta 100 activos al mismo tiempo.
 
+### Bibliografía
 
 La documentación de algunas de las aplicaciones comentadas aquí:
 
